@@ -23,7 +23,19 @@
 function initRatyRoomTypeDetail(path) {
     $('.room_hotel_name_block .raty').html(''); // reset first to avoid star duplications
     $.extend($.raty, { path: path });
-    $('.room_hotel_name_block .raty').raty({readOnly: true, hints: null, noRatedMsg: '0'});
+    $('.room_hotel_name_block .raty').each(function () {
+        var score = parseFloat($(this).data('score'));
+        if (isNaN(score)) {
+            score = 0;
+        }
+
+        $(this).raty({
+            readOnly: true,
+            score: score,
+            hints: null,
+            noRatedMsg: '0'
+        });
+    });
 }
 
 $(document).ready(function () {

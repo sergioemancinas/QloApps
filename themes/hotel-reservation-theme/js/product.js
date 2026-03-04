@@ -30,6 +30,60 @@ var colors = [];
 var original_url = window.location + '';
 var first_url_check = true;
 var firstTime = true;
+
+function cleanupLegacyRoomInfoText() {
+    var $infoContainer = $('#product_info_tab_information');
+    if (!$infoContainer.length) {
+        return;
+    }
+
+    var legacyPatterns = [
+        /rate options and pricing/i,
+        /pricing logic/i,
+        /final price is calculated automatically/i,
+        /base daily rate/i,
+        /base per day/i,
+        /option\s*[1-4]/i,
+        /non-refundable rates include/i,
+        /weekly rates apply from 7 nights/i,
+        /pricing is calculated dynamically/i,
+        /children below 3 years are free/i
+    ];
+
+    $infoContainer.find('p, li').each(function() {
+        var $el = $(this);
+        var text = $.trim($el.text());
+        if (!text) {
+            return;
+        }
+
+        for (var i = 0; i < legacyPatterns.length; i++) {
+            if (legacyPatterns[i].test(text)) {
+                $el.remove();
+                break;
+            }
+        }
+    });
+
+    $infoContainer.find('span, div').each(function() {
+        var $el = $(this);
+        if ($el.children().length) {
+            return;
+        }
+
+        var text = $.trim($el.text());
+        if (!text) {
+            return;
+        }
+
+        for (var i = 0; i < legacyPatterns.length; i++) {
+            if (legacyPatterns[i].test(text)) {
+                $el.remove();
+                break;
+            }
+        }
+    });
+}
 /* Retro compat from product.tpl */
 if (typeof customizationFields !== 'undefined' && customizationFields)
 {
@@ -207,6 +261,12 @@ $(document).ready(function() {
     if ($('.room_info_hotel_images_wrap').length) {
         loadHotelImagesByPage(1);
     }
+
+    cleanupLegacyRoomInfoText();
+});
+
+$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function() {
+    cleanupLegacyRoomInfoText();
 });
 
 $(window).resize(function() {
@@ -1338,6 +1398,234 @@ function initMap() {
 
 var BookingForm = {
     currentRequest: null,
+    currentAvailabilityRequest: null,
+    unavailableDatesMap: {},
+    availabilityCacheKey: '',
+    calendarResizeTimer: null,
+    calendarLayoutKey: '',
+    getCalendarLayoutKey: function() {
+        return this.getCalendarSingleMonthMode() ? 'single' : 'double';
+    },
+    getCalendarSingleMonthMode: function() {
+        if (typeof window.matchMedia === 'function') {
+            return window.matchMedia('(max-width: 900px)').matches;
+        }
+
+        return $(window).width() <= 900;
+    },
+    bindCalendarLayoutWatcher: function() {
+        var self = this;
+        $(window).off('resize.bookingFormCalendar orientationchange.bookingFormCalendar');
+        $(window).on('resize.bookingFormCalendar orientationchange.bookingFormCalendar', function() {
+            if (self.calendarResizeTimer) {
+                clearTimeout(self.calendarResizeTimer);
+            }
+
+            self.calendarResizeTimer = setTimeout(function() {
+                var newKey = self.getCalendarLayoutKey();
+                if (newKey !== self.calendarLayoutKey) {
+                    self.calendarLayoutKey = newKey;
+                    self.initDatepicker(max_order_date, min_booking_offset, $('#room_check_in').val(), $('#room_check_out').val());
+                } else {
+                    self.positionCalendarWithinViewport();
+                }
+            }, 120);
+        });
+    },
+    positionCalendarWithinViewport: function() {
+        var picker = $('#room_date_range').siblings('.date-picker-wrapper:visible');
+        if (!picker.length) {
+            return;
+        }
+
+        var margin = 8;
+        var scrollLeft = $(window).scrollLeft();
+        var viewportWidth = $(window).width();
+        var viewportLeft = scrollLeft + margin;
+        var viewportRight = scrollLeft + viewportWidth - margin;
+
+        picker.css({
+            right: 'auto',
+            'max-width': '',
+        });
+
+        var pickerOffset = picker.offset();
+        if (!pickerOffset) {
+            return;
+        }
+
+        var offsetParent = picker.offsetParent();
+        var parentOffset = (offsetParent && offsetParent.length) ? (offsetParent.offset() || { left: 0 }) : { left: 0 };
+
+        var pickerWidth = picker.outerWidth() || 0;
+        var maxPickerWidth = Math.max(280, viewportWidth - (margin * 2));
+        if (pickerWidth > maxPickerWidth) {
+            picker.css('max-width', maxPickerWidth + 'px');
+            pickerWidth = picker.outerWidth() || pickerWidth;
+        }
+
+        var nextLeft = pickerOffset.left;
+        var maxLeft = viewportRight - pickerWidth;
+        if (nextLeft > maxLeft) {
+            nextLeft = maxLeft;
+        }
+        if (nextLeft < viewportLeft) {
+            nextLeft = viewportLeft;
+        }
+
+        var nextLeftCss = nextLeft - parentOffset.left;
+        var currentLeftCss = parseFloat(picker.css('left'));
+        if (isNaN(currentLeftCss)) {
+            currentLeftCss = pickerOffset.left - parentOffset.left;
+        }
+
+        if (Math.abs(nextLeftCss - currentLeftCss) > 1) {
+            picker.css('left', nextLeftCss + 'px');
+        }
+    },
+    formatDateForAvailabilityApi: function(dateObj) {
+        return $.datepicker.formatDate('yy-mm-dd', dateObj);
+    },
+    getAvailabilityRangeEndDate: function(startDate, maxOrderDate) {
+        if (maxOrderDate) {
+            return new Date(maxOrderDate.getTime());
+        }
+
+        var endDate = new Date(startDate.getTime());
+        endDate.setDate(endDate.getDate() + 365);
+        return endDate;
+    },
+    fetchUnavailableDates: function(idHotel, startDate, maxOrderDate) {
+        var deferred = $.Deferred();
+
+        if (typeof availability_search_url === 'undefined' || !availability_search_url || !idHotel) {
+            this.unavailableDatesMap = {};
+            this.availabilityCacheKey = '';
+            deferred.resolve();
+            return deferred.promise();
+        }
+
+        var dateFrom = this.formatDateForAvailabilityApi(startDate);
+        var dateToDate = this.getAvailabilityRangeEndDate(startDate, maxOrderDate);
+        var dateTo = this.formatDateForAvailabilityApi(dateToDate);
+        var cacheKey = [idHotel, dateFrom, dateTo].join('|');
+
+        if (this.availabilityCacheKey === cacheKey) {
+            deferred.resolve();
+            return deferred.promise();
+        }
+
+        if (this.currentAvailabilityRequest) {
+            this.currentAvailabilityRequest.abort();
+        }
+
+        var self = this;
+        this.currentAvailabilityRequest = $.ajax({
+            url: availability_search_url,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id_hotel: idHotel,
+                hotel_cat_id: $('#hotel_cat_id').val() || '',
+                date_from: dateFrom,
+                date_to: dateTo,
+            }
+        });
+
+        this.currentAvailabilityRequest.done(function(response) {
+            self.unavailableDatesMap = {};
+            if (response && response.status === true && $.isArray(response.unavailable_dates)) {
+                $.each(response.unavailable_dates, function(_, day) {
+                    self.unavailableDatesMap[day] = true;
+                });
+                self.availabilityCacheKey = cacheKey;
+            }
+            deferred.resolve();
+        }).fail(function() {
+            self.unavailableDatesMap = {};
+            self.availabilityCacheKey = '';
+            deferred.resolve();
+        }).always(function() {
+            self.currentAvailabilityRequest = null;
+        });
+
+        return deferred.promise();
+    },
+    ensureCalendarLegend: function() {
+        var picker = $('#room_date_range').siblings('.date-picker-wrapper');
+        if (!picker.length || picker.find('.wk-calendar-legend').length) {
+            return;
+        }
+
+        var availableText = (typeof available_date_txt !== 'undefined' && available_date_txt) ? available_date_txt : 'Available';
+        var unavailableText = (typeof unavailable_date_txt !== 'undefined' && unavailable_date_txt) ? unavailable_date_txt : 'Already booked';
+
+        picker.append(
+            '<div class="wk-calendar-legend">'
+            + '<span class="wk-legend-item"><i class="wk-legend-dot wk-legend-dot-available"></i>' + availableText + '</span>'
+            + '<span class="wk-legend-item"><i class="wk-legend-dot wk-legend-dot-unavailable"></i>' + unavailableText + '</span>'
+            + '</div>'
+        );
+    },
+    ensureProductCalendarStyles: function() {
+        if ($('#fewo-product-calendar-styles').length) {
+            return;
+        }
+
+        $('head').append(
+            '<style id="fewo-product-calendar-styles">' +
+            'body#product .date-picker-wrapper{border-radius:14px;border:1px solid #d4dbe6;box-shadow:0 18px 40px rgba(15,23,42,.15);background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);overflow:hidden;}' +
+            'body#product .date-picker-wrapper .month-wrapper{border-radius:12px;background:#ffffff;padding:7px;}' +
+            'body#product .date-picker-wrapper .month-wrapper .month-name{font-weight:700;color:#1f2937;letter-spacing:.02em;}' +
+            'body#product .date-picker-wrapper .month-wrapper table .caption .next,' +
+            'body#product .date-picker-wrapper .month-wrapper table .caption .prev{border-radius:8px;transition:background-color .16s ease,color .16s ease;}' +
+            'body#product .date-picker-wrapper .month-wrapper table .caption .next:hover,' +
+            'body#product .date-picker-wrapper .month-wrapper table .caption .prev:hover{background-color:#eef2f7;color:#1f2937;}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day{border-radius:10px;border:1px solid transparent;font-weight:600;transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease,transform .16s ease;}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.toMonth.valid{color:#0f172a;}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.checked{background:linear-gradient(180deg,#e4f1ff 0%,#d1e6ff 100%);border-color:#8bb6e4;color:#17476f;box-shadow:inset 0 0 0 1px rgba(81,136,192,.15);}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.first-date-selected,' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.last-date-selected,' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.real-today.checked.first-date-selected,' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.real-today.checked.last-date-selected{background-color:#0f80e4;border-color:#0f80e4;color:#ffffff;}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.real-today{box-shadow:inset 0 0 0 1px rgba(15,128,228,.35);}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.toMonth.valid.wk-available-date:not(.checked):not(.first-date-selected):not(.last-date-selected){background:#d9f4dc;border-color:#1d7a3d;color:#0f5132;font-weight:700;box-shadow:inset 0 0 0 1px rgba(17,94,52,.16);}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.toMonth.valid.wk-available-date:not(.checked):not(.first-date-selected):not(.last-date-selected):hover{background:#1d7a3d;border-color:#14532d;color:#fff;box-shadow:inset 0 0 0 1px rgba(13,76,41,.28),0 4px 10px rgba(13,76,41,.18);}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.wk-unavailable-date,' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.invalid.wk-unavailable-date,' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.toMonth.wk-unavailable-date{background:#ffe5e5;background-image:repeating-linear-gradient(135deg,rgba(153,27,27,.22) 0,rgba(153,27,27,.22) 4px,transparent 4px,transparent 8px);border-color:#b91c1c;color:#7f1d1d;font-weight:700;}' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.wk-unavailable-date:hover,' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.invalid.wk-unavailable-date:hover,' +
+            'body#product .date-picker-wrapper .month-wrapper table .day.toMonth.wk-unavailable-date:hover{background:#ffdada;background-image:repeating-linear-gradient(135deg,rgba(127,29,29,.24) 0,rgba(127,29,29,.24) 4px,transparent 4px,transparent 8px);border-color:#991b1b;color:#7f1d1d;cursor:not-allowed;}' +
+            'body#product .date-picker-wrapper .wk-calendar-legend{clear:both;width:100%;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;}' +
+            'body#product .date-picker-wrapper .wk-calendar-legend .wk-legend-item{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid #d3dae5;background-color:#fbfcff;font-weight:700;}' +
+            'body#product .date-picker-wrapper .wk-calendar-legend .wk-legend-dot{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid transparent;}' +
+            'body#product .date-picker-wrapper .wk-calendar-legend .wk-legend-dot-available{background:#d9f4dc;border-color:#1d7a3d;box-shadow:0 0 0 1px rgba(17,94,52,.14);}' +
+            'body#product .date-picker-wrapper .wk-calendar-legend .wk-legend-dot-unavailable{background:#ffe5e5;background-image:repeating-linear-gradient(135deg,rgba(153,27,27,.22) 0,rgba(153,27,27,.22) 4px,transparent 4px,transparent 8px);border-color:#b91c1c;box-shadow:0 0 0 1px rgba(127,29,29,.14);}' +
+            '</style>'
+        );
+    },
+    createDatePickerOptions: function(startDate, maxOrderDate) {
+        var singleMonth = this.getCalendarSingleMonthMode();
+        var unavailableText = (typeof unavailable_date_txt !== 'undefined' && unavailable_date_txt) ? unavailable_date_txt : 'Already booked';
+        var self = this;
+
+        return {
+            endDate: maxOrderDate,
+            startDate: startDate,
+            singleMonth: singleMonth,
+            stickyMonths: !singleMonth,
+            minDays: 4,
+            beforeShowDay: function(dateObj) {
+                var dateKey = self.formatDateForAvailabilityApi(dateObj);
+                if (self.unavailableDatesMap[dateKey]) {
+                    return [false, 'wk-unavailable-date', unavailableText];
+                }
+
+                return [true, 'wk-available-date'];
+            },
+        };
+    },
     init: function() {
         $('form#booking-form input[type="radio"]').uniform();
         $('select.input-hotel').chosen({
@@ -1400,6 +1688,7 @@ var BookingForm = {
     },
     initDatepicker: function(max_order_date, min_booking_offset, dateFrom, dateTo) {
         let start_date = new Date();
+        let idHotel = (typeof id_hotels !== 'undefined') ? parseInt(id_hotels, 10) : 0;
         if (min_booking_offset) {
             start_date.setDate(start_date.getDate() + parseInt(min_booking_offset));
             start_date.setHours(0, 0, 0, 0);
@@ -1411,6 +1700,21 @@ var BookingForm = {
                     dateTo = $.datepicker.formatDate('yy-mm-dd', dateTo);
                 }
             }
+        }
+
+        if (typeof window.fewoBookingDatePrefillHandled === 'undefined') {
+            var hasDateFromParam = /(?:^|[?&])date_from=[^&]+/.test(window.location.search);
+            var hasDateToParam = /(?:^|[?&])date_to=[^&]+/.test(window.location.search);
+            window.fewoBookingSkipInitialPrefill = !(hasDateFromParam && hasDateToParam);
+            window.fewoBookingDatePrefillHandled = false;
+        }
+
+        var skipInitialPrefill = window.fewoBookingSkipInitialPrefill && !window.fewoBookingDatePrefillHandled;
+        if (skipInitialPrefill) {
+            dateFrom = '';
+            dateTo = '';
+            $('#room_check_in').val('');
+            $('#room_check_out').val('');
         }
 
         if (max_order_date) {
@@ -1430,29 +1734,68 @@ var BookingForm = {
             $("#room_date_range").off("datepicker-change");
         }
 
-        $('#room_date_range').dateRangePicker({
-            endDate: max_order_date,
-            startDate: start_date,
-        }).on('datepicker-change', function(event,obj){
-            $('#room_check_in').val($.datepicker.formatDate('yy-mm-dd', obj.date1));
-            $('#room_check_out').val($.datepicker.formatDate('yy-mm-dd', obj.date2));
-            BookingForm.refresh();
-        });
+        BookingForm.ensureProductCalendarStyles();
+        BookingForm.fetchUnavailableDates(idHotel, start_date, max_order_date).always(function() {
+            $('#room_date_range').dateRangePicker(BookingForm.createDatePickerOptions(start_date, max_order_date)).on('datepicker-change', function(event,obj){
+                $('#room_check_in').val($.datepicker.formatDate('yy-mm-dd', obj.date1));
+                $('#room_check_out').val($.datepicker.formatDate('yy-mm-dd', obj.date2));
+                BookingForm.refresh();
+            }).on('datepicker-open', function() {
+                BookingForm.ensureCalendarLegend();
+                BookingForm.positionCalendarWithinViewport();
+                setTimeout(function() {
+                    BookingForm.positionCalendarWithinViewport();
+                }, 24);
+            });
 
-        $('body button').on('click', '', function() {
-            if (!$(this).closest('.date-picker-wrapper').length) {
-                $('#room_date_range').data('dateRangePicker').close();
+            $('body').off('click.bookingFormCalendarClose').on('click.bookingFormCalendarClose', 'button', function() {
+                if (!$(this).closest('.date-picker-wrapper').length) {
+                    $('#room_date_range').data('dateRangePicker').close();
+                }
+            });
+            $(document).off('click.bookingFormCalendarNav').on('click.bookingFormCalendarNav', '.date-picker-wrapper .next, .date-picker-wrapper .prev', function() {
+                setTimeout(function() {
+                    BookingForm.positionCalendarWithinViewport();
+                }, 24);
+            });
+            $(document).off('click.bookingFormCalendarOpen touchstart.bookingFormCalendarOpen', '#room_date_range');
+            $(document).on('click.bookingFormCalendarOpen touchstart.bookingFormCalendarOpen', '#room_date_range', function(event) {
+                var pickerObj = $('#room_date_range').data('dateRangePicker');
+                if (pickerObj && typeof pickerObj.open === 'function') {
+                    event.preventDefault();
+                    pickerObj.open();
+                    BookingForm.positionCalendarWithinViewport();
+                }
+            });
+
+            if (dateFrom && dateTo) {
+                $('#room_date_range').data('dateRangePicker').setDateRange(
+                    $.datepicker.formatDate('dd-mm-yy', $.datepicker.parseDate('yy-mm-dd', dateFrom)),
+                    $.datepicker.formatDate('dd-mm-yy', $.datepicker.parseDate('yy-mm-dd', dateTo))
+                );
+            } else if (skipInitialPrefill) {
+                $('#room_date_range').data('dateRangePicker').clear();
             }
+
+            if (!window.fewoBookingDatePrefillHandled) {
+                window.fewoBookingDatePrefillHandled = true;
+            }
+
+            BookingForm.calendarLayoutKey = BookingForm.getCalendarLayoutKey();
+            BookingForm.bindCalendarLayoutWatcher();
         });
-        if (dateFrom && dateTo) {
-            $('#room_date_range').data('dateRangePicker').setDateRange(
-                $.datepicker.formatDate('dd-mm-yy', $.datepicker.parseDate('yy-mm-dd', dateFrom)),
-                $.datepicker.formatDate('dd-mm-yy', $.datepicker.parseDate('yy-mm-dd', dateTo))
-            );
-        }
     },
     getFormData: function () {
         let formData = new FormData($('form#booking-form').get(0));
+        // Some browser/plugin combinations can miss radio serialization in FormData.
+        // Force the selected rate option so backend pricing modifiers always receive it.
+        let selectedRateOption = $('form#booking-form input[name="fewo_rate_option"]:checked').val();
+        if (!selectedRateOption && typeof fewoPricingDefault !== 'undefined' && fewoPricingDefault) {
+            selectedRateOption = fewoPricingDefault;
+        }
+        if (selectedRateOption) {
+            formData.set('fewo_rate_option', selectedRateOption);
+        }
         formData.append('room_type_demands', JSON.stringify(getRoomsExtraDemands()));
         formData.append('room_service_products', JSON.stringify(getRoomsServiceProducts()));
         return formData;

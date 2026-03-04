@@ -194,7 +194,31 @@ var QhrReviewImages = {
 function initRaty(path) {
     $('.raty').html(''); // reset first to avoid star duplications
     $.extend($.raty, { path: path });
-    $('.raty').raty({ score: 0, half: true, hints: null, noRatedMsg: '0' });
+    $('.raty.readonly').each(function () {
+        var score = parseFloat($(this).data('score'));
+        if (isNaN(score)) {
+            score = 0;
+        }
+        $(this).raty({
+            readOnly: true,
+            score: score,
+            hints: null,
+            noRatedMsg: '0'
+        });
+    });
+
+    $('.raty').not('.readonly').each(function () {
+        var score = parseFloat($(this).data('score'));
+        if (isNaN(score)) {
+            score = 0;
+        }
+        $(this).raty({
+            score: score,
+            half: true,
+            hints: null,
+            noRatedMsg: '0'
+        });
+    });
 }
 
 $(document).on('click', '#add-review-btn', function(e) {

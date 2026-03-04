@@ -72,18 +72,18 @@
 						<div class="room_type_img_containter card">
 							<div class="room_hotel_name_block {if isset($language_is_rtl) && $language_is_rtl}rtl{/if}">
 								{block name='product_name'}
-									<div class="hotel_name_block">
-										<h1><span class="hotel_name">{$product->name}
-											{* Block for booking products *}
-											{if isset($id_hotel) && $id_hotel}&nbsp;-&nbsp;{$hotel_name}{/if}</span>{if isset($hotel_rating) && $hotel_rating}<div id="hotel_rating">{for $i=0; $i < $hotel_rating; $i++}<i class="icon-star"></i>{/for}</div>{/if}
-										</h1>
-										{block name='displayRoomTypeDetailRoomTypeNameBlock'}
-											{hook h='displayRoomTypeDetailRoomTypeNameBlock' id_product=$product->id}
+										<div class="hotel_name_block">
+											<h1><span class="hotel_name">{$product->name|replace:'★':''|replace:'☆':''}
+												{* Block for booking products *}
+												{if isset($id_hotel) && $id_hotel}&nbsp;-&nbsp;{$hotel_name|replace:'★':''|replace:'☆':''}{/if}</span>
+											</h1>
+											{block name='displayRoomTypeDetailRoomTypeNameBlock'}
+												{hook h='displayRoomTypeDetailRoomTypeNameBlock' id_product=$product->id}
+											{/block}
+										</div>
+										{block name='displayRoomTypeDetailRoomTypeNameAfter'}
+											{hook h='displayRoomTypeDetailRoomTypeNameAfter' product=$product id_product=$product->id}
 										{/block}
-									</div>
-									{block name='displayRoomTypeDetailRoomTypeNameAfter'}
-										{hook h='displayRoomTypeDetailRoomTypeNameAfter' product=$product id_product=$product->id}
-									{/block}
 								{/block}
 							</div>
 							{block name='displayRoomTypeDetailRoomTypeImageBlockBefore'}
@@ -229,19 +229,24 @@
 									<div class="tab-content product_description_tabs_contents">
 										{block name='product_info_tab_content'}
 											<div id="product_info_tab" class="tab-pane active card">
-												<div id="product_info_tab_information">
+												<div id="product_info_tab_information" class="fewo-room-info-layout">
 													{block name='product_info_tab_room_description'}
-														<div class="row info_margin_div room_description">
-															<div class="col-sm-12">
-																{$product->description}
+														{if (!isset($hotel_description) || !$hotel_description) && isset($product->description) && $product->description}
+															<div class="row info_margin_div room_description fewo-room-info-card fewo-room-info-card--overview">
+																<div class="col-sm-12">
+																	{$product->description}
+																</div>
 															</div>
-														</div>
+														{/if}
 													{/block}
 													{block name='product_info_tab_room_guests'}
 														{if isset($room_type_info['adults']) && isset($room_type_info['children']) }
-															<div class="info_margin_div">
+															<div class="info_margin_div fewo-room-info-card">
 																<div class="room_info_heading">
-																	<span>{l s='Max Capacity'}</span>
+																	<span class="room_info_heading_label">
+																			<img class="room_info_heading_icon" src="{$img_dir}icons8/group.png" alt="{l s='Max Capacity'}" onerror="this.style.display='none';">
+																		<span>{l s='Max Capacity'}</span>
+																	</span>
 																</div>
 																<div class="room_info_content">
 																	<p>{$room_type_info['adults']} {l s='Adults'}, {$room_type_info['children']} {if $room_type_info['children'] > 1}{l s='Children'}{else}{l s='Child'}{/if} ({l s='Max guests'}: {$room_type_info['max_guests']|escape:'htmlall':'UTF-8'})</p>
@@ -251,9 +256,12 @@
 													{/block}
 													{block name='product_info_tab_room_timing'}
 														{if isset($id_hotel) && $id_hotel}
-															<div class="info_margin_div">
+															<div class="info_margin_div fewo-room-info-card">
 																<div class="room_info_heading">
-																	<span>{l s='Check-in and check-out time'}</span>
+																	<span class="room_info_heading_label">
+																			<img class="room_info_heading_icon" src="{$img_dir}icons8/calendar.png" alt="{l s='Check-in and check-out time'}" onerror="this.style.display='none';">
+																		<span>{l s='Check-in and check-out time'}</span>
+																	</span>
 																</div>
 																<div class="room_info_content">
 																	<p>{l s='Check-in: '}{$hotel_check_in|escape:'html':'UTF-8'}</p>
@@ -264,9 +272,12 @@
 													{/block}
 													{block name='product_info_tab_room_bed_type'}
 														{if isset($selected_bed_types) && $selected_bed_types && isset($bed_types_info) && $bed_types_info}
-															<div class="info_margin_div">
+															<div class="info_margin_div fewo-room-info-card">
 																<div class="room_info_heading">
-																	<span>{l s='Bed Types'}</span>
+																	<span class="room_info_heading_label">
+																			<img class="room_info_heading_icon" src="{$img_dir}icons8/bed.png" alt="{l s='Bed Types'}" onerror="this.style.display='none';">
+																		<span>{l s='Bed Types'}</span>
+																	</span>
 																</div>
 																<div class="room_info_content">
 																	{foreach $selected_bed_types as $selected_bed_type}
@@ -278,45 +289,17 @@
 															</div>
 														{/if}
 													{/block}
-													{block name='product_info_tab_room_features'}
-														{if isset($features) && $features}
-															<div class="info_margin_div">
-																<div class="room_info_heading">
-																	<span>{l s='Room Features'}</span>
-																</div>
-																<div class="room_info_content row">
-																	{foreach from=$features key=ftr_k item=ftr_v}
-																		<div class="col-md-3 col-sm-4 col-xs-6">
-																			<div class="rm_ftr_wrapper" title="{$ftr_v.name|escape:'html':'UTF-8'}" alt="{$ftr_v.name|escape:'html':'UTF-8'}" >
-																				<img src="{$link->getMediaLink("`$ftr_img_src|escape:'html':'UTF-8'`{$ftr_v.value|escape:'html':'UTF-8'}")}">  {$ftr_v.name|escape:'html':'UTF-8'}
-																			</div>
-																		</div>
-																	{/foreach}
-																</div>
-															</div>
-														{/if}
-													{/block}
 													{* Block for booking products *}
 													{if isset($id_hotel) && $id_hotel}
-														{block name='product_info_tab_hotel_features'}
-															{if isset($hotel_features) && $hotel_features}
-																<div class="info_margin_div">
-																	<div class="room_info_heading">
-																		<span>{l s='Hotel Features'}</span>
-																	</div>
-																	<div class="room_info_content row">
-																		{foreach from=$hotel_features key=ftr_k item=ftr_v}
-																			<div class="col-sm-4 col-xs-12"><i class="circle-small">o</i> {$ftr_v|escape:'html':'UTF-8'}</div>
-																		{/foreach}
-																	</div>
-																</div>
-															{/if}
-														{/block}
+														{* Features hidden for single-property setup *}
 														{block name='product_info_tab_hotel_description'}
 															{if isset($hotel_description) && $hotel_description}
-																<div class="info_margin_div">
+																<div class="info_margin_div fewo-room-info-card fewo-room-info-card--overview">
 																	<div class="room_info_heading">
-																		<span>{l s='Hotel Description'}</span>
+																		<span class="room_info_heading_label">
+																				<img class="room_info_heading_icon" src="{$img_dir}icons8/info.png" alt="{l s='House Highlights'}" onerror="this.style.display='none';">
+																			<span>{l s='House Highlights'}</span>
+																		</span>
 																	</div>
 																	<div class="room_info_content">
 																		{$hotel_description}
@@ -363,9 +346,12 @@
 													</div> -->
 													{block name='product_info_tab_hotel_policies'}
 														{if isset($hotel_policies) && $hotel_policies}
-															<div class="info_margin_div">
+															<div class="info_margin_div fewo-room-info-card">
 																<div class="room_info_heading">
-																	<span>{l s='Hotel Policies'}</span>
+																	<span class="room_info_heading_label">
+																			<img class="room_info_heading_icon" src="{$img_dir}icons8/policy.png" alt="{l s='Hotel Policies'}" onerror="this.style.display='none';">
+																		<span>{l s='Hotel Policies'}</span>
+																	</span>
 																</div>
 																<div class="room_info_content">
 																	<p class="">{$hotel_policies}</p>
@@ -373,6 +359,11 @@
 															</div>
 														{/if}
 													{/block}
+													<div class="info_margin_div room_info_icons8_attribution">
+														<div class="room_info_content">
+															<a href="https://icons8.com" target="_blank" rel="noopener noreferrer nofollow">{l s='Icons by Icons8'}</a>
+														</div>
+													</div>
 												</div>
 											</div>
 										{/block}
@@ -395,6 +386,11 @@
 													{else}
 														<span class="non_refundable_txt error_msg">{l s='Non Refundable'}</span>
 													{/if}
+													<div class="info_margin_div refund-contact-help">
+														<div class="room_info_content">
+															{l s='If you have a problem with your booking, please'} <a href="{$link->getPageLink('contact', true)|escape:'html':'UTF-8'}" class="refund-contact-link">{l s='contact us'}</a>.
+														</div>
+													</div>
 												</div>
 											{/if}
 										{/block}
@@ -426,11 +422,244 @@
 											{if isset($HOOK_PRODUCT_TAB_CONTENT) && $HOOK_PRODUCT_TAB_CONTENT}{$HOOK_PRODUCT_TAB_CONTENT}{/if}
 										{/block}
 									</div>
-								{/block}
-							</section>
-						</div>
-					</div> <!-- end pb-left-column -->
-				{/block}
+									{/block}
+								</section>
+								<script type="text/javascript">
+								(function () {
+									function initTabFallback() {
+										var schedule = window.requestAnimationFrame || function (fn) { setTimeout(fn, 0); };
+										var boxes = document.querySelectorAll('.page-product-box');
+										if (!boxes.length) {
+											return;
+										}
+
+										boxes.forEach(function (box) {
+											var tabs = box.querySelector('.product_description_tabs');
+											var paneWrap = box.querySelector('.product_description_tabs_contents');
+											if (!tabs || !paneWrap) {
+												return;
+											}
+
+											var links = tabs.querySelectorAll('a.idTabHrefShort[href^="#"]');
+											if (!links.length) {
+												return;
+											}
+
+											function activate(link) {
+												var targetSelector = link.getAttribute('href');
+												if (!targetSelector || targetSelector.charAt(0) !== '#') {
+													return;
+												}
+
+												var targetPane = paneWrap.querySelector(targetSelector);
+												if (!targetPane) {
+													return;
+												}
+
+												tabs.querySelectorAll('li').forEach(function (li) {
+													li.classList.remove('active');
+												});
+												links.forEach(function (a) {
+													a.classList.remove('active');
+													a.setAttribute('aria-selected', 'false');
+												});
+												paneWrap.querySelectorAll('.tab-pane').forEach(function (pane) {
+													pane.classList.remove('active');
+													pane.classList.remove('in');
+													pane.setAttribute('aria-hidden', 'true');
+												});
+
+												var tabLi = link.closest('li');
+												if (tabLi) {
+													tabLi.classList.add('active');
+												}
+												link.classList.add('active');
+												link.setAttribute('aria-selected', 'true');
+												targetPane.classList.add('active');
+												targetPane.setAttribute('aria-hidden', 'false');
+												if (targetPane.classList.contains('fade')) {
+													schedule(function () {
+														targetPane.classList.add('in');
+													});
+												} else {
+													targetPane.classList.add('in');
+												}
+
+												var eventPayload = {
+													target: targetSelector
+												};
+												if (typeof window.CustomEvent === 'function') {
+													document.dispatchEvent(new CustomEvent('fewo:tab-activated', { detail: eventPayload }));
+												} else if (document.createEvent) {
+													var customEvent = document.createEvent('CustomEvent');
+													customEvent.initCustomEvent('fewo:tab-activated', true, true, eventPayload);
+													document.dispatchEvent(customEvent);
+												}
+
+												if (window.jQuery) {
+													window.jQuery(document).trigger('fewo:tab-activated', [eventPayload]);
+													window.jQuery(link).trigger('shown.bs.tab');
+												}
+											}
+
+											links.forEach(function (link) {
+												if (link.dataset.fewoTabFallbackBound === '1') {
+													return;
+												}
+												link.dataset.fewoTabFallbackBound = '1';
+												link.addEventListener('click', function (event) {
+													event.preventDefault();
+													activate(link);
+												});
+											});
+
+											var hashLink = null;
+											if (window.location.hash) {
+												hashLink = tabs.querySelector('a.idTabHrefShort[href="' + window.location.hash + '"]');
+											}
+
+											var initiallyActive = hashLink || tabs.querySelector('li.active a.idTabHrefShort[href^="#"]');
+											if (!initiallyActive) {
+												initiallyActive = links[0];
+											}
+											if (initiallyActive) {
+												activate(initiallyActive);
+											}
+										});
+									}
+
+									if (document.readyState === 'loading') {
+										document.addEventListener('DOMContentLoaded', initTabFallback);
+									} else {
+										initTabFallback();
+									}
+								})();
+								</script>
+								<script type="text/javascript">
+								(function () {
+									var fallbackLoading = false;
+									var fallbackLoaded = false;
+
+									function loadScript(src, done) {
+										var script = document.createElement('script');
+										script.async = false;
+										script.src = src;
+										script.onload = function () { done(); };
+										script.onerror = function () { done(); };
+										document.head.appendChild(script);
+									}
+
+									function loadSequentially(sources, done) {
+										var index = 0;
+										function next() {
+											if (index >= sources.length) {
+												done();
+												return;
+											}
+											loadScript(sources[index], function () {
+												index += 1;
+												next();
+											});
+										}
+										next();
+									}
+
+									function shouldRecoverProductScripts() {
+										var hasJquery = !!window.jQuery;
+										var hasDatePicker = hasJquery && !!window.jQuery.fn && !!window.jQuery.fn.dateRangePicker;
+										var hasRaty = hasJquery && !!window.jQuery.fn && !!window.jQuery.fn.raty;
+
+										if (!hasJquery) {
+											return true;
+										}
+										if (document.getElementById('room_date_range') && !hasDatePicker) {
+											return true;
+										}
+										if (document.getElementById('hotel-reviews') && !hasRaty) {
+											return true;
+										}
+
+										return false;
+									}
+
+									function recoverProductScripts() {
+										if (fallbackLoading || fallbackLoaded) {
+											return;
+										}
+										if (!shouldRecoverProductScripts()) {
+											return;
+										}
+
+										fallbackLoading = true;
+										var sources = [];
+
+										if (!window.jQuery) {
+											sources.push('/js/jquery/jquery-1.11.0.min.js');
+										}
+
+										if (!(window.jQuery && window.jQuery.fn && window.jQuery.fn.tab)) {
+											sources.push('/themes/hotel-reservation-theme/js/autoload/10-bootstrap.min.js');
+										}
+										if (!(window.jQuery && window.jQuery.datepicker)) {
+											sources.push('/js/jquery/ui/jquery-ui.min.js');
+										}
+										if (!(window.jQuery && window.jQuery.fn && window.jQuery.fn.dateRangePicker)) {
+											sources.push('/js/daterangepicker/moment.min.js');
+											sources.push('/js/daterangepicker/jquery.daterangepicker.min.js');
+											sources.push('/js/daterangepicker/qlodaterangepicker.js');
+										}
+										if (!(window.jQuery && window.jQuery.fn && window.jQuery.fn.raty)) {
+											sources.push('/js/raty/jquery.raty.js');
+										}
+										if (!(window.jQuery && window.jQuery.fn && window.jQuery.fn.circleProgress)) {
+											sources.push('/js/jquery-circle-progress/circle-progress.min-1.2.2.js');
+										}
+										if (typeof window.BookingForm === 'undefined') {
+											sources.push('/themes/hotel-reservation-theme/js/product.js');
+										}
+										if (typeof window.QhrReview === 'undefined') {
+											sources.push('/modules/qlohotelreview/views/js/front/review-list.js');
+										}
+										if (typeof window.initRatyRoomTypeDetail === 'undefined') {
+											sources.push('/modules/qlohotelreview/views/js/front/room-type-detail.js');
+										}
+
+										if (!sources.length) {
+											fallbackLoaded = true;
+											fallbackLoading = false;
+											return;
+										}
+
+										loadSequentially(sources, function () {
+											fallbackLoaded = true;
+											fallbackLoading = false;
+
+											if (window.jQuery && window.BookingForm && typeof window.BookingForm.init === 'function' && window.jQuery('#booking-form').length) {
+												window.BookingForm.init();
+											}
+
+											if (window.jQuery && typeof window.initRaty === 'function' && typeof window.qlo_hotel_review_js_vars === 'object' && window.qlo_hotel_review_js_vars.raty_img_path) {
+												window.initRaty(window.qlo_hotel_review_js_vars.raty_img_path);
+											}
+
+											if (window.jQuery && typeof window.initCircleProgress === 'function' && window.jQuery('#hotel-reviews').length) {
+												window.initCircleProgress();
+											}
+										});
+									}
+
+									if (document.readyState === 'loading') {
+										document.addEventListener('DOMContentLoaded', recoverProductScripts);
+									} else {
+										recoverProductScripts();
+									}
+
+									setTimeout(recoverProductScripts, 120);
+								})();
+								</script>
+							</div>
+						</div> <!-- end pb-left-column -->
+					{/block}
 
 				{block name='product_right_column'}
 					<div class="pb-right-column col-xs-12 col-sm-4 col-md-4">
@@ -441,37 +670,7 @@
 							{/block}
 
 							{block name='product_demands'}
-								{* extra room type demands *}
-								{if isset($room_type_demands) && $room_type_demands}
-									<div class="col-sm-12 card room_demands_container">
-										<label for="" class="control-label">{l s='Additional Facilities'}</label>
-										{foreach $room_type_demands as $idGlobalDemand => $demand}
-											<div class="row room_demand_block">
-												{if $product->show_price && !isset($restricted_country_mode) && !$PS_CATALOG_MODE}
-													<div class="col-xs-1">
-														<p class="checkbox">
-															<input value="{$idGlobalDemand|escape:'html':'UTF-8'}" type="checkbox" class="id_room_type_demand" data-id_global_demand="{$idGlobalDemand|escape:'html':'UTF-8'}" />
-														</p>
-													</div>
-												{/if}
-												<div class="col-xs-11 demand_adv_option_block">
-													<p>{$demand['name']|escape:'html':'UTF-8'} {if $product->show_price && !isset($restricted_country_mode) && !$PS_CATALOG_MODE}<span class="pull-right"><span class="extra_demand_option_price">{convertPrice price = $demand['price']}</span>{if $demand['price_calc_method'] == $WK_PRICE_CALC_METHOD_EACH_DAY}{l s='/Night'}{/if}</span>{/if}</p>
-													{if isset($demand['adv_option']) && $demand['adv_option']}
-														<select class="id_option">
-															{foreach $demand['adv_option'] as $idOption => $option}
-																<option optionPrice="{$option['price']|escape:'html':'UTF-8'}" value="{$idOption|escape:'html':'UTF-8'}">{$option['name']|escape:'html':'UTF-8'}</option>
-															{/foreach}
-														</select>
-													{else}
-														<input type="hidden" class="id_option" value="0" />
-													{/if}
-												</div>
-											</div>
-										{/foreach}
-										<div class="room_demands_container_overlay">
-										</div>
-									</div>
-								{/if}
+								{* Extra services disabled for single-property setup *}
 							{/block}
 						{/if}
 						{block name='displayRightColumnProduct'}
@@ -868,7 +1067,7 @@
 			{addJsDefL name=correct_date_cond}{l s='Check Out Date should be greater than Check in date.' js=1}{/addJsDefL}
 			{addJsDefL name=some_error_cond}{l s='Some error occured .Please try again.' js=1}{/addJsDefL}
 			{addJsDefL name=unavail_qty_text}{l s='Required quantity of rooms are Not available.' js=1}{/addJsDefL}
-			{addJsDefL name=out_of_stock_cond}{l s='No room is available for this period.' js=1}{/addJsDefL}
+			{addJsDefL name=out_of_stock_cond}{l s='Selected dates are not available. Please choose different dates.' js=1}{/addJsDefL}
 			{addJsDefL name=wrong_qty_cond}{l s='you are trying for a invalid quantity.' js=1}{/addJsDefL}
 			{addJsDefL name=select_txt}{l s='Select' js=1}{/addJsDefL}
 			{addJsDefL name=remove_txt}{l s='Remove' js=1}{/addJsDefL}

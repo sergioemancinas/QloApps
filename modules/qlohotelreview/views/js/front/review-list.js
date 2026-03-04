@@ -133,7 +133,19 @@ var QhrReview = {
 function initRaty(path, selector = '.raty') {
     $(selector).html(''); // reset first to avoid star duplications
     $.extend($.raty, { path: path });
-    $(selector).raty({readOnly: true, hints: null, noRatedMsg: '0'});
+    $(selector).each(function () {
+        var score = parseFloat($(this).data('score'));
+        if (isNaN(score)) {
+            score = 0;
+        }
+
+        $(this).raty({
+            readOnly: true,
+            score: score,
+            hints: null,
+            noRatedMsg: '0'
+        });
+    });
 }
 
 function initCircleProgress() {
@@ -151,6 +163,24 @@ function initCircleProgress() {
     });
 
     circleProgressInitialized = true;
+}
+
+function initReviewTabVisuals(forceCircleProgress) {
+    if (typeof qlo_hotel_review_js_vars === 'object' && qlo_hotel_review_js_vars.raty_img_path && $.fn.raty) {
+        initRaty(qlo_hotel_review_js_vars.raty_img_path);
+    }
+
+    if (!$.fn.circleProgress || !$('#hotel-reviews .score-circle').length) {
+        return;
+    }
+
+    if (forceCircleProgress) {
+        circleProgressInitialized = false;
+    }
+
+    if (!circleProgressInitialized) {
+        initCircleProgress();
+    }
 }
 
 $(document).on('click', '.btn-helpful', function(e) {
@@ -201,17 +231,26 @@ $(document).on('click', '#btn-load-more-reviews', function(e) {
 });
 
 $(document).on('shown.bs.tab', 'a[href="#hotel-reviews"]', function(e) {
-    if (!circleProgressInitialized) {
-        // init circle scores
-        initCircleProgress();
+    initReviewTabVisuals(true);
+});
+
+if (typeof document !== 'undefined') {
+    document.addEventListener('fewo:tab-activated', function(event) {
+        var detail = event && event.detail ? event.detail : null;
+        if (detail && detail.target === '#hotel-reviews') {
+            initReviewTabVisuals(true);
+        }
+    });
+}
+
+$(document).on('fewo:tab-activated', function(e, detail) {
+    if (detail && detail.target === '#hotel-reviews') {
+        initReviewTabVisuals(true);
     }
 });
 
 $(document).ready(function () {
-    // init raty
-    if (typeof qlo_hotel_review_js_vars === 'object' && qlo_hotel_review_js_vars.raty_img_path) {
-        initRaty(qlo_hotel_review_js_vars.raty_img_path);
-    }
+    initReviewTabVisuals($('#hotel-reviews').hasClass('active'));
 
     // init fancybox
     $('.review-images-fancybox').fancybox();

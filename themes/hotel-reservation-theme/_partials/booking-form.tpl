@@ -211,9 +211,7 @@
                                     </div>
                                 {/block}
                             {else}
-                                <div class="sold_out_alert">
-                                    <span>{l s='All rooms sold out!'}</span>
-                                </div>
+                                {* Single-property setup: suppress generic multi-room sold-out banner. *}
                             {/if}
                         {/if}
                     {else}

@@ -151,9 +151,7 @@
 		{/if}
 	{/foreach}
 {else}
-	<div class="noRoomsAvailAlert">
-		<span>{l s='No room available for this hotel!'}</span>
-	</div>
+		{* Single-property setup: suppress generic "no rooms" banner on listing pages. *}
 {/if}
 
 {block name='displayRoomTypeListAfter'}

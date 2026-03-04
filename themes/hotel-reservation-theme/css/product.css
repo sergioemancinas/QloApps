@@ -1189,6 +1189,21 @@ Quick View Styles
   font-size: 12px;
   color: #000000;
   text-transform: uppercase;}
+.room_info_heading .room_info_heading_label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.room_info_heading .room_info_heading_emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  font-size: 15px;
+  line-height: 1;
+}
 .room_info_content {
   font-size: 14px;
   color: #000000;}

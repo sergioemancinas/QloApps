@@ -78,17 +78,7 @@
                                 </div>
                             {/block}
                         </div>
-                        {block name='shopping_cart_room_type_features'}
-                            {if isset($data_v['hotel_info']['room_features'])}
-                                <div class="room-type-features">
-                                {foreach $data_v['hotel_info']['room_features'] as $feature}
-                                    <span class="room-type-feature">
-                                        <img src="{$THEME_DIR}img/icon/form-ok-circle.svg" /> {$feature['name']}
-                                    </span>
-                                {/foreach}
-                                </div>
-                            {/if}
-                        {/block}
+                        {* Room feature chips intentionally hidden in checkout summary for cleaner UX. *}
                         {block name='shopping_cart_room_type_booking_information'}
                             {assign var="is_full_date" value=($show_full_date && ($rm_v['data_form']|date_format:'%D' == $rm_v['data_to']|date_format:'%D'))}
                             <div class="room_duration_block">

@@ -1106,6 +1106,14 @@ Quick View Styles
 .booking_room_fields #room_date_range {
   display: grid;
   cursor: text;}
+  .booking_room_fields .date-picker-wrapper {
+    max-width: calc(100vw - 16px);
+    box-sizing: border-box;
+  }
+  .booking_room_fields .date-picker-wrapper .month-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+  }
   .booking_room_fields #room_date_range span {
     align-self: center;}
     .booking_room_fields #room_date_range span i {
@@ -1182,16 +1190,76 @@ Quick View Styles
   color: #000000!important;
   text-align: center;
   border: none!important;}
+#product_info_tab_information.fewo-room-info-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+#product_info_tab_information.fewo-room-info-layout > .info_margin_div {
+  grid-column: span 6;
+  margin-bottom: 0;
+  padding: 16px 18px;
+  border: 1px solid #e4e9f2;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+#product_info_tab_information.fewo-room-info-layout > .room_description,
+#product_info_tab_information.fewo-room-info-layout > .fewo-room-info-card--overview {
+  grid-column: 1 / -1;
+}
 .room_info_heading {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 700;
-  opacity: 0.5;
-  font-size: 12px;
-  color: #000000;
-  text-transform: uppercase;}
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #415166;
+  text-transform: uppercase;
+}
+.room_info_heading .room_info_heading_label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.room_info_heading .room_info_heading_icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid #dbe6f7;
+  background: #f2f7ff;
+}
+.room_info_heading .room_info_heading_emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  font-size: 15px;
+  line-height: 1;
+}
 .room_info_content {
   font-size: 14px;
-  color: #000000;}
+  color: #1f2937;
+}
+#product_info_tab_information.fewo-room-info-layout .room_info_content p {
+  margin: 0 0 8px;
+  line-height: 1.6;
+}
+#product_info_tab_information.fewo-room-info-layout .room_info_content p:last-child {
+  margin-bottom: 0;
+}
+#product_info_tab_information.fewo-room-info-layout .room_info_content ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+#product_info_tab_information.fewo-room-info-layout .room_info_content li {
+  margin-bottom: 6px;
+}
   .room_info_content .refund-rule-name {
     font-weight: 600;}
   .room_info_content .rm_ftr_wrapper {
@@ -1211,6 +1279,21 @@ Quick View Styles
   margin-bottom: 25px;}
   #refund_policies_tab .info_margin_div {
     margin-bottom: 10px;}
+  #refund_policies_tab .refund-contact-help {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #eceff4;
+  }
+  #refund_policies_tab .refund-contact-link {
+    color: #0f80e4;
+    font-weight: 700;
+  }
+  #refund_policies_tab .refund-contact-link:hover,
+  #refund_policies_tab .refund-contact-link:focus {
+    color: #0b63b3;
+    text-decoration: underline;
+  }
+
 
 .hotel_name_block {
   display: flex;
@@ -1239,7 +1322,16 @@ Quick View Styles
     color: #404040;
     font-size: 16px;
     font-weight: 400;
-    padding-top: 10px;}
+    padding-top: 0;}
+
+@media (max-width: 991px) {
+  #product_info_tab_information.fewo-room-info-layout {
+    grid-template-columns: 1fr;
+  }
+  #product_info_tab_information.fewo-room-info-layout > .info_margin_div {
+    grid-column: auto;
+  }
+}
 
 .sold_out_alert, .order_restrict_alert {
   color: #FF4B4B;
@@ -1744,15 +1836,11 @@ ul.service-product-nav > li:hover {
 
 #room_info_hotel_images .skeleton-loading-wrap .loading-container-box {
   height: 200px; }
-  #hotel_rating {
-    position:relative;
-    top: -3px;
-    display: inline-flex;
-    color: #333;
-    gap: 1px;
-  }
-  #hotel_rating i {
-    font-size: 12px;
+  .room_hotel_name_block #hotel_rating,
+  .room_hotel_name_block #hotel_rating i,
+  .room_hotel_name_block .num_reviews,
+  .room_hotel_name_block .raty {
+    display: none !important;
   }
 @media (min-width:768px) {
   .hotel_name_block{
@@ -1767,7 +1855,7 @@ ul.service-product-nav > li:hover {
   }
 }
 @media (max-width:768px) {
-  #hotel_rating {
-    display: block;
+  .room_hotel_name_block #hotel_rating {
+    display: none !important;
   }
 }

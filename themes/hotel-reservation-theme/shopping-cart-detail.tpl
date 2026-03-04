@@ -78,17 +78,7 @@
                                 </div>
                             {/block}
                         </div>
-                        {block name='shopping_cart_room_type_features'}
-                            {if isset($data_v['hotel_info']['room_features'])}
-                                <div class="room-type-features">
-                                {foreach $data_v['hotel_info']['room_features'] as $feature}
-                                    <span class="room-type-feature">
-                                        <img src="{$THEME_DIR}img/icon/form-ok-circle.svg" /> {$feature['name']}
-                                    </span>
-                                {/foreach}
-                                </div>
-                            {/if}
-                        {/block}
+                        {* Room feature chips intentionally hidden in checkout summary for cleaner UX. *}
                         {block name='shopping_cart_room_type_booking_information'}
                             {assign var="is_full_date" value=($show_full_date && ($rm_v['data_form']|date_format:'%D' == $rm_v['data_to']|date_format:'%D'))}
                             <div class="room_duration_block">
@@ -137,7 +127,7 @@
                                                         {/if}
                                                     </p>
                                                     <p class="total_price_detial">
-                                                        {l s='Total rooms price'} {if $display_tax_label}{if $priceDisplay} {l s='(Excl.'} {else}{l s='(Incl.)'}{/if} {l s='all taxes.)'}{/if}
+                                                        {l s='Total rooms price'}
                                                     </p>
                                                 </div>
                                             </div>
@@ -169,7 +159,7 @@
                                                 </span>
                                             </p>
                                             <p class="total_price_detial">
-                                                {l s='Total price for'} {$rm_v['num_days']} {l s='Night(s) stay'}{if $display_tax_label}{if $priceDisplay} {l s='(Excl.'} {else}{l s='(Incl.'}{/if} {l s='all taxes.)'}{/if}
+                                                {l s='Total price for'} {$rm_v['num_days']} {l s='Night(s) stay'}
                                             </p>
                                         </div>
                                     </div>
@@ -247,11 +237,11 @@
                             <div class="price_block col-xs-7">
                                 <p class="total_price">
                                     <span>
-                                        {if $priceDisplay}{displayPrice price=($product['unit_price_tax_excl'])}{else}{displayPrice price=($product['unit_price_tax_incl'])}{/if}
+                                        {displayPrice price=($product['unit_price_tax_excl'])}
                                     </span>
                                 </p>
                                 <p class="total_price_detial">
-                                    {l s='Unit price'} {if $display_tax_label}{if $priceDisplay} {l s='(Excl.'} {else}{l s='(Incl.)'}{/if} {l s='all taxes.)'}{/if}
+                                    {l s='Unit price'}
                                 </p>
                             </div>
                             {if $product.allow_multiple_quantity}
@@ -279,11 +269,11 @@
                             <div class="total_price_block col-xs-12">
                                 <p class="total_price">
                                     <span>
-                                        {if $priceDisplay}{displayPrice price=($product['total_price_tax_excl'])}{else}{displayPrice price=($product['total_price_tax_incl'])}{/if}
+                                        {displayPrice price=($product['total_price_tax_excl'])}
                                     </span>
                                 </p>
                                 <p class="total_price_detial">
-                                    {l s='Total price'} {if $display_tax_label}{if $priceDisplay} {l s='(Excl.'} {else}{l s='(Incl.)'}{/if} {l s='all taxes.)'}{/if}
+                                    {l s='Total price'}
                                 </p>
                             </div>
                         </div>
@@ -338,11 +328,11 @@
                             <div class="price_block col-xs-7">
                                 <p class="total_price">
                                     <span>
-                                        {if $priceDisplay}{displayPrice price=($product['unit_price_tax_excl'])}{else}{displayPrice price=($product['unit_price_tax_incl'])}{/if}
+                                        {displayPrice price=($product['unit_price_tax_excl'])}
                                     </span>
                                 </p>
                                 <p class="total_price_detial">
-                                    {l s='Unit price'} {if $display_tax_label}{if $priceDisplay} {l s='(Excl.'} {else}{l s='(Incl.)'}{/if} {l s='all taxes.)'}{/if}
+                                    {l s='Unit price'}
                                 </p>
                             </div>
                             {if $product.allow_multiple_quantity}
@@ -371,11 +361,11 @@
                             <div class="total_price_block col-xs-12">
                                 <p class="total_price">
                                     <span>
-                                        {if $priceDisplay}{displayPrice price=($product['total_price_tax_excl'])}{else}{displayPrice price=($product['total_price_tax_incl'])}{/if}
+                                        {displayPrice price=($product['total_price_tax_excl'])}
                                     </span>
                                 </p>
                                 <p class="total_price_detial">
-                                    {l s='Total price'} {if $display_tax_label}{if $priceDisplay} {l s='(Excl.'} {else}{l s='(Incl.)'}{/if} {l s='all taxes.)'}{/if}
+                                    {l s='Total price'}
                                 </p>
                             </div>
                         </div>

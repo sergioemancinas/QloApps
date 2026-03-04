@@ -1,48 +1,17 @@
 <div id="opc_new_account" class="opc-main-block">
 	<div id="opc_new_account-overlay" class="opc-overlay" style="display: none;"></div>
+	{assign var='fewo_keycloak_login_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc'], true)|escape:'html':'UTF-8'}
 	{block name='order_opc_new_account_login_form'}
-		<form action="{$link->getPageLink('authentication', true, NULL, "back=order-opc")|escape:'html':'UTF-8'}" method="post" id="login_form">
+		<div id="login_form">
 			<fieldset>
 				<div class="already_registered_block">
 					<p>
-						{l s='Already have an account?'} <a href="{$link->getPageLink('authentication', true)|escape:'html':'UTF-8'}" id="openLoginFormBlock"> {l s='Login now'}</a> {l s='to make checkout process faster and time saving.'}
+						{l s='Already have an account?'} <a href="{$fewo_keycloak_login_url}" rel="nofollow">{l s='Login now'}</a> {l s='to continue securely and manage your booking details.'}
 					</p>
 					<p>{l s='Or'}</p>
 				</div>
-				<div id="login_form_content" style="display:none;">
-					<p class="text-secondary"><a href="#" id="idAccountChoice"> {l s='Return'}</a> {l s='to other checkout options.'}</p>
-					<!-- Error return block -->
-					<div id="opc_login_errors" class="alert alert-danger" style="display:none;"></div>
-					<!-- END Error return block -->
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="login_email">{l s='Email address'}</label>
-							<input type="email" class="form-control validate" id="login_email" name="email" data-validate="isEmail" />
-						</div>
-					</div>
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="login_passwd">{l s='Password'}</label>
-							<input class="form-control validate" type="password" id="login_passwd" name="login_passwd" data-validate="isPasswd" />
-						</div>
-					</div>
-					{block name='displayLoginFormFieldsAfter'}
-						{hook h='displayLoginFormFieldsAfter'}
-					{/block}
-					<a href="{$link->getPageLink('password', true)|escape:'html':'UTF-8'}" class="lost_password pull-right">{l s='Forgot your password?'}</a>
-					<div style="clear:both"></div>
-					{block name='order_opc_new_account_login_submit'}
-						<p class="submit">
-							{if isset($back)}<input type="hidden" class="hidden" name="back" value="{$back|escape:'html':'UTF-8'}" />{/if}
-							<button type="submit" id="SubmitLogin" name="SubmitLogin" class="button btn btn-default button-medium pull-right"><span>{l s='Sign in'}</span></button>
-						</p>
-					{/block}
-					{block name='displayLoginFormBottom'}
-						{hook h='displayLoginFormBottom'}
-					{/block}
-				</div>
 			</fieldset>
-		</form>
+		</div>
 	{/block}
 	{block name='order_opc_new_account_new_account_form'}
 		<form action="{$link->getPageLink('authentication', true)|escape:'html':'UTF-8'}" method="post" id="new_account_form" class="std" autocomplete="on" autofill="on">
@@ -58,7 +27,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="opc_account_form" class="unvisible">
+			<div id="opc_account_form" class="unvisible fewo-minimal-checkout">
 				{block name='displayCustomerAccountFormTop'}
 					{$HOOK_CREATE_ACCOUNT_TOP}
 				{/block}
@@ -116,6 +85,13 @@
 						<input type="text" class="text form-control validate" name="customer_phone" id="customer_phone" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone_mobile) && $guestInformations.phone_mobile}{$guestInformations.phone_mobile}{/if}" onblur="$('#phone').val($(this).val());"/>
 					</div>
 				</div>
+				<div class="row fewo-inline-address-row">
+					<div class="required form-group col-sm-6">
+						<label for="guest_invoice_address">{l s='Address'} <sup>*</sup></label>
+						<input type="text" class="text form-control validate" name="guest_invoice_address" id="guest_invoice_address" data-validate="isAddress" value="{if isset($guestInformations) && isset($guestInformations.address1) && $guestInformations.address1}{$guestInformations.address1}{/if}" />
+						<span class="form_info">{l s='Street and house number (for invoice)'}</span>
+					</div>
+				</div>
 				{if isset($PS_REGISTRATION_PROCESS_TYPE) && $PS_REGISTRATION_PROCESS_TYPE}
 					{if isset($birthday) && $birthday}
 						<div class="row">
@@ -171,6 +147,7 @@
 						</div>
 					{/if}
 
+					<div class="fewo-address-block">
 					<p class="block-small-header margin-top-20 margin-btm-10">{l s='RESIDENTIAL ADDRESS'}</p>
 					{$stateExist = false}
 					{$postCodeExist = false}
@@ -273,11 +250,24 @@
 							<textarea class="form-control" name="other" id="other" cols="26" rows="7"></textarea>
 						</div>
 					</div>
+					</div>
+					<div class="fewo-minimal-hidden-inputs">
+						<input type="hidden" name="address1" id="address1_hidden" value="{if isset($guestInformations) && isset($guestInformations.address1) && $guestInformations.address1}{$guestInformations.address1}{/if}" />
+						<input type="hidden" name="address2" id="address2_hidden" value="" />
+						<input type="hidden" name="city" id="city_hidden" value="Lauscha" />
+						<input type="hidden" name="postcode" id="postcode_hidden" value="98724" />
+						<input type="hidden" name="id_country" id="id_country_hidden" value="{$sl_country|default:1}" />
+						<input type="hidden" name="id_state" id="id_state_hidden" value="" />
+						<input type="hidden" name="dni" id="dni_hidden" value="NA" />
+						<input type="hidden" name="company" id="company_hidden" value="" />
+						<input type="hidden" name="phone" id="phone_hidden" value="" />
+						<input type="hidden" name="phone_mobile" id="phone_mobile_hidden" value="" />
+						<input type="hidden" name="other" id="other_hidden" value="" />
+					</div>
 					<div class="row">
 						<div class="col-sm-12">
 							{if isset($one_phone_at_least) && $one_phone_at_least}
 								{assign var="atLeastOneExists" value=true}
-								<p class="inline-infos required">** {l s='You must register at least one phone number.'}</p>
 							{/if}
 							<input type="hidden" name="alias" id="alias" value="{l s='My address'}"/>
 

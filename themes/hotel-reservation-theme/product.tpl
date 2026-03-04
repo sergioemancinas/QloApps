@@ -239,30 +239,30 @@
 															</div>
 														{/if}
 													{/block}
-													{block name='product_info_tab_room_guests'}
-														{if isset($room_type_info['adults']) && isset($room_type_info['children']) }
-															<div class="info_margin_div fewo-room-info-card">
-																<div class="room_info_heading">
-																	<span class="room_info_heading_label">
-																			<img class="room_info_heading_icon" src="{$img_dir}icons8/group.png" alt="{l s='Max Capacity'}" onerror="this.style.display='none';">
-																		<span>{l s='Max Capacity'}</span>
-																	</span>
-																</div>
+														{block name='product_info_tab_room_guests'}
+															{if isset($room_type_info['adults']) && isset($room_type_info['children']) }
+																<div class="info_margin_div fewo-room-info-card">
+																	<div class="room_info_heading">
+																		<span class="room_info_heading_label">
+																			<span class="room_info_heading_emoji" aria-hidden="true">👥</span>
+																			<span>{l s='Max Capacity'}</span>
+																		</span>
+																	</div>
 																<div class="room_info_content">
 																	<p>{$room_type_info['adults']} {l s='Adults'}, {$room_type_info['children']} {if $room_type_info['children'] > 1}{l s='Children'}{else}{l s='Child'}{/if} ({l s='Max guests'}: {$room_type_info['max_guests']|escape:'htmlall':'UTF-8'})</p>
 																</div>
 															</div>
 														{/if}
 													{/block}
-													{block name='product_info_tab_room_timing'}
-														{if isset($id_hotel) && $id_hotel}
-															<div class="info_margin_div fewo-room-info-card">
-																<div class="room_info_heading">
-																	<span class="room_info_heading_label">
-																			<img class="room_info_heading_icon" src="{$img_dir}icons8/calendar.png" alt="{l s='Check-in and check-out time'}" onerror="this.style.display='none';">
-																		<span>{l s='Check-in and check-out time'}</span>
-																	</span>
-																</div>
+														{block name='product_info_tab_room_timing'}
+															{if isset($id_hotel) && $id_hotel}
+																<div class="info_margin_div fewo-room-info-card">
+																	<div class="room_info_heading">
+																		<span class="room_info_heading_label">
+																			<span class="room_info_heading_emoji" aria-hidden="true">🗓️</span>
+																			<span>{l s='Check-in and check-out time'}</span>
+																		</span>
+																	</div>
 																<div class="room_info_content">
 																	<p>{l s='Check-in: '}{$hotel_check_in|escape:'html':'UTF-8'}</p>
 																	<p>{l s='Check-out: '}{$hotel_check_out|escape:'html':'UTF-8'}</p>
@@ -270,37 +270,19 @@
 															</div>
 														{/if}
 													{/block}
-													{block name='product_info_tab_room_bed_type'}
-														{if isset($selected_bed_types) && $selected_bed_types && isset($bed_types_info) && $bed_types_info}
-															<div class="info_margin_div fewo-room-info-card">
-																<div class="room_info_heading">
-																	<span class="room_info_heading_label">
-																			<img class="room_info_heading_icon" src="{$img_dir}icons8/bed.png" alt="{l s='Bed Types'}" onerror="this.style.display='none';">
-																		<span>{l s='Bed Types'}</span>
-																	</span>
-																</div>
-																<div class="room_info_content">
-																	{foreach $selected_bed_types as $selected_bed_type}
-																		{if isset($bed_types_info[$selected_bed_type])}
-																			<p>{$bed_types_info[$selected_bed_type]['name']}: {$bed_types_info[$selected_bed_type]['area']} {l s='sq.'}{$dimension_unit}</p>
-																		{/if}
-																	{/foreach}
-																</div>
-															</div>
-														{/if}
-													{/block}
+														{* Bed-types block removed for cleaner single-property detail view. *}
 													{* Block for booking products *}
 													{if isset($id_hotel) && $id_hotel}
 														{* Features hidden for single-property setup *}
-														{block name='product_info_tab_hotel_description'}
-															{if isset($hotel_description) && $hotel_description}
-																<div class="info_margin_div fewo-room-info-card fewo-room-info-card--overview">
-																	<div class="room_info_heading">
-																		<span class="room_info_heading_label">
-																				<img class="room_info_heading_icon" src="{$img_dir}icons8/info.png" alt="{l s='House Highlights'}" onerror="this.style.display='none';">
-																			<span>{l s='House Highlights'}</span>
-																		</span>
-																	</div>
+															{block name='product_info_tab_hotel_description'}
+																{if isset($hotel_description) && $hotel_description}
+																	<div class="info_margin_div fewo-room-info-card fewo-room-info-card--overview">
+																		<div class="room_info_heading">
+																			<span class="room_info_heading_label">
+																				<span class="room_info_heading_emoji" aria-hidden="true">🏡</span>
+																				<span>{l s='House Highlights'}</span>
+																			</span>
+																		</div>
 																	<div class="room_info_content">
 																		{$hotel_description}
 																	</div>
@@ -344,26 +326,21 @@
 														</div>
 														<div class="room_info_content row"></div>
 													</div> -->
-													{block name='product_info_tab_hotel_policies'}
-														{if isset($hotel_policies) && $hotel_policies}
-															<div class="info_margin_div fewo-room-info-card">
-																<div class="room_info_heading">
-																	<span class="room_info_heading_label">
-																			<img class="room_info_heading_icon" src="{$img_dir}icons8/policy.png" alt="{l s='Hotel Policies'}" onerror="this.style.display='none';">
-																		<span>{l s='Hotel Policies'}</span>
-																	</span>
-																</div>
+														{block name='product_info_tab_hotel_policies'}
+															{if isset($hotel_policies) && $hotel_policies}
+																<div class="info_margin_div fewo-room-info-card">
+																	<div class="room_info_heading">
+																		<span class="room_info_heading_label">
+																			<span class="room_info_heading_emoji" aria-hidden="true">📜</span>
+																			<span>{l s='Hotel Policies'}</span>
+																		</span>
+																	</div>
 																<div class="room_info_content">
 																	<p class="">{$hotel_policies}</p>
 																</div>
 															</div>
 														{/if}
 													{/block}
-													<div class="info_margin_div room_info_icons8_attribution">
-														<div class="room_info_content">
-															<a href="https://icons8.com" target="_blank" rel="noopener noreferrer nofollow">{l s='Icons by Icons8'}</a>
-														</div>
-													</div>
 												</div>
 											</div>
 										{/block}

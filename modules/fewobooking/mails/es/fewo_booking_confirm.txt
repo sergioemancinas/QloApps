@@ -1,0 +1,10 @@
+Hello {firstname} {lastname},
+
+Your booking at {hotel_name} is confirmed.
+Stay: {date_from} - {date_to}
+Check-in: {check_in_time} | Check-out: {check_out_time}
+
+We attached your house instructions (PDF) and a calendar invite (.ics).
+
+Thank you,
+{shop_name}

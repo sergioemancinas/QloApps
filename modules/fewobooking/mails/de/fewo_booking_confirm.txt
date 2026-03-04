@@ -1,0 +1,10 @@
+Hallo {firstname} {lastname},
+
+Ihre Buchung bei {hotel_name} ist bestaetigt.
+Aufenthalt: {date_from} - {date_to}
+Check-in: {check_in_time} | Check-out: {check_out_time}
+
+Im Anhang finden Sie die Hausanweisungen (PDF) sowie einen Kalendereintrag (.ics).
+
+Vielen Dank,
+{shop_name}

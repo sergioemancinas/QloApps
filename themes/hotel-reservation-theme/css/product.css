@@ -1836,11 +1836,15 @@ ul.service-product-nav > li:hover {
 
 #room_info_hotel_images .skeleton-loading-wrap .loading-container-box {
   height: 200px; }
-  .room_hotel_name_block #hotel_rating,
-  .room_hotel_name_block #hotel_rating i,
-  .room_hotel_name_block .num_reviews,
-  .room_hotel_name_block .raty {
-    display: none !important;
+  #hotel_rating {
+    position:relative;
+    top: -3px;
+    display: inline-flex;
+    color: #333;
+    gap: 1px;
+  }
+  #hotel_rating i {
+    font-size: 12px;
   }
 @media (min-width:768px) {
   .hotel_name_block{
@@ -1855,7 +1859,7 @@ ul.service-product-nav > li:hover {
   }
 }
 @media (max-width:768px) {
-  .room_hotel_name_block #hotel_rating {
-    display: none !important;
+  #hotel_rating {
+    display: block;
   }
 }

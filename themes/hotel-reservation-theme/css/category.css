@@ -310,17 +310,10 @@ p.capa_txt {
   float: left;
   margin-left: 5px;
   padding-top: 3px;}
-.noRoomsAvailAlert
-{
-    margin-bottom: 20px;
-    background-color: #ffa0a0;
-    border: 1px solid #cccccc;
-    color: #9f1010;
-    display: block;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 10px 5px;
-    text-align: center;
+.noRoomsAvailAlert,
+.sold_out_alert,
+.all_rms_sold {
+    display: none !important;
 }
 
 .room_type_old_price {

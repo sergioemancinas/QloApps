@@ -202,7 +202,7 @@
 			{hook h='displayBeforeHotelBranchInformation'}
 		{/block}
 		{block name='contact_form_hotel_branches'}
-			{if isset($displayHotels) && $displayHotels && isset($hotelsInfo) && $hotelsInfo}
+			{if false && isset($displayHotels) && $displayHotels && isset($hotelsInfo) && $hotelsInfo}
 				<div class="row hotels-container">
 					<div class="col-sm-12 hotel-header">
 						<span>{l s='Our Hotels'}</span>

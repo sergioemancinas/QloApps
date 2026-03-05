@@ -291,16 +291,15 @@ class WkRoomSearchBlock extends Module
                 }
 
                 if ($canRedirectToConfiguredRoomType) {
-                    $roomTypeProduct = new Product($roomTypeRedirectId, false, $this->context->language->id);
-                    if (Validate::isLoadedObject($roomTypeProduct)) {
-                        $redirectLink = $this->context->link->getProductLink(
-                            $roomTypeProduct,
-                            null,
-                            null,
-                            null,
-                            $this->context->language->id
-                        );
+                    $redirectLink = $this->context->link->getProductLink(
+                        (int) $roomTypeRedirectId,
+                        null,
+                        null,
+                        null,
+                        $this->context->language->id
+                    );
 
+                    if ($redirectLink) {
                         $queryString = http_build_query($urlData);
                         if ($queryString) {
                             $redirectLink .= (strpos($redirectLink, '?') === false ? '?' : '&').$queryString;

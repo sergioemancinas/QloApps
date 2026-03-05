@@ -82,6 +82,8 @@ class WkCustomNavigationLink extends ObjectModel
                 'discover lauscha',
                 'getting here',
                 'gastro tips',
+                'rooms',
+                'testimonials',
             );
             $blockedLinkFragments = array(
                 '/content/4-about-us',
@@ -95,17 +97,13 @@ class WkCustomNavigationLink extends ObjectModel
                 $roomTypeRedirectId = 1;
             }
 
-            $interiorLink = '';
-            $roomTypeProduct = new Product($roomTypeRedirectId, false, $context->language->id);
-            if (Validate::isLoadedObject($roomTypeProduct)) {
-                $interiorLink = $context->link->getProductLink(
-                    $roomTypeProduct,
-                    null,
-                    null,
-                    null,
-                    $context->language->id
-                );
-            }
+            $interiorLink = $context->link->getProductLink(
+                (int) $roomTypeRedirectId,
+                null,
+                null,
+                null,
+                $context->language->id
+            );
 
             $filteredResult = array();
             foreach ($result as &$navigationLink) {

@@ -541,6 +541,44 @@
 										next();
 									}
 
+									function sanitizeFewoRoomInfo() {
+										var starTitle = document.querySelector('.hotel_name');
+										if (starTitle && starTitle.textContent) {
+											starTitle.textContent = starTitle.textContent.replace(/\s*[\*★☆]{2,}\s*$/, '');
+										}
+
+										var descriptionRoot = document.querySelector('.room_description');
+										if (descriptionRoot) {
+											var blacklist = [
+												/option\s*1/i,
+												/option\s*2/i,
+												/option\s*3/i,
+												/option\s*4/i,
+												/children\s+below\s+3\s+years/i
+											];
+											var items = descriptionRoot.querySelectorAll('li, p');
+											for (var i = 0; i < items.length; i += 1) {
+												var txt = (items[i].textContent || '').trim();
+												for (var j = 0; j < blacklist.length; j += 1) {
+													if (blacklist[j].test(txt)) {
+														items[i].remove();
+														break;
+													}
+												}
+											}
+										}
+
+										var reviewLinks = document.querySelectorAll('a[href="#hotel-reviews"]');
+										if (reviewLinks.length > 1) {
+											for (var r = 1; r < reviewLinks.length; r += 1) {
+												var li = reviewLinks[r].closest('li');
+												if (li) {
+													li.remove();
+												}
+											}
+										}
+									}
+
 									function shouldRecoverProductScripts() {
 										var hasJquery = !!window.jQuery;
 										var hasDatePicker = hasJquery && !!window.jQuery.fn && !!window.jQuery.fn.dateRangePicker;
@@ -627,11 +665,14 @@
 
 									if (document.readyState === 'loading') {
 										document.addEventListener('DOMContentLoaded', recoverProductScripts);
+										document.addEventListener('DOMContentLoaded', sanitizeFewoRoomInfo);
 									} else {
 										recoverProductScripts();
+										sanitizeFewoRoomInfo();
 									}
 
 									setTimeout(recoverProductScripts, 120);
+									setTimeout(sanitizeFewoRoomInfo, 140);
 								})();
 								</script>
 							</div>

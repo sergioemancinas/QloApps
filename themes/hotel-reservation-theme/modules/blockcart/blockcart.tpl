@@ -25,6 +25,8 @@
 
 {block name='blockcart'}
 	<!-- MODULE Block cart -->
+	{assign var='show_tax' value=false}
+	{assign var='display_tax_label' value=false}
 	{if isset($blockcart_top) && $blockcart_top}
 	<div class="header-top-item {if $PS_CATALOG_MODE}header_user_catalog{/if}">
 	{/if}

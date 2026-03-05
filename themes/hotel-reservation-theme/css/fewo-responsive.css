@@ -92,6 +92,18 @@ button[type="submit"]:hover {
   color: #244d24;
 }
 
+.fewo-static-stars {
+  color: #f2b01e;
+  letter-spacing: 1px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.fewo-review-fallback-summary .raty.readonly,
+.room_hotel_name_block .raty.readonly {
+  display: none !important;
+}
+
 .fewo-review-fallback-item {
   padding: 10px 12px;
   border: 1px solid #dce8dd;

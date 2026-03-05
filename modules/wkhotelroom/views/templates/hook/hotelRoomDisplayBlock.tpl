@@ -21,7 +21,7 @@
 *}
 
 {block name='hotel_room_block'}
-    {if isset($hotelRoomDisplay) && $hotelRoomDisplay}
+    {if false && isset($hotelRoomDisplay) && $hotelRoomDisplay}
         <div id="hotelRoomsBlock" class="row home_block_container">
             <div class="col-xs-12 col-sm-12">
                 {if $HOTEL_ROOM_DISPLAY_HEADING && $HOTEL_ROOM_DISPLAY_DESCRIPTION}

@@ -21,7 +21,7 @@
 *}
 
 {block name='testimonial_block'}
-    {if isset($testimonials_data) && $testimonials_data}
+    {if false && isset($testimonials_data) && $testimonials_data}
         <div id="hotelTestimonialBlock" class="row home_block_container">
             <div class="col-xs-12 col-sm-12">
                 {if $HOTEL_TESIMONIAL_BLOCK_HEADING && $HOTEL_TESIMONIAL_BLOCK_CONTENT}

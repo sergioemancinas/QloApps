@@ -39,6 +39,7 @@
             <div class="fewo-review-fallback">
                 <div class="fewo-review-fallback-summary">
                     <span class="raty readonly" data-score="5"></span>
+                    <span class="fewo-static-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
                     <strong>5.0</strong>
                     <span>14 {l s='Review(s)' mod='qlohotelreview'}</span>
                 </div>

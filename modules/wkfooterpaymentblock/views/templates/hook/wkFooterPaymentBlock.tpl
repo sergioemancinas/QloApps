@@ -28,9 +28,21 @@
 		</div>
 		<div class="row margin-lr-0 footer-payment-block">
 			{if isset($allPaymentBlocks) && $allPaymentBlocks}
+				{assign var='hasStripe' value=0}
 				{foreach $allPaymentBlocks as $paymentBlock}
-					<img src="{$link->getMediaLink("`$module_dir`views/img/payment_img/`$paymentBlock['id_payment_block']`.jpg")}">
+					{if isset($paymentBlock['id_payment_block']) && $paymentBlock['id_payment_block']|intval == 5}
+						{assign var='hasStripe' value=1}
+					{/if}
+					<img
+						src="{$link->getMediaLink("`$module_dir`views/img/payment_img/`$paymentBlock['id_payment_block']`.jpg")}"
+						alt="{$paymentBlock['name']|escape:'html':'UTF-8'}"
+						onerror="this.style.display='none'; if (this.nextElementSibling) { this.nextElementSibling.style.display='inline-flex'; }"
+					>
+					<span class="fe-payment-fallback">{$paymentBlock['name']|escape:'html':'UTF-8'}</span>
 				{/foreach}
+				{if !$hasStripe}
+					<span class="fe-footer-stripe-fallback"><i class="icon-cc-stripe"></i> Stripe</span>
+				{/if}
 			{/if}
 		</div>
 	</section>

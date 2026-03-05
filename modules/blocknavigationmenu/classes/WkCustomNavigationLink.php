@@ -79,8 +79,6 @@ class WkCustomNavigationLink extends ObjectModel
         if ($result = Db::getInstance()->executeS($sql)) {
             $blockedNames = array(
                 'about us',
-                'discover lauscha',
-                'getting here',
                 'gastro tips',
                 'rooms',
                 'testimonials',
@@ -88,8 +86,6 @@ class WkCustomNavigationLink extends ObjectModel
             $blockedLinkFragments = array(
                 '/content/4-about-us',
                 '/content/8-gastro-tips',
-                '/content/9-discover-lauscha',
-                '/content/10-getting-here',
             );
 
             $roomTypeRedirectId = (int) Configuration::get('FEWO_PRICING_ROOM_TYPE_ID');

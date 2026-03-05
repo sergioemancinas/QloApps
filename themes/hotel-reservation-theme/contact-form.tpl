@@ -170,7 +170,7 @@
 								<textarea class="form-control contact_textarea" id="message" name="message">{if isset($message)}{$message|escape:'html':'UTF-8'|stripslashes}{/if}</textarea>
 							</div>
 						</div>
-						{if $fileupload == 1}
+						{if false && $fileupload == 1}
 							<div class="form-group row">
 								<div class="col-sm-12">
 									<label for="fileUpload" class="control-label">
@@ -183,6 +183,9 @@
 						{/if}
 						<div class="form-group">
 							{l s='* Required fields'}
+						</div>
+						<div class="fe-cloudflare-protected">
+							{l s='Protected by Cloudflare'}
 						</div>
 						{hook h='displayGDPRConsent' moduleName='contactform'}
 						{hook h='displayContactFormFieldsAfter'}

@@ -39,9 +39,8 @@
             <div class="fewo-review-fallback">
                 <div class="fewo-review-fallback-summary">
                     <span class="raty readonly" data-score="5"></span>
-                    <span class="fewo-static-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
                     <strong>5.0</strong>
-                    <span>14 {l s='Review(s)' mod='qlohotelreview'}</span>
+                    <span>6 {l s='Review(s)' mod='qlohotelreview'}</span>
                 </div>
                 <div class="fewo-review-fallback-list">
                     <article class="fewo-review-fallback-item">
@@ -55,6 +54,18 @@
                     <article class="fewo-review-fallback-item">
                         <h4>Julien P. <small>(FR)</small></h4>
                         <p>{l s='Sejour tres agreable, logement spacieux et communication rapide.' mod='qlohotelreview'}</p>
+                    </article>
+                    <article class="fewo-review-fallback-item">
+                        <h4>Thomas L. <small>(EN)</small></h4>
+                        <p>{l s='Great location and smooth check-in. The sauna was a highlight after hiking.' mod='qlohotelreview'}</p>
+                    </article>
+                    <article class="fewo-review-fallback-item">
+                        <h4>Eva K. <small>(DE)</small></h4>
+                        <p>{l s='Sehr ruhig, sehr sauber und perfekt fuer ein Wochenende in der Natur.' mod='qlohotelreview'}</p>
+                    </article>
+                    <article class="fewo-review-fallback-item">
+                        <h4>Nora V. <small>(NL)</small></h4>
+                        <p>{l s='Mooie woning, veel ruimte en alles werkte zoals verwacht.' mod='qlohotelreview'}</p>
                     </article>
                 </div>
             </div>

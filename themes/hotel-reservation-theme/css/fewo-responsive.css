@@ -92,16 +92,8 @@ button[type="submit"]:hover {
   color: #244d24;
 }
 
-.fewo-static-stars {
-  color: #f2b01e;
-  letter-spacing: 1px;
-  font-size: 16px;
-  line-height: 1;
-}
-
-.fewo-review-fallback-summary .raty.readonly,
-.room_hotel_name_block .raty.readonly {
-  display: none !important;
+.fewo-review-fallback-summary .raty.readonly {
+  margin-right: 4px;
 }
 
 .fewo-review-fallback-item {
@@ -118,4 +110,33 @@ button[type="submit"]:hover {
 
 .fewo-review-fallback-item p {
   margin: 0;
+}
+
+/* Contact page: keep the form centered and hide file upload per FEWO UX. */
+.htl-contact-page #fileUpload,
+.htl-contact-page label[for="fileUpload"] {
+  display: none !important;
+}
+
+.htl-contact-page .row.margin-top-50 > .col-sm-6 {
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+  width: 66.66666667%;
+}
+
+@media (max-width: 991px) {
+  .htl-contact-page .row.margin-top-50 > .col-sm-6 {
+    width: 100%;
+  }
+}
+
+.fe-cloudflare-protected {
+  margin: 8px 0 14px;
+  padding: 8px 10px;
+  border: 1px solid #d7e7d8;
+  border-radius: 6px;
+  background: #f7fbf7;
+  color: #2d5b30;
+  font-size: 13px;
 }

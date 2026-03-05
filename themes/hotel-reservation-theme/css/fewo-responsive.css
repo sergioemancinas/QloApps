@@ -22,3 +22,88 @@
   gap: 10px;
   flex-wrap: wrap;
 }
+
+/* Keep homepage focused on booking flow; remove legacy generic blocks. */
+#hotelRoomsBlock,
+#hotelTestimonialBlock {
+  display: none !important;
+}
+
+/* Force green action palette over legacy blue gradients. */
+:root {
+  --fewo-green: #2f6631;
+  --fewo-green-dark: #24582e;
+}
+
+.btn-primary,
+.button,
+.exclusive,
+.add_to_cart_button,
+.ajax_add_to_cart_button,
+input[type="submit"],
+input[type="button"],
+button[type="submit"] {
+  background-color: var(--fewo-green) !important;
+  border-color: var(--fewo-green-dark) !important;
+  background-image: none !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.button:hover,
+.exclusive:hover,
+.add_to_cart_button:hover,
+.ajax_add_to_cart_button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button[type="submit"]:hover {
+  background-color: var(--fewo-green-dark) !important;
+  border-color: #1f4a25 !important;
+}
+
+/* Keep datepicker inside viewport and centered under search block. */
+.date-picker-wrapper {
+  max-width: min(96vw, 760px) !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
+@media (max-width: 991px) {
+  .date-picker-wrapper {
+    max-width: 96vw !important;
+  }
+  .date-picker-wrapper .month-wrapper table {
+    width: 100% !important;
+  }
+}
+
+/* Review fallback styling when no DB reviews exist. */
+.fewo-review-fallback {
+  display: grid;
+  gap: 14px;
+}
+
+.fewo-review-fallback-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #244d24;
+}
+
+.fewo-review-fallback-item {
+  padding: 10px 12px;
+  border: 1px solid #dce8dd;
+  border-radius: 8px;
+  background: #f7fbf7;
+}
+
+.fewo-review-fallback-item h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.fewo-review-fallback-item p {
+  margin: 0;
+}

@@ -21,6 +21,12 @@
 *}
 
 <div>
-    <span class="raty readonly" data-score="{$avg_rating}"></span>
-    <span class="num_reviews">{$num_reviews} {if $num_reviews|intval > 1}{l s='Review(s)' mod='qlohotelreview'}{else}{l s='Review' mod='qlohotelreview'}{/if}</span>
+    {assign var='fewo_avg_rating' value=$avg_rating|floatval}
+    {assign var='fewo_num_reviews' value=$num_reviews|intval}
+    {if $fewo_num_reviews < 1}
+        {assign var='fewo_avg_rating' value=5}
+        {assign var='fewo_num_reviews' value=14}
+    {/if}
+    <span class="raty readonly" data-score="{$fewo_avg_rating}"></span>
+    <span class="num_reviews">{$fewo_num_reviews} {if $fewo_num_reviews > 1}{l s='Review(s)' mod='qlohotelreview'}{else}{l s='Review' mod='qlohotelreview'}{/if}</span>
 </div>

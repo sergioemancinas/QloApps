@@ -135,10 +135,10 @@
 											</div>
 											{/if} --><!-- commented by webkul unnecessary data -->
 											{block name='blockcart_shopping_cart_total_tax'}
-												{if $show_tax && $use_tax}
-													<div class="cart-prices-line">
-														<span class="price cart_block_tax_cost ajax_cart_tax_cost">{$tax_cost}</span>
-														<span>{l s='Tax' mod='blockcart'}</span>
+											{if false && $show_tax && $use_tax}
+												<div class="cart-prices-line">
+													<span class="price cart_block_tax_cost ajax_cart_tax_cost">{$tax_cost}</span>
+													<span>{l s='Tax' mod='blockcart'}</span>
 													</div>
 												{/if}
 											{/block}
@@ -342,7 +342,7 @@
 								{/if}
 							{/block}
 							{block name='blockcart_layer_cart_total_tax'}
-								{if $show_tax && $use_tax}
+								{if false && $show_tax && $use_tax}
 									<div class="layer_cart_row">
 										<strong class="dark">{l s='Tax' mod='blockcart'}</strong>
 										<span class="price cart_block_tax_cost ajax_cart_tax_cost pull-right">{$tax_cost}</span>

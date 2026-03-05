@@ -271,6 +271,9 @@ class WkRoomSearchBlock extends Module
         // id there is no validation error the proceed to redirect on search result page
         if (!count($this->context->controller->errors)) {
             $roomTypeRedirectId = (int) Configuration::get('FEWO_PRICING_ROOM_TYPE_ID');
+            if ($roomTypeRedirectId <= 0) {
+                $roomTypeRedirectId = 1;
+            }
             if ($isHomePageSearch && $roomTypeRedirectId > 0) {
                 $canRedirectToConfiguredRoomType = true;
 

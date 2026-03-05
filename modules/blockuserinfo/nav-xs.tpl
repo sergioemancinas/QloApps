@@ -21,6 +21,8 @@
 *}
 
 <ul class="nav nav-pills nav-stacked visible-xs wk-nav-style">
+	{assign var='fewo_keycloak_login_url' value='https://fewolauscha.de/auth/realms/fewo/protocol/openid-connect/auth?client_id=qloapps-customer&response_type=code&scope=openid%20email%20profile&redirect_uri=https%3A%2F%2Ffewolauscha.de%2Fen%2Fmodule%2Ffewokeycloak%2Fcustomercallback'}
+	{assign var='fewo_keycloak_register_url' value='https://fewolauscha.de/auth/realms/fewo/protocol/openid-connect/registrations?client_id=qloapps-customer&redirect_uri=https%3A%2F%2Ffewolauscha.de%2Fen%2Fmodule%2Ffewokeycloak%2Fcustomercallback&response_type=code&scope=openid%20email%20profile'}
 	{if $logged}
 		<li>
 			<a class="navigation-link" href="{$link->getPageLink('history', true)|escape:'html'}" title="{l s='Bookings' mod='blockuserinfo'}">{l s='Bookings' mod='blockuserinfo'}</a>
@@ -33,7 +35,10 @@
 		</li>
 	{else}
 		<li>
-			<a class="navigation-link" href="{$link->getPageLink('my-account', true)|escape:'html'}" rel="nofollow" title="{l s='Log in to your customer account' mod='blockuserinfo'}">{l s='Sign in' mod='blockuserinfo'}</a>
+			<a class="navigation-link" href="{$fewo_keycloak_login_url}" rel="nofollow" title="{l s='Log in to your customer account' mod='blockuserinfo'}">{l s='Sign in' mod='blockuserinfo'}</a>
+		</li>
+		<li>
+			<a class="navigation-link" href="{$fewo_keycloak_register_url|escape:'html':'UTF-8'}" rel="nofollow" title="{l s='Create an account' mod='blockuserinfo'}">{l s='Register' mod='blockuserinfo'}</a>
 		</li>
 	{/if}
 </ul>

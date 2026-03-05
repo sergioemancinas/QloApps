@@ -77,6 +77,37 @@ class WkCustomNavigationLink extends ObjectModel
         $sql .= ' ORDER BY `position`';
 
         if ($result = Db::getInstance()->executeS($sql)) {
+            $blockedNames = array(
+                'about us',
+                'discover lauscha',
+                'getting here',
+                'gastro tips',
+            );
+            $blockedLinkFragments = array(
+                '/content/4-about-us',
+                '/content/8-gastro-tips',
+                '/content/9-discover-lauscha',
+                '/content/10-getting-here',
+            );
+
+            $roomTypeRedirectId = (int) Configuration::get('FEWO_PRICING_ROOM_TYPE_ID');
+            if ($roomTypeRedirectId <= 0) {
+                $roomTypeRedirectId = 1;
+            }
+
+            $interiorLink = '';
+            $roomTypeProduct = new Product($roomTypeRedirectId, false, $context->language->id);
+            if (Validate::isLoadedObject($roomTypeProduct)) {
+                $interiorLink = $context->link->getProductLink(
+                    $roomTypeProduct,
+                    null,
+                    null,
+                    null,
+                    $context->language->id
+                );
+            }
+
+            $filteredResult = array();
             foreach ($result as &$navigationLink) {
                 if ($navigationLink['id_cms']) {
                     if (Validate::isLoadedObject($objCMS = new CMS($navigationLink['id_cms']))) {
@@ -84,7 +115,33 @@ class WkCustomNavigationLink extends ObjectModel
                         $navigationLink['name'] = $objCMS->meta_title[$context->language->id];
                     }
                 }
+
+                $name = Tools::strtolower(trim((string) $navigationLink['name']));
+                $link = trim((string) $navigationLink['link']);
+                $linkLower = Tools::strtolower($link);
+
+                if (in_array($name, $blockedNames)) {
+                    continue;
+                }
+
+                $skip = false;
+                foreach ($blockedLinkFragments as $blockedLinkFragment) {
+                    if ($blockedLinkFragment && strpos($linkLower, Tools::strtolower($blockedLinkFragment)) !== false) {
+                        $skip = true;
+                        break;
+                    }
+                }
+                if ($skip) {
+                    continue;
+                }
+
+                if ($name === 'interior' && $interiorLink) {
+                    $navigationLink['link'] = $interiorLink;
+                }
+
+                $filteredResult[] = $navigationLink;
             }
+            $result = $filteredResult;
         }
         return $result;
     }

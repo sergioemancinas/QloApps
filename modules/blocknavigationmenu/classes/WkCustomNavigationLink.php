@@ -157,6 +157,10 @@ class WkCustomNavigationLink extends ObjectModel
                     ? (string) $cms->meta_title[(int) $context->language->id]
                     : (string) $cms->meta_title;
 
+                if ($cmsId === 9) {
+                    $cmsTitle = 'Discover Lauscha';
+                }
+
                 if (!trim($cmsTitle)) {
                     return;
                 }

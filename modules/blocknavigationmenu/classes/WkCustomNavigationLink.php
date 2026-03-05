@@ -135,6 +135,49 @@ class WkCustomNavigationLink extends ObjectModel
 
                 $filteredResult[] = $navigationLink;
             }
+
+            $ensureCmsNavigationLink = function ($cmsId) use (&$filteredResult, $context) {
+                $cmsId = (int) $cmsId;
+                if ($cmsId <= 0) {
+                    return;
+                }
+
+                foreach ($filteredResult as $item) {
+                    if ((int) $item['id_cms'] === $cmsId) {
+                        return;
+                    }
+                }
+
+                $cms = new CMS($cmsId, (int) $context->language->id);
+                if (!Validate::isLoadedObject($cms) || !(int) $cms->active) {
+                    return;
+                }
+
+                $cmsTitle = is_array($cms->meta_title)
+                    ? (string) $cms->meta_title[(int) $context->language->id]
+                    : (string) $cms->meta_title;
+
+                if (!trim($cmsTitle)) {
+                    return;
+                }
+
+                $filteredResult[] = array(
+                    'id_navigation_link' => 0,
+                    'id_cms' => $cmsId,
+                    'is_custom_link' => 0,
+                    'show_at_navigation' => 1,
+                    'show_at_footer' => 0,
+                    'active' => 1,
+                    'position' => 9999 + $cmsId,
+                    'link' => $context->link->getCMSLink($cmsId),
+                    'name' => $cmsTitle,
+                );
+            };
+
+            // Keep both destination pages visible in navigation.
+            $ensureCmsNavigationLink(9);  // Discover Lauscha
+            $ensureCmsNavigationLink(10); // Getting Here
+
             $result = $filteredResult;
         }
         return $result;

@@ -240,7 +240,7 @@
             {block name='search_form_submit'}
                 <div class="form-group grid-item search_room_submit_block area-4" style="grid-column: span 4;">
                     <button type="submit" class="btn btn btn-primary" name="search_room_submit" id="search_room_submit">
-                        <span>{l s='Search Rooms' mod='wkroomsearchblock'}</span>
+                        <span>{l s='Check Availability' mod='wkroomsearchblock'}</span>
                     </button>
                 </div>
             {/block}

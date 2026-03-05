@@ -28,12 +28,10 @@
 				<div class="header-rmsearch-details-wrapper">
 					<div class="container">
 						<div class="row">
-							<div class="col-sm-9 form-group">
+							<div class="col-sm-12 form-group">
 								<div class="filter_header row">
 									<div class="col-sm-12">
-										<p>{l s='Searched results for' mod='wkroomsearchblock'}:
-										<button class="btn btn-default visible-xs modify_roomtype_search_btn pull-right"><i class="icon-pencil"></i></button>
-										</p>
+										<p>{l s='Searched results for' mod='wkroomsearchblock'}:</p>
 									</div>
 								</div>
 								<div class="row">
@@ -41,9 +39,6 @@
 										{$search_data['htl_dtl']['hotel_name']|escape:'htmlall':'UTF-8'}, {$search_data['htl_dtl']['city']|escape:'htmlall':'UTF-8'} {if !$search_data['order_date_restrict']}<img src="{$module_dir}views/img/icon-arrow-left.svg"> {if (isset($search_data['date_from']))}{$search_data['date_from']|escape:'htmlall':'UTF-8'|date_format:"%d %b %Y"}{/if} - {if isset($search_data['date_to'])}{$search_data['date_to']|escape:'htmlall':'UTF-8'|date_format:"%d %b %Y"}{/if}<span class="faded-txt"> ({1+$search_data['num_days']|escape:'htmlall':'UTF-8'} {l s='Days' mod='wkroomsearchblock'} {$search_data['num_days']|escape:'htmlall':'UTF-8'} {if $search_data['num_days'] > 1}{l s='Nights' mod='wkroomsearchblock'}{else}{l s='Night' mod='wkroomsearchblock'}{/if})</span> {/if}
 									</div>
 								</div>
-							</div>
-							<div class="col-sm-3 form-group hidden-xs">
-								<button class="btn btn-default modify_roomtype_search_btn pull-right">{l s='Modify Search' mod='wkroomsearchblock'}</button>
 							</div>
 						</div>
 					</div>

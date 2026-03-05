@@ -250,9 +250,10 @@ class WkRoomSearchHelper
             && count($hotelsInfo) <= 1
             && !$occupancyEnabled
         ) {
-            $smartyVars['multiple_dates_input'] = true;
+            // Force a single combined date input to avoid duplicate check-in/check-out buttons.
+            $smartyVars['multiple_dates_input'] = false;
             Media::addJSDef(array(
-                'multiple_dates_input' => true
+                'multiple_dates_input' => false
             ));
         }
 

@@ -54,11 +54,16 @@ class WkRoomSearchBlock extends Module
             $objHotelBranchInformation = new HotelBranchInformation();
             $hotelBranchesInfo = $objHotelBranchInformation->hotelBranchesInfo(0, 1);
             if (is_array($hotelBranchesInfo) && count($hotelBranchesInfo)) {
+                $searchJsVersion = @filemtime(_PS_MODULE_DIR_ . $this->name . '/views/js/wk-room-search-block.js');
+                if (!$searchJsVersion) {
+                    $searchJsVersion = $this->version;
+                }
+
                 $this->context->controller->addJS(_PS_JS_DIR_.'jquery/plugins/jquery.chosen.js');
                 $this->context->controller->addCSS($this->_path.'/views/css/chosen.css');
 
-                $this->context->controller->addCSS($this->_path.'/views/css/wk-global-search.css');
-                $this->context->controller->addJS($this->_path.'/views/js/wk-room-search-block.js');
+                $this->context->controller->addCSS($this->_path.'/views/css/wk-global-search-v3.css');
+                $this->context->controller->addJS($this->_path.'/views/js/wk-room-search-block.js?v='.$searchJsVersion);
 
                 $isOccupancyWiseSearch = false;
                 if (Configuration::get('PS_FRONT_SEARCH_TYPE') == HotelBookingDetail::SEARCH_TYPE_OWS) {
@@ -70,12 +75,18 @@ class WkRoomSearchBlock extends Module
                             'wkroomsearchblock',
                             'autocompletesearch'
                         ),
+                        'availability_search_url' => $this->context->link->getModuleLink(
+                            'wkroomsearchblock',
+                            'availability'
+                        ),
                         'no_results_found_cond' => $this->l('No results found for this search', false, true),
                         'hotel_name_cond' => $this->l('Please select a hotel name', false, true),
                         'check_in_time_cond' => $this->l('Please enter Check In time', false, true),
                         'check_out_time_cond' => $this->l('Please enter Check Out time', false, true),
                         'less_checkin_date' => $this->l('Check In date can not be before current date.', false, true),
                         'more_checkout_date' => $this->l('Check Out date must be greater than Check In date.', false, true),
+                        'available_date_txt' => $this->l('Available', false, true),
+                        'unavailable_date_txt' => $this->l('Already booked', false, true),
                         'hotel_location_txt' => $this->l('Hotel Location', false, true),
                         'select_htl_txt' => $this->l('Select Hotel', false, true),
                         'select_age_txt' => $this->l('Select age', false, true),
@@ -165,6 +176,11 @@ class WkRoomSearchBlock extends Module
     {
         $urlData = array();
         $hotelCategoryId = Tools::getValue('hotel_cat_id');
+        $searchController = (string) Tools::getValue('controller');
+        $isHomePageSearch = (
+            (isset($this->context->controller->php_self) && $this->context->controller->php_self === 'index')
+            || $searchController === 'index'
+        );
         // change dates format to acceptable format
         if ($checkIn = Tools::getValue('check_in_time')) {
             if (!Validate::isDateFormat($checkIn)) {
@@ -187,14 +203,64 @@ class WkRoomSearchBlock extends Module
         $maxOrderDate = Tools::getValue('max_order_date');
         $maxOrderDate = date('Y-m-d', strtotime($maxOrderDate));
 
-        if (Configuration::get('PS_FRONT_ROOM_UNIT_SELECTION_TYPE') == HotelBookingDetail::PS_ROOM_UNIT_SELECTION_TYPE_OCCUPANCY) {
-            if ($occupancy = Tools::getValue('occupancy')) {
-                $urlData['occupancy'] = $occupancy;
-            }
+        $occupancy = Tools::getValue('occupancy');
+        if ($occupancy === null && isset($_REQUEST['occupancy'])) {
+            $occupancy = $_REQUEST['occupancy'];
+        }
+        if ($occupancy) {
+            $urlData['occupancy'] = $occupancy;
         }
 
         if ($locationCategoryId = Tools::getValue('location_category_id')) {
             $urlData['location'] = $locationCategoryId;
+        }
+
+        $ratePlanCode = '';
+        if (class_exists('HotelCartBookingData')) {
+            $ratePlanCode = HotelCartBookingData::normalizeRatePlanCode(Tools::getValue('fewo_rate_option'));
+        } else {
+            $ratePlanCode = trim((string) Tools::getValue('fewo_rate_option'));
+        }
+        if (!$ratePlanCode && isset($this->context->cookie->fewo_rate_option)) {
+            if (class_exists('HotelCartBookingData')) {
+                $ratePlanCode = HotelCartBookingData::normalizeRatePlanCode($this->context->cookie->fewo_rate_option);
+            } else {
+                $ratePlanCode = trim((string) $this->context->cookie->fewo_rate_option);
+            }
+        }
+        if ($ratePlanCode) {
+            $urlData['fewo_rate_option'] = $ratePlanCode;
+        }
+
+        $chargeableGuests = (int) Tools::getValue('fewo_chargeable_guests');
+        if ($chargeableGuests <= 0 && isset($this->context->cookie->fewo_chargeable_guests)) {
+            $chargeableGuests = (int) $this->context->cookie->fewo_chargeable_guests;
+        }
+        if ($chargeableGuests > 0) {
+            $chargeableGuests = min(4, $chargeableGuests);
+        }
+
+        $under3GuestsRaw = Tools::getValue('fewo_under3_guests', null);
+        $under3Guests = $under3GuestsRaw === null ? -1 : (int) $under3GuestsRaw;
+        if ($under3Guests < 0 && isset($this->context->cookie->fewo_under3_guests)) {
+            $under3Guests = (int) $this->context->cookie->fewo_under3_guests;
+        }
+        if ($under3Guests > 0) {
+            $under3Guests = min(4, $under3Guests);
+        } else {
+            $under3Guests = 0;
+        }
+
+        if ($chargeableGuests > 0) {
+            $maxUnder3Guests = max(0, 4 - $chargeableGuests);
+            if ($under3Guests > $maxUnder3Guests) {
+                $under3Guests = $maxUnder3Guests;
+            }
+
+            $urlData['fewo_chargeable_guests'] = $chargeableGuests;
+            if ($under3Guests > 0) {
+                $urlData['fewo_under3_guests'] = $under3Guests;
+            }
         }
 
         $objSearchHelper = new WkRoomSearchHelper();
@@ -204,6 +270,44 @@ class WkRoomSearchBlock extends Module
         );
         // id there is no validation error the proceed to redirect on search result page
         if (!count($this->context->controller->errors)) {
+            $roomTypeRedirectId = (int) Configuration::get('FEWO_PRICING_ROOM_TYPE_ID');
+            if ($isHomePageSearch && $roomTypeRedirectId > 0) {
+                $canRedirectToConfiguredRoomType = true;
+
+                if ($hotelCategoryId && class_exists('HotelRoomType')) {
+                    $objHotelRoomType = new HotelRoomType();
+                    if (method_exists($objHotelRoomType, 'getRoomTypeInfoByIdProduct')) {
+                        $roomTypeInfo = $objHotelRoomType->getRoomTypeInfoByIdProduct($roomTypeRedirectId);
+                        if (is_array($roomTypeInfo)
+                            && !empty($roomTypeInfo['id_category'])
+                            && (int) $roomTypeInfo['id_category'] !== (int) $hotelCategoryId
+                        ) {
+                            $canRedirectToConfiguredRoomType = false;
+                        }
+                    }
+                }
+
+                if ($canRedirectToConfiguredRoomType) {
+                    $roomTypeProduct = new Product($roomTypeRedirectId, false, $this->context->language->id);
+                    if (Validate::isLoadedObject($roomTypeProduct)) {
+                        $redirectLink = $this->context->link->getProductLink(
+                            $roomTypeProduct,
+                            null,
+                            null,
+                            null,
+                            $this->context->language->id
+                        );
+
+                        $queryString = http_build_query($urlData);
+                        if ($queryString) {
+                            $redirectLink .= (strpos($redirectLink, '?') === false ? '?' : '&').$queryString;
+                        }
+
+                        Tools::redirect($redirectLink);
+                    }
+                }
+            }
+
             if (Configuration::get('PS_REWRITING_SETTINGS')) {
                 $redirectLink = $this->context->link->getCategoryLink(
                     new Category($hotelCategoryId, $this->context->language->id),

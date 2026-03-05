@@ -26,7 +26,11 @@
 {block name='order_confirmation'}
 	{capture name=path}{l s='Order confirmation'}{/capture}
 	{block name='order_confirmation_heading'}
-		<h1 class="page-heading">{l s='Booking confirmation'} : <span class="bold">{$order->reference}</span></h1>
+		<h1 class="page-heading fewo-confirmation-title">
+			<span class="fewo-confirmation-kicker">{l s='Booking confirmed'}</span>
+			<span>{l s='Booking confirmation'} : <span class="bold fewo-confirmation-reference">{$order->reference}</span></span>
+		</h1>
+		<p class="fewo-confirmation-lead">{l s='Thank you for your reservation. A confirmation email with your booking details has been sent.'}</p>
 	{/block}
 
 	{assign var='current_step' value='payment'}
@@ -42,7 +46,7 @@
 		{$HOOK_ORDER_CONFIRMATION}
 	{/block}
 
-	<div class="order-confirmation-column">
+	<div class="order-confirmation-column fewo-confirmation-column">
         {if $HOOK_PAYMENT_RETURN}
             <div class="card">
                 <div class="card-body">
@@ -70,8 +74,36 @@
 						</p>
 					{/if}
 				{/if}
+				<div class="card fewo-booking-snapshot">
+					<div class="card-body">
+						<div class="fewo-snapshot-grid">
+							<div class="fewo-snapshot-item">
+								<span class="fewo-snapshot-label">{l s='Reference'}</span>
+								<span class="fewo-snapshot-value">{$order->reference}</span>
+							</div>
+							<div class="fewo-snapshot-item">
+								<span class="fewo-snapshot-label">{l s='Payment method'}</span>
+								<span class="fewo-snapshot-value">{$order->payment|escape:'html':'UTF-8'}</span>
+							</div>
+							<div class="fewo-snapshot-item">
+								<span class="fewo-snapshot-label">{l s='Status'}</span>
+								<span class="fewo-snapshot-value">
+									{if isset($order_history[0]) && $order_history[0]}
+										{if $order_history[0].id_order_state|in_array:$overbooking_order_states}
+											{l s='Order Not Confirmed'}
+										{else}
+											{$order_history[0].ostate_name|escape:'html':'UTF-8'}
+										{/if}
+									{else}
+										{l s='Processing'}
+									{/if}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
 				{block name='order_details'}
-					<div id="order-detail-content" class="">
+					<div id="order-detail-content" class="fewo-order-detail-content">
 						<div class="row">
 							<div class="col-md-8 order-product-summary">
 								{if isset($cart_htl_data)}
@@ -525,13 +557,18 @@
 						</div>
 					</div>
 				{/block}
-				<p>{l s='An email has been sent with this information.'}
-					<br /><strong>{l s='Your booking has been received successfully and we are looking forward to welcoming you.'}</strong>
-					<br />{l s='If you have questions, comments or concerns, please contact our'} <a class="cust_serv_lnk" href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='expert customer support team.'}</a>
-				</p>
-				<p class="cart_navigation exclusive">
-					<a class="btn" href="{$link->getPageLink('history', true)|escape:'html':'UTF-8'}" title="{l s='Go to your order history page'}"><i class="icon-chevron-left"></i>{l s='View your order history'}</a>
-				</p>
+				<div class="card fewo-confirmation-footer">
+					<div class="card-body">
+						<p class="fewo-confirmation-message">{l s='An email has been sent with this information.'}
+							<br /><strong>{l s='Your booking has been received successfully and we are looking forward to welcoming you.'}</strong>
+							<br />{l s='If you have questions, comments or concerns, please contact our'} <a class="cust_serv_lnk" href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='expert customer support team.'}</a>
+						</p>
+						<div class="fewo-confirmation-actions">
+							<a class="btn fewo-btn-primary" href="{$link->getPageLink('history', true)|escape:'html':'UTF-8'}" title="{l s='Go to your order history page'}"><i class="icon-chevron-left"></i>{l s='View your order history'}</a>
+							<a class="btn fewo-btn-secondary" href="{$link->getPageLink('contact', true)|escape:'html'}" title="{l s='Contact support'}">{l s='Contact support'}</a>
+						</div>
+					</div>
+				</div>
 			{/if}
 		{/if}
 	</div>

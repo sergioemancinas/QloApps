@@ -30,6 +30,7 @@
             <p>{l s='GET NOTIFICATIONS' mod='blocknewsletter'}</p>
             <hr/>
         </div>
+        <p class="fe-newsletter-note">{l s='Subscribe to receive your welcome voucher and seasonal offers.' mod='blocknewsletter'}</p>
         <div class="row margin-lr-0">
             <form action="{$link->getModuleLink('newsletter', 'subscription')|escape:'html':'UTF-8'}" method="post">
                 <div class="form-group">

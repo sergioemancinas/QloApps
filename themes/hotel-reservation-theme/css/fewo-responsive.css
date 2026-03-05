@@ -1,0 +1,24 @@
+/*
+ * Local responsive overrides.
+ *
+ * This file is intentionally kept lightweight so theme references do not 404.
+ * Add project-specific responsive tweaks here when needed.
+ */
+
+/* Single-property setup: suppress generic multi-room sold-out banner blocks. */
+.noRoomsAvailAlert {
+  display: none !important;
+}
+
+/* Hide static hotel classification stars next to title; keep review stars below. */
+#hotel_rating {
+  display: none !important;
+}
+
+/* Keep inline rating row visible and tidy on all breakpoints. */
+.fewo-review-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}

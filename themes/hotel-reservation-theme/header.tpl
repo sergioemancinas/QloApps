@@ -65,6 +65,7 @@
 		{block name='displayHeader'}
 			{$HOOK_HEADER}
 		{/block}
+		<link rel="stylesheet" href="{$css_dir}cookie-consent.css?v=1" type="text/css" media="all" />
 		<!-- <link rel="stylesheet" href="http{if Tools::usingSecureMode()}s{/if}://fonts.googleapis.com/css?family=Open+Sans:300,600&amp;subset=latin,latin-ext" type="text/css" media="all" /> -->
 
 		<!--[if IE 8]>

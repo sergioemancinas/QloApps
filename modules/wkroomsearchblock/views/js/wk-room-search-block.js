@@ -383,6 +383,624 @@ $(document).ready(function() {
 
     /*END*/
     var ajax_check_var = '';
+    var availability_ajax_var = '';
+    var unavailableDatesMap = {};
+    var unavailableDatesHotelId = 0;
+    var unavailableDatesRange = { from: '', to: '' };
+    var unavailableDatesLoaded = false;
+    var nativeDateFallbackInitialized = false;
+    var calendarLayoutKey = '';
+    var touchCalendarResizeTimer = null;
+    var calendarEnhanceTimer = null;
+    var calendarMutationObserver = null;
+
+    showNativeDateFallback = function () {
+        var fallback = $('#wk-native-date-fallback');
+        if (!fallback.length) {
+            var labelCheckin = (typeof RangePickerCheckin != 'undefined' && RangePickerCheckin) ? RangePickerCheckin : 'Check-in';
+            var labelCheckout = (typeof RangePickerCheckout != 'undefined' && RangePickerCheckout) ? RangePickerCheckout : 'Check-out';
+            var fallbackHtml =
+                '<div id="wk-native-date-fallback" class="wk-native-date-fallback">'
+                + '<div class="wk-native-date-field">'
+                + '<label for="wk_native_check_in">' + labelCheckin + '</label>'
+                + '<input type="date" id="wk_native_check_in" class="form-control header-rmsearch-input" />'
+                + '</div>'
+                + '<div class="wk-native-date-field">'
+                + '<label for="wk_native_check_out">' + labelCheckout + '</label>'
+                + '<input type="date" id="wk_native_check_out" class="form-control header-rmsearch-input" />'
+                + '</div>'
+                + '</div>';
+
+            $('#daterange_value').closest('.form-group').append(fallbackHtml);
+            fallback = $('#wk-native-date-fallback');
+
+            $(document).on('change', '#wk_native_check_in', function () {
+                var inDate = $(this).val();
+                $('#check_in_time').val(inDate);
+                if (inDate) {
+                    var outInput = $('#wk_native_check_out');
+                    outInput.attr('min', inDate);
+                    if (outInput.val() && outInput.val() < inDate) {
+                        outInput.val('');
+                        $('#check_out_time').val('');
+                    }
+                }
+            });
+
+            $(document).on('change', '#wk_native_check_out', function () {
+                $('#check_out_time').val($(this).val());
+            });
+        }
+
+        $('#wk_native_check_in').val($('#check_in_time').val() || '');
+        $('#wk_native_check_out').val($('#check_out_time').val() || '');
+        fallback.show();
+        nativeDateFallbackInitialized = true;
+    }
+
+    hideNativeDateFallback = function () {
+        $('#wk-native-date-fallback').hide();
+    }
+
+    isTouchPrimaryPointer = function () {
+        if (window.matchMedia) {
+            if (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches) {
+                return true;
+            }
+        }
+
+        return ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+    }
+
+    isPhoneCalendarViewport = function () {
+        return window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
+    }
+
+    isTabletCalendarViewport = function () {
+        return isTouchPrimaryPointer()
+            && window.matchMedia
+            && window.matchMedia('(min-width: 821px) and (max-width: 1200px)').matches;
+    }
+
+    shouldUseTouchCalendarShell = function () {
+        return isTouchPrimaryPointer() && (isPhoneCalendarViewport() || isTabletCalendarViewport());
+    }
+
+    updateTouchModeClasses = function () {
+        $('body').toggleClass('wk-touch-ui', isTouchPrimaryPointer());
+        $('body').toggleClass('wk-touch-phone', isPhoneCalendarViewport());
+        $('body').toggleClass('wk-touch-tablet', isTabletCalendarViewport());
+    }
+
+    openTouchCalendarShell = function () {
+        updateTouchModeClasses();
+        if (!shouldUseTouchCalendarShell()) {
+            return;
+        }
+
+        var overlay = $('#wk-calendar-backdrop');
+        if (!overlay.length) {
+            $('body').append('<div id="wk-calendar-backdrop" class="wk-calendar-backdrop"></div>');
+            overlay = $('#wk-calendar-backdrop');
+        }
+
+        overlay.off('click.wkcalendar').on('click.wkcalendar', function () {
+            var pickerObj = $('#daterange_value').data('dateRangePicker');
+            if (pickerObj && typeof pickerObj.close == 'function') {
+                pickerObj.close();
+            }
+        });
+
+        $('body')
+            .addClass('wk-touch-calendar-active')
+            .toggleClass('wk-touch-calendar-phone', isPhoneCalendarViewport())
+            .toggleClass('wk-touch-calendar-tablet', !isPhoneCalendarViewport());
+    }
+
+    closeTouchCalendarShell = function () {
+        $('body').removeClass('wk-touch-calendar-active wk-touch-calendar-phone wk-touch-calendar-tablet');
+    }
+
+    formatDateForApi = function (dateObj) {
+        return $.datepicker.formatDate('yy-mm-dd', dateObj);
+    }
+
+    redrawDateRangePicker = function () {
+        if (typeof $('#daterange_value').data('dateRangePicker') != 'undefined') {
+            $('#daterange_value').data('dateRangePicker').redraw();
+            setTimeout(function() {
+                ensureDatePickerLegend();
+                syncCalendarLegendLayout();
+                applyCalendarVisualStyles();
+            }, 0);
+        }
+    }
+
+    syncCalendarAvailabilityClasses = function (picker) {
+        if (!picker || !picker.length) {
+            return;
+        }
+
+        picker.find('.day.toMonth').each(function () {
+            var day = $(this);
+            var time = parseInt(day.attr('time'), 10);
+            if (isNaN(time)) {
+                return;
+            }
+
+            var unavailable = isDateUnavailable(new Date(time));
+            if (unavailable) {
+                day
+                    .addClass('wk-unavailable-date')
+                    .removeClass('wk-available-date')
+                    .removeClass('valid')
+                    .addClass('invalid');
+            } else {
+                day.removeClass('wk-unavailable-date');
+                if (day.hasClass('valid')) {
+                    day.addClass('wk-available-date');
+                }
+            }
+        });
+    }
+
+    applyCalendarVisualStyles = function () {
+        var picker = $('#daterange_value').siblings('.date-picker-wrapper');
+        if (!picker.length) {
+            return;
+        }
+
+        // Reset inline day styles before repainting from current classes.
+        picker.find('.day').css({
+            'background': '',
+            'background-image': '',
+            'border-color': '',
+            'color': '',
+            'font-weight': '',
+            'box-shadow': '',
+            'cursor': '',
+            'text-decoration': '',
+            'transform': ''
+        });
+
+        syncCalendarAvailabilityClasses(picker);
+
+        picker.find('.day.wk-available-date').each(function () {
+            var day = $(this);
+            if (
+                day.hasClass('checked')
+                || day.hasClass('first-date-selected')
+                || day.hasClass('last-date-selected')
+                || day.hasClass('hovering')
+                || day.hasClass('invalid')
+            ) {
+                return;
+            }
+
+            day.css({
+                'background': '#d9f4dc',
+                'border-color': '#1d7a3d',
+                'color': '#0f5132',
+                'font-weight': '700',
+                'box-shadow': 'inset 0 0 0 1px rgba(17,94,52,.16)'
+            });
+        });
+
+        picker.find('.day.wk-unavailable-date').each(function () {
+            var day = $(this);
+            day.css({
+                'background': '#ffe5e5',
+                'background-image': 'repeating-linear-gradient(135deg, rgba(153,27,27,.22) 0, rgba(153,27,27,.22) 4px, transparent 4px, transparent 8px)',
+                'border-color': '#b91c1c',
+                'color': '#7f1d1d',
+                'font-weight': '700',
+                'cursor': 'not-allowed',
+                'text-decoration': 'none'
+            });
+        });
+
+        picker.find('.day.checked').each(function () {
+            var day = $(this);
+            if (day.hasClass('first-date-selected') || day.hasClass('last-date-selected')) {
+                day.css({
+                    'background': '#0f80e4',
+                    'border-color': '#0f80e4',
+                    'color': '#ffffff',
+                    'font-weight': '700'
+                });
+            } else {
+                day.css({
+                    'background': '#e6ebf2',
+                    'border-color': '#bac6d8',
+                    'color': '#2f3d4f',
+                    'font-weight': '700',
+                    'box-shadow': 'inset 0 0 0 1px rgba(120, 138, 164, .16)'
+                });
+            }
+        });
+
+        // While dragging after first click, highlight provisional nights selection.
+        picker.find('.day.hovering').each(function () {
+            var day = $(this);
+            if (day.hasClass('wk-unavailable-date')) {
+                return;
+            }
+            // Allow "invalid tmp" hover cells so the user can preview before minimum nights is reached.
+            if (day.hasClass('invalid') && !day.hasClass('tmp')) {
+                return;
+            }
+
+            if (day.hasClass('first-date-selected') || day.hasClass('last-date-selected')) {
+                day.css({
+                    'background': '#0f80e4',
+                    'border-color': '#0f80e4',
+                    'color': '#ffffff',
+                    'font-weight': '700'
+                });
+            } else {
+                day.css({
+                    'background': '#dfe6f1',
+                    'border-color': '#b0bed3',
+                    'color': '#2f3d4f',
+                    'font-weight': '700',
+                    'box-shadow': 'inset 0 0 0 1px rgba(120, 138, 164, .16)'
+                });
+            }
+        });
+    }
+
+    startCalendarEnhancer = function () {
+        if (calendarEnhanceTimer) {
+            clearInterval(calendarEnhanceTimer);
+        }
+
+        calendarEnhanceTimer = setInterval(function () {
+            var picker = $('#daterange_value').siblings('.date-picker-wrapper:visible');
+            if (!picker.length) {
+                stopCalendarEnhancer();
+                return;
+            }
+
+            ensureDatePickerLegend();
+            syncCalendarLegendLayout();
+            applyCalendarVisualStyles();
+        }, 180);
+    }
+
+    stopCalendarEnhancer = function () {
+        if (calendarEnhanceTimer) {
+            clearInterval(calendarEnhanceTimer);
+            calendarEnhanceTimer = null;
+        }
+    }
+
+    startCalendarMutationObserver = function () {
+        if (!window.MutationObserver) {
+            return;
+        }
+
+        stopCalendarMutationObserver();
+        var monthWrapper = $('#daterange_value').siblings('.date-picker-wrapper:visible').find('.month-wrapper').get(0);
+        if (!monthWrapper) {
+            return;
+        }
+
+        calendarMutationObserver = new MutationObserver(function () {
+            ensureDatePickerLegend();
+            syncCalendarLegendLayout();
+            applyCalendarVisualStyles();
+        });
+        calendarMutationObserver.observe(monthWrapper, {
+            childList: true,
+            subtree: true,
+        });
+    }
+
+    stopCalendarMutationObserver = function () {
+        if (calendarMutationObserver) {
+            calendarMutationObserver.disconnect();
+            calendarMutationObserver = null;
+        }
+    }
+
+    animateDateSelectionFeedback = function () {
+        var fields = $('#daterange_value, #daterange_value_from, #daterange_value_to').filter(':visible');
+        if (!fields.length) {
+            fields = $('#daterange_value');
+        }
+
+        fields.removeClass('wk-date-selection-animated');
+        setTimeout(function () {
+            fields.addClass('wk-date-selection-animated');
+        }, 0);
+        setTimeout(function () {
+            fields.removeClass('wk-date-selection-animated');
+        }, 460);
+    }
+
+    ensureDatePickerLegend = function () {
+        var legendAvailable = (typeof available_date_txt != 'undefined' && available_date_txt) ? available_date_txt : 'Available';
+        var legendUnavailable = (typeof unavailable_date_txt != 'undefined' && unavailable_date_txt) ? unavailable_date_txt : 'Already booked';
+        var legendSelected = (typeof selected_nights_txt != 'undefined' && selected_nights_txt) ? selected_nights_txt : 'Selected nights';
+        var legendToday = (typeof today_txt != 'undefined' && today_txt) ? today_txt : 'Today';
+        var picker = $('#daterange_value').siblings('.date-picker-wrapper');
+
+        if (!picker.length || picker.find('.wk-calendar-legend').length) {
+            return;
+        }
+
+        picker.append(
+            '<div class="wk-calendar-legend" role="note" aria-label="Calendar availability legend">'
+            + '<span class="wk-legend-item"><i class="wk-legend-dot wk-legend-dot-available"></i><span class="wk-legend-label">' + legendAvailable + '</span></span>'
+            + '<span class="wk-legend-separator" aria-hidden="true">|</span>'
+            + '<span class="wk-legend-item"><i class="wk-legend-dot wk-legend-dot-selected"></i><span class="wk-legend-label">' + legendSelected + '</span></span>'
+            + '<span class="wk-legend-separator" aria-hidden="true">|</span>'
+            + '<span class="wk-legend-item"><i class="wk-legend-dot wk-legend-dot-unavailable"></i><span class="wk-legend-label">' + legendUnavailable + '</span></span>'
+            + '<button type="button" class="wk-calendar-today-btn">' + legendToday + '</button>'
+            + '</div>'
+        );
+
+        var legend = picker.find('.wk-calendar-legend');
+        legend.css({
+            'position': 'absolute',
+            'left': '10px',
+            'right': '10px',
+            'bottom': '8px',
+            'z-index': '3',
+            'display': 'flex',
+            'justify-content': 'center',
+            'align-items': 'center',
+            'gap': '8px',
+            'flex-wrap': 'wrap',
+            'margin-top': '0',
+            'padding': '6px 8px 0',
+            'border-top': '1px solid #e8edf4',
+            'background': 'linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,1) 55%)',
+            'font-size': '12px',
+            'text-align': 'center',
+            'overflow-x': 'hidden',
+            'overflow-y': 'hidden'
+        });
+        legend.find('.wk-legend-item').css({
+            'display': 'inline-flex',
+            'align-items': 'center',
+            'gap': '6px',
+            'padding': '4px 8px',
+            'border-radius': '999px',
+            'border': '1px solid #d3dae5',
+            'background-color': '#fbfcff',
+            'font-weight': '800',
+            'white-space': 'nowrap',
+            'flex': '0 0 auto'
+        });
+        legend.find('.wk-legend-dot').css({
+            'width': '12px',
+            'height': '12px',
+            'border-radius': '3px',
+            'display': 'inline-block',
+            'border': '1px solid transparent'
+        });
+        legend.find('.wk-legend-dot-available').css({
+            'background-color': '#d9f4dc',
+            'border-color': '#1d7a3d',
+            'box-shadow': '0 0 0 1px rgba(17, 94, 52, 0.14)'
+        });
+        legend.find('.wk-legend-dot-selected').css({
+            'background-color': '#e6ebf2',
+            'border-color': '#bac6d8',
+            'box-shadow': '0 0 0 1px rgba(120, 138, 164, .14)'
+        });
+        legend.find('.wk-legend-dot-unavailable').css({
+            'background-color': '#ffe5e5',
+            'background-image': 'repeating-linear-gradient(135deg, rgba(153, 27, 27, 0.22) 0, rgba(153, 27, 27, 0.22) 4px, transparent 4px, transparent 8px)',
+            'border-color': '#b91c1c',
+            'box-shadow': '0 0 0 1px rgba(127, 29, 29, 0.14)'
+        });
+        legend.find('.wk-legend-label').css({
+            'font-weight': '800',
+            'letter-spacing': '.01em'
+        });
+        legend.find('.wk-legend-separator').css({
+            'font-weight': '700',
+            'color': '#64748b'
+        });
+        legend.find('.wk-calendar-today-btn').css({
+            'margin-left': '4px',
+            'padding': '4px 8px',
+            'border-radius': '999px',
+            'border': '1px solid #9fb0c7',
+            'background': '#f2f6fb',
+            'color': '#334155',
+            'font-weight': '700',
+            'line-height': '1.2',
+            'cursor': 'pointer',
+            'white-space': 'nowrap',
+            'flex': '0 0 auto'
+        });
+
+        legend.find('.wk-calendar-today-btn')
+            .off('click.wkcal touchend.wkcal keydown.wkcal')
+            .on('click.wkcal touchend.wkcal', function(e) {
+                goToTodayInDatePicker(e);
+            })
+            .on('keydown.wkcal', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    goToTodayInDatePicker(e);
+                }
+            });
+
+        syncCalendarLegendLayout();
+    }
+
+    goToTodayInDatePicker = function (e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        var pickerObj = $('#daterange_value').data('dateRangePicker');
+        if (!pickerObj) {
+            return;
+        }
+
+        if (typeof pickerObj.resetMonthsView == 'function') {
+            pickerObj.resetMonthsView(new Date());
+        } else if (typeof pickerObj.redraw == 'function') {
+            pickerObj.redraw();
+        }
+
+        if (typeof pickerObj.redraw == 'function') {
+            pickerObj.redraw();
+        }
+
+        setTimeout(function () {
+            ensureDatePickerLegend();
+            syncCalendarLegendLayout();
+            applyCalendarVisualStyles();
+        }, 16);
+    }
+
+    syncCalendarLegendLayout = function () {
+        var picker = $('#daterange_value').siblings('.date-picker-wrapper:visible');
+        if (!picker.length) {
+            picker = $('#daterange_value').siblings('.date-picker-wrapper');
+        }
+        if (!picker.length) {
+            return;
+        }
+
+        var legend = picker.find('.wk-calendar-legend');
+        if (!legend.length) {
+            return;
+        }
+
+        var legendHeight = Math.ceil(legend.outerHeight(true) || 0);
+        var bottomPadding = Math.max(44, legendHeight + 10);
+        picker.css({
+            'padding-bottom': bottomPadding + 'px',
+            'min-height': ''
+        });
+    }
+
+    shouldUseSingleMonthCalendar = function () {
+        if (window.matchMedia) {
+            return window.matchMedia('(max-width: 900px)').matches;
+        }
+
+        return $(window).width() <= 900;
+    }
+
+    getCalendarLayoutKey = function () {
+        var mode = shouldUseSingleMonthCalendar() ? 'single' : 'double';
+        var viewport = isPhoneCalendarViewport() ? 'phone' : (isTabletCalendarViewport() ? 'tablet' : 'desktop');
+        return mode + ':' + viewport;
+    }
+
+    getMinimumStayDays = function () {
+        // 2 nights minimum stay => 3 calendar days in daterangepicker.
+        return 3;
+    }
+
+    isDateUnavailable = function (dateObj) {
+        return !!unavailableDatesMap[formatDateForApi(dateObj)];
+    }
+
+    getDatePickerOptions = function (options) {
+        var singleMonth = shouldUseSingleMonthCalendar();
+        return $.extend({}, options, {
+            singleMonth: singleMonth,
+            stickyMonths: !singleMonth,
+            minDays: getMinimumStayDays(),
+            beforeShowDay: function (dateObj) {
+                if (isDateUnavailable(dateObj)) {
+                    return [false, 'wk-unavailable-date'];
+                }
+
+                return [true, 'wk-available-date'];
+            }
+        });
+    }
+
+    refreshUnavailableDates = function (startDateObj, maxOrderDateObj) {
+        if (typeof availability_search_url == 'undefined' || !availability_search_url) {
+            return;
+        }
+
+        var idHotel = parseInt($('#id_hotel').val() || 0);
+        if (!idHotel) {
+            unavailableDatesMap = {};
+            unavailableDatesHotelId = 0;
+            unavailableDatesRange = { from: '', to: '' };
+            unavailableDatesLoaded = false;
+            redrawDateRangePicker();
+            return;
+        }
+
+        var dateFrom = formatDateForApi(startDateObj);
+        var dateToObj;
+        if (maxOrderDateObj) {
+            dateToObj = maxOrderDateObj;
+        } else {
+            dateToObj = new Date(startDateObj.getTime());
+            dateToObj.setDate(dateToObj.getDate() + 365);
+        }
+
+        var dateTo = formatDateForApi(dateToObj);
+
+        if (unavailableDatesLoaded
+            && unavailableDatesHotelId === idHotel
+            && unavailableDatesRange.from
+            && unavailableDatesRange.to
+            && unavailableDatesRange.from <= dateFrom
+            && unavailableDatesRange.to >= dateTo
+        ) {
+            return;
+        }
+
+        if (unavailableDatesHotelId !== idHotel) {
+            unavailableDatesMap = {};
+            unavailableDatesLoaded = false;
+            redrawDateRangePicker();
+        }
+
+        if (availability_ajax_var) {
+            availability_ajax_var.abort();
+        }
+
+        availability_ajax_var = $.ajax({
+            url: availability_search_url,
+            data: {
+                id_hotel: idHotel,
+                hotel_cat_id: $('#hotel_cat_id').val() || '',
+                date_from: dateFrom,
+                date_to: dateTo,
+            },
+            method: 'POST',
+            dataType: 'json',
+            success: function(result) {
+                if (result.status && $.isArray(result.unavailable_dates)) {
+                    unavailableDatesMap = {};
+                    $.each(result.unavailable_dates, function(_, dateStr) {
+                        unavailableDatesMap[dateStr] = true;
+                    });
+                    unavailableDatesHotelId = idHotel;
+                    unavailableDatesRange = {
+                        from: dateFrom,
+                        to: dateTo,
+                    };
+                    unavailableDatesLoaded = true;
+                    redrawDateRangePicker();
+                }
+            },
+            error: function() {
+                unavailableDatesMap = {};
+                unavailableDatesLoaded = false;
+                unavailableDatesHotelId = idHotel;
+                unavailableDatesRange = { from: '', to: '' };
+                redrawDateRangePicker();
+            }
+        });
+    }
 
     createDateRangePicker = function (max_order_date, min_booking_offset, dateFrom, dateTo) {
         let start_date = new Date();
@@ -399,6 +1017,7 @@ $(document).ready(function() {
         } else {
             max_order_date = false;
         }
+        let max_order_date_obj = max_order_date ? new Date(max_order_date.getTime()) : false;
 
         if (selectedDateFrom < start_date
             || selectedDateTo < start_date
@@ -427,8 +1046,10 @@ $(document).ready(function() {
             max_order_date = $.datepicker.formatDate('dd-mm-yy', max_order_date);
         }
 
+        refreshUnavailableDates(start_date, max_order_date_obj);
+
         if (typeof(multiple_dates_input) != 'undefined' && multiple_dates_input) {
-            $('#daterange_value').dateRangePicker({
+            $('#daterange_value').dateRangePicker(getDatePickerOptions({
                 startDate: $.datepicker.formatDate('dd-mm-yy', new Date()),
                 separator : ' to ',
                 setValue: function(s,s1,s2)
@@ -436,7 +1057,7 @@ $(document).ready(function() {
                     if (s1) {
                         $('#daterange_value_from').find('span').html(s1);
                     } else {
-                        $(daterange_value_from).find('span').html(
+                        $('#daterange_value_from').find('span').html(
                             RangePickerCheckin
                         );
                     }
@@ -457,18 +1078,41 @@ $(document).ready(function() {
                 {
                     $(this).hide(10, cb);
                 }
-            }).on('datepicker-first-date-selected', function() {
+            })).on('datepicker-first-date-selected', function() {
                 calendarFirstDateSelected = true;
             }).on('datepicker-change', function(event,obj){
                 $('#check_in_time').val($.datepicker.formatDate('yy-mm-dd', obj.date1));
                 $('#check_out_time').val($.datepicker.formatDate('yy-mm-dd', obj.date2));
+                animateDateSelectionFeedback();
                 focusNextOnCalendarClose = true;
                 calendarFirstDateSelected = false;
             }).on('datepicker-open', function() {
                 $('#daterange_value').addClass('focused').focus();
+                ensureDatePickerLegend();
+                syncCalendarLegendLayout();
+                hideNativeDateFallback();
+                applyCalendarVisualStyles();
+                startCalendarEnhancer();
+                startCalendarMutationObserver();
+                openTouchCalendarShell();
+                if (!shouldUseTouchCalendarShell()) {
+                    forceDatepickerDown();
+                    setTimeout(function () {
+                        var picker = $('#daterange_value').siblings('.date-picker-wrapper:visible');
+                        if (picker.length) {
+                            clampDatepickerWithinViewport(picker, $('#daterange_value'));
+                        }
+                    }, 0);
+                }
             }).on('datepicker-close', function() {
                 $('#daterange_value').removeClass('focused').blur();
+                stopCalendarEnhancer();
+                stopCalendarMutationObserver();
+                closeTouchCalendarShell();
             }).on('datepicker-closed', function() {
+                stopCalendarEnhancer();
+                stopCalendarMutationObserver();
+                closeTouchCalendarShell();
                 if (search_auto_focus_next_field && focusNextOnCalendarClose) {
                     if (is_occupancy_wise_search) {
                         if ($('#check_in_time').val() != '' && $('#check_out_time').val() != '') {
@@ -484,7 +1128,7 @@ $(document).ready(function() {
                 }
             });
         } else {
-            $('#daterange_value').dateRangePicker({
+            $('#daterange_value').dateRangePicker(getDatePickerOptions({
                 startDate: start_date,
                 endDate: max_order_date,
                 customOpenAnimation: function(cb)
@@ -495,19 +1139,42 @@ $(document).ready(function() {
                 {
                     $(this).hide(10, cb);
                 }
-            }).on('datepicker-first-date-selected', function() {
+            })).on('datepicker-first-date-selected', function() {
                 calendarFirstDateSelected = true;
             }).on('datepicker-change', function(event,obj){
                 $('#check_in_time').val($.datepicker.formatDate('yy-mm-dd', obj.date1));
                 $('#check_out_time').val($.datepicker.formatDate('yy-mm-dd', obj.date2));
+                animateDateSelectionFeedback();
                 focusNextOnCalendarClose = true;
                 calendarFirstDateSelected = false;
             }).on('datepicker-open', function() {
                 $('#daterange_value').addClass('focused').focus();
+                ensureDatePickerLegend();
+                syncCalendarLegendLayout();
+                hideNativeDateFallback();
+                applyCalendarVisualStyles();
+                startCalendarEnhancer();
+                startCalendarMutationObserver();
+                openTouchCalendarShell();
+                if (!shouldUseTouchCalendarShell()) {
+                    forceDatepickerDown();
+                    setTimeout(function () {
+                        var picker = $('#daterange_value').siblings('.date-picker-wrapper:visible');
+                        if (picker.length) {
+                            clampDatepickerWithinViewport(picker, $('#daterange_value'));
+                        }
+                    }, 0);
+                }
             }).on('datepicker-close', function() {
                 $('#daterange_value').removeClass('focused').blur();
                 calendarFirstDateSelected = false;
+                stopCalendarEnhancer();
+                stopCalendarMutationObserver();
+                closeTouchCalendarShell();
             }).on('datepicker-closed', function() {
+                stopCalendarEnhancer();
+                stopCalendarMutationObserver();
+                closeTouchCalendarShell();
                 if (search_auto_focus_next_field && focusNextOnCalendarClose) {
                     if (is_occupancy_wise_search) {
                         if ($('#check_in_time').val() != '' && $('#check_out_time').val() != '') {
@@ -541,7 +1208,91 @@ $(document).ready(function() {
     // If only one hotel then set max order date on date pickers
     var max_order_date = $('#max_order_date').val();
     var min_booking_offset = $('#min_booking_offset').val();
+    updateTouchModeClasses();
     createDateRangePicker(max_order_date, min_booking_offset, $('#check_in_time').val(), $('#check_out_time').val());
+    calendarLayoutKey = getCalendarLayoutKey();
+
+    $(window).on('resize orientationchange', function () {
+        if (touchCalendarResizeTimer) {
+            clearTimeout(touchCalendarResizeTimer);
+        }
+
+        touchCalendarResizeTimer = setTimeout(function () {
+            updateTouchModeClasses();
+            tuneHomepageSearchButtonWidth();
+            var newKey = getCalendarLayoutKey();
+            if (newKey !== calendarLayoutKey) {
+                calendarLayoutKey = newKey;
+                createDateRangePicker(
+                    $('#max_order_date').val(),
+                    $('#min_booking_offset').val(),
+                    $('#check_in_time').val(),
+                    $('#check_out_time').val()
+                );
+            } else {
+                var picker = $('#daterange_value').siblings('.date-picker-wrapper:visible');
+                if (picker.length) {
+                    clampDatepickerWithinViewport(picker, $('#daterange_value'));
+                }
+            }
+        }, 120);
+    });
+
+    $(document).on('click touchstart', '#daterange_value, #daterange_value_from, #daterange_value_to', function(e) {
+        var pickerObj = $('#daterange_value').data('dateRangePicker');
+        if (pickerObj && typeof pickerObj.open == 'function') {
+            hideNativeDateFallback();
+            pickerObj.open();
+        } else {
+            e.preventDefault();
+            showNativeDateFallback();
+        }
+    });
+
+    setTimeout(function() {
+        var pickerObj = $('#daterange_value').data('dateRangePicker');
+        if ((!pickerObj || typeof pickerObj.open != 'function') && !nativeDateFallbackInitialized) {
+            showNativeDateFallback();
+        }
+    }, 1200);
+
+    tuneHomepageSearchButtonWidth = function () {
+        if (!$('body#index').length) {
+            return;
+        }
+
+        var isDesktop = !(window.matchMedia && window.matchMedia('(max-width: 767px)').matches);
+        var submitBlock = $('#search_hotel_block_form .search_room_submit_block');
+        var visibleGridItems = $('#search_hotel_block_form .grid > .grid-item:visible');
+        if (!submitBlock.length || visibleGridItems.length !== 2) {
+            return;
+        }
+
+        // Two-field layout only (calendar + submit): make submit button wider horizontally.
+        if (isDesktop) {
+            submitBlock.css('grid-column', 'span 4');
+            visibleGridItems.first().css('grid-column', 'span 5');
+        } else {
+            submitBlock.css('grid-column', '');
+            visibleGridItems.first().css('grid-column', '');
+        }
+    }
+
+    // Re-apply calendar styling after month navigation arrows are used.
+    $(document).on('click', '.date-picker-wrapper .next, .date-picker-wrapper .prev', function() {
+        setTimeout(function () {
+            ensureDatePickerLegend();
+            syncCalendarLegendLayout();
+            applyCalendarVisualStyles();
+            forceDatepickerDown();
+            var picker = $('#daterange_value').siblings('.date-picker-wrapper:visible');
+            if (picker.length) {
+                clampDatepickerWithinViewport(picker, $('#daterange_value'));
+            }
+        }, 24);
+    });
+
+    tuneHomepageSearchButtonWidth();
 
     // validations on the submit of the search fields
     $(document).on('click', '#search_room_submit', function() {
@@ -784,6 +1535,12 @@ $(document).ready(function() {
         if ($('#daterange_value').siblings('.date-picker-wrapper').is(':visible')) {
             $('#daterange_value').data('dateRangePicker').close();
         }
+        if (typeof setBookingSearchPositions === 'function') {
+            setBookingSearchPositions();
+        }
+        if (isHomePage()) {
+            $("#search_occupancy_wrapper").removeClass('bottom').addClass('top');
+        }
         $("#search_occupancy_wrapper").toggle();
     });
 
@@ -988,6 +1745,7 @@ function setGuestOccupancy()
 function setBookingSearchPositions() {
     // calculate available spaces
     let searchForm = $('#search_hotel_block_form');
+    const forceTop = isHomePage();
 
     let inputFieldsAndDropdowns = [
         { input: $('#hotel_location'), dropdown: $('.location_search_results_ul')},
@@ -1021,6 +1779,115 @@ function setBookingSearchPositions() {
 
     // position dropdowns
     $(inputFieldsAndDropdowns).each(function (i, inputFieldAndDropdown) {
-        inputFieldAndDropdown.dropdown.removeClass('top bottom').addClass(positionClass);
+        const dropdown = inputFieldAndDropdown.dropdown;
+        dropdown.removeClass('top bottom');
+        if (forceTop && dropdown.is('#search_occupancy_wrapper')) {
+            dropdown.addClass('top');
+            return;
+        }
+        dropdown.addClass(positionClass);
     });
+
+    forceDatepickerDown();
+}
+
+function isHomePage() {
+    if (typeof page_name !== 'undefined' && page_name === 'index') {
+        return true;
+    }
+    return $('body').attr('id') === 'index';
+}
+
+function forceDatepickerDown() {
+    if (!isHomePage()) {
+        return;
+    }
+
+    if ($('body').hasClass('wk-touch-calendar-active')) {
+        return;
+    }
+
+    var input = $('#daterange_value');
+    if (!input.length) {
+        return;
+    }
+
+    var picker = input.siblings('.date-picker-wrapper');
+    if (!picker.length) {
+        picker = $('.date-picker-wrapper');
+    }
+    if (!picker.length) {
+        return;
+    }
+
+    var inputHeight = input.outerHeight() || 0;
+    var offset = 8;
+
+    picker
+        .removeClass('bottom')
+        .addClass('top')
+        .css({
+            top: 'unset',
+            bottom: inputHeight + offset,
+            left: 0,
+            right: 'auto'
+        });
+
+    clampDatepickerWithinViewport(picker, input);
+}
+
+function clampDatepickerWithinViewport(picker, input) {
+    if (!picker || !picker.length) {
+        return;
+    }
+
+    if ($('body').hasClass('wk-touch-calendar-active')) {
+        return;
+    }
+
+    var anchor = (input && input.length) ? input : $('#daterange_value');
+    var margin = 8;
+    var scrollLeft = $(window).scrollLeft();
+    var viewportWidth = $(window).width();
+    var viewportLeft = scrollLeft + margin;
+    var viewportRight = scrollLeft + viewportWidth - margin;
+
+    picker.css({
+        right: 'auto',
+        'max-width': '',
+    });
+
+    var pickerOffset = picker.offset();
+    if (!pickerOffset) {
+        return;
+    }
+
+    var offsetParent = picker.offsetParent();
+    var parentOffset = (offsetParent && offsetParent.length) ? (offsetParent.offset() || { left: 0 }) : { left: 0 };
+
+    var pickerWidth = picker.outerWidth() || 0;
+    var maxPickerWidth = Math.max(280, viewportWidth - (margin * 2));
+    if (pickerWidth > maxPickerWidth) {
+        picker.css('max-width', maxPickerWidth + 'px');
+        pickerWidth = picker.outerWidth() || pickerWidth;
+    }
+
+    var nextLeft = pickerOffset.left;
+    var maxLeft = viewportRight - pickerWidth;
+    if (nextLeft > maxLeft) {
+        nextLeft = maxLeft;
+    }
+    if (nextLeft < viewportLeft) {
+        nextLeft = viewportLeft;
+    }
+
+    var nextLeftCss = nextLeft - parentOffset.left;
+    var currentLeftCss = parseFloat(picker.css('left'));
+    if (isNaN(currentLeftCss)) {
+        currentLeftCss = pickerOffset.left - parentOffset.left;
+    }
+
+    if (Math.abs(nextLeftCss - currentLeftCss) > 1) {
+        picker.css('left', nextLeftCss + 'px');
+    }
 }

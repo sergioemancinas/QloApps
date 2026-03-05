@@ -1347,10 +1347,79 @@ $(document).ready(function() {
             error = true;
         }
 
-        if (error)
+        if (error) {
             return false;
-        else
-            return true;
+        }
+
+        // Homepage search should route directly to the room detail page with selected dates.
+        // This avoids posting `search_room_submit` to index, which can fail depending on runtime state.
+        if (isHomePage()) {
+            var defaultProductLink = baseUri + (lang_iso || 'en') + '/the-hotel-prime/1-fewo-ebermannsmuehle-lauscha.html';
+            var productLink = $('.htlRoomTypeBookNow:first').attr('href')
+                || $('.navigation-link[href*="/the-hotel-prime/"]:first').attr('href')
+                || defaultProductLink;
+
+            if (typeof productLink !== 'string') {
+                productLink = defaultProductLink;
+            } else {
+                productLink = productLink.split('#')[0];
+                if (/^https?:\/\//i.test(productLink)) {
+                    try {
+                        var parsed = new URL(productLink, window.location.origin);
+                        if (parsed.origin !== window.location.origin) {
+                            productLink = defaultProductLink;
+                        } else {
+                            productLink = parsed.pathname;
+                        }
+                    } catch (e) {
+                        productLink = defaultProductLink;
+                    }
+                }
+            }
+
+            if (productLink.charAt(0) !== '/' || productLink.indexOf('/the-hotel-prime/') === -1) {
+                productLink = defaultProductLink;
+            }
+
+            var searchParams = {
+                date_from: check_in_time,
+                date_to: check_out_time
+            };
+
+            var selectedRate = $('input[name="fewo_rate_option"]:checked').val();
+            if (!selectedRate && typeof fewoPricingDefault !== 'undefined' && fewoPricingDefault) {
+                selectedRate = fewoPricingDefault;
+            }
+            if (selectedRate) {
+                searchParams.fewo_rate_option = selectedRate;
+            }
+
+            var chargeableGuests = $('#fewo_chargeable_guests').val();
+            if (!chargeableGuests && typeof fewoGuestChargeableDefault !== 'undefined') {
+                chargeableGuests = fewoGuestChargeableDefault;
+            }
+            if (chargeableGuests) {
+                searchParams.fewo_chargeable_guests = chargeableGuests;
+            }
+
+            var under3Guests = $('#fewo_under3_guests').val();
+            if (!under3Guests && typeof fewoGuestUnder3Default !== 'undefined') {
+                under3Guests = fewoGuestUnder3Default;
+            }
+            if (typeof under3Guests !== 'undefined' && under3Guests !== null && under3Guests !== '') {
+                searchParams.fewo_under3_guests = under3Guests;
+            }
+
+            var query = $.param(searchParams);
+            if (query) {
+                productLink += (productLink.indexOf('?') === -1 ? '?' : '&') + query;
+            }
+
+            window.location.href = productLink;
+            return false;
+        }
+
+        return true;
     });
 
     // Occupancy field dropdown

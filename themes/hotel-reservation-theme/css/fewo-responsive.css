@@ -67,6 +67,27 @@ button[type="submit"]:hover {
   left: 50% !important;
   right: auto !important;
   transform: translateX(-50%) !important;
+  border: 1px solid rgba(21, 86, 42, 0.22) !important;
+  box-shadow: 0 18px 44px rgba(18, 57, 31, 0.26) !important;
+}
+
+.header-rmsearch-wrapper .date-picker-wrapper .month-wrapper table .day.checked {
+  background: linear-gradient(180deg, #e8f6e9 0%, #d8edd9 100%) !important;
+  border-color: #86b987 !important;
+  color: #1f4f25 !important;
+  box-shadow: inset 0 0 0 1px rgba(25, 94, 46, 0.15) !important;
+}
+
+.header-rmsearch-wrapper .date-picker-wrapper .month-wrapper table .day.first-date-selected,
+.header-rmsearch-wrapper .date-picker-wrapper .month-wrapper table .day.last-date-selected,
+.header-rmsearch-wrapper .date-picker-wrapper .month-wrapper table .day.real-today.checked.first-date-selected,
+.header-rmsearch-wrapper .date-picker-wrapper .month-wrapper table .day.real-today.checked.last-date-selected {
+  background-color: var(--fewo-green) !important;
+  border-color: var(--fewo-green-dark) !important;
+}
+
+.header-rmsearch-wrapper .date-picker-wrapper .month-wrapper table .day.real-today {
+  box-shadow: inset 0 0 0 1px rgba(32, 108, 52, 0.35) !important;
 }
 
 @media (max-width: 991px) {
@@ -118,7 +139,8 @@ button[type="submit"]:hover {
   display: none !important;
 }
 
-.htl-contact-page .row.margin-top-50 > .col-sm-6 {
+.htl-contact-page .row.margin-top-50 > .col-sm-6,
+.htl-contact-page .row.margin-top-50 > .col-sm-8 {
   float: none;
   margin-left: auto;
   margin-right: auto;
@@ -126,7 +148,8 @@ button[type="submit"]:hover {
 }
 
 @media (max-width: 991px) {
-  .htl-contact-page .row.margin-top-50 > .col-sm-6 {
+  .htl-contact-page .row.margin-top-50 > .col-sm-6,
+  .htl-contact-page .row.margin-top-50 > .col-sm-8 {
     width: 100%;
   }
 }

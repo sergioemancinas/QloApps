@@ -39,6 +39,49 @@
 			</div>
 		{/if}
 		<div class="rte{if $content_only} content_only{/if}">
+			{if isset($cms->id) && $cms->id|intval == 9}
+				<div class="fe-weather-section">
+					<div class="container">
+						<div class="fe-weather-widget" id="fe-weather-widget">
+							<div class="fe-weather-header">
+								<div class="fe-weather-location">
+									<i class="fa fa-map-marker"></i>
+									<span>Lauscha, {l s='Thuringia'}</span>
+								</div>
+								<p class="fe-weather-subtitle">{l s='Plan your forest escape'}</p>
+							</div>
+							<div class="fe-weather-loading">
+								<div class="fe-weather-spinner"></div>
+								<span>{l s='Loading weather...'}</span>
+							</div>
+							<div class="fe-weather-content" style="display: none;">
+								<div class="fe-weather-current">
+									<div class="fe-weather-today">
+										<span class="fe-weather-now-label">{l s='Now'}</span>
+										<span class="fe-weather-icon-large" id="fe-weather-icon"></span>
+										<div class="fe-weather-temp-wrap">
+											<span class="fe-weather-temp" id="fe-weather-temp">--</span>
+											<span class="fe-weather-unit">°C</span>
+										</div>
+									</div>
+									<div class="fe-weather-details">
+										<p class="fe-weather-desc" id="fe-weather-desc">--</p>
+										<div class="fe-weather-meta">
+											<span><i class="fa fa-thermometer-half"></i> {l s='Feels like'} <strong id="fe-weather-feels">--</strong>°C</span>
+											<span><i class="fa fa-tint"></i> {l s='Humidity'} <strong id="fe-weather-humidity">--</strong>%</span>
+											<span><i class="fa fa-flag"></i> {l s='Wind'} <strong id="fe-weather-wind">--</strong> km/h</span>
+										</div>
+									</div>
+								</div>
+								<div class="fe-weather-forecast" id="fe-weather-forecast"></div>
+							</div>
+							<div class="fe-weather-error" style="display: none;">
+								<p>{l s='Weather data unavailable'}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/if}
 			{$cms->content}
 		</div>
 	{elseif isset($cms_category)}

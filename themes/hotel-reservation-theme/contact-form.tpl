@@ -36,7 +36,7 @@
 			<p class="contact-desc col-sm-offset-2 col-sm-8">{l s='Reach out to us for any inquiries or assistance. We\'re here to help make your experience with us exceptional.'}</p>
 		</div>
 		<div class="row margin-top-50">
-			{if (isset($gblHtlAddress) && $gblHtlAddress) && (isset($gblHtlPhone) && $gblHtlPhone) && (isset($gblHtlEmail) && $gblHtlEmail)}
+			{if false && (isset($gblHtlAddress) && $gblHtlAddress) && (isset($gblHtlPhone) && $gblHtlPhone) && (isset($gblHtlEmail) && $gblHtlEmail)}
 				<div class="col-sm-6">
 					{block name='contact_form_info'}
 						<div class="htl-global-address-div col-md-8 col-sm-12">
@@ -84,7 +84,7 @@
 					{/block}
 				</div>
 			{/if}
-			<div class="col-sm-6 {if !(isset($gblHtlAddress) && $gblHtlAddress) && !(isset($gblHtlPhone) && $gblHtlPhone) && !(isset($gblHtlEmail) && $gblHtlEmail)} col-sm-offset-3 {/if}">
+			<div class="col-sm-8 col-sm-offset-2">
 				{block name='contact_form_content'}
 				{if isset($customerThread.token)}
 					<form action="{$link->getPageLink('contact', null, null, array('token' => $customerThread.token))}" method="post" class="contact-form-box" enctype="multipart/form-data">

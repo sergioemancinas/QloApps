@@ -1353,7 +1353,9 @@ $(document).ready(function() {
 
         // Homepage search should route directly to the room detail page with selected dates.
         // This avoids posting `search_room_submit` to index, which can fail depending on runtime state.
-        if (isHomePage()) {
+        var bodyId = $('body').attr('id') || '';
+
+        if (isHomePage() || bodyId === 'product') {
             var defaultProductLink = baseUri + (lang_iso || 'en') + '/the-hotel-prime/1-fewo-ebermannsmuehle-lauscha.html';
             var productLink = $('.htlRoomTypeBookNow:first').attr('href')
                 || $('.navigation-link[href*="/the-hotel-prime/"]:first').attr('href')

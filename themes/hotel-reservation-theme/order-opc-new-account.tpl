@@ -1,6 +1,7 @@
 <div id="opc_new_account" class="opc-main-block">
 	<div id="opc_new_account-overlay" class="opc-overlay" style="display: none;"></div>
 	{assign var='fewo_keycloak_login_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc'], true)|escape:'html':'UTF-8'}
+	{assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc', 'register' => 1], true)|escape:'html':'UTF-8'}
 	{block name='order_opc_new_account_login_form'}
 		<div id="login_form">
 			<fieldset>
@@ -21,9 +22,9 @@
 						<span>
 							<button type="submit" class="opc-button-small opc-btn-primary" id="opc_guestCheckout"><span>{l s='Guest checkout'}</span></button>
 						</span>
-						<span>
-							<button type="submit" class="opc-button-small opc-btn-default" id="opc_createAccount"><span>{l s='Create an account'}</span></button>
-						</span>
+							<span>
+								<a class="opc-button-small opc-btn-default" id="opc_createAccount" href="{$fewo_keycloak_register_url}" rel="nofollow"><span>{l s='Create an account'}</span></a>
+							</span>
 					</div>
 				</div>
 			</div>
@@ -85,7 +86,7 @@
 						<input type="text" class="text form-control validate" name="customer_phone" id="customer_phone" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone_mobile) && $guestInformations.phone_mobile}{$guestInformations.phone_mobile}{/if}" onblur="$('#phone').val($(this).val());"/>
 					</div>
 				</div>
-				{if isset($PS_REGISTRATION_PROCESS_TYPE) && $PS_REGISTRATION_PROCESS_TYPE}
+					{if true}
 					{if isset($birthday) && $birthday}
 						<div class="row">
 							<div class="select form-group date-select col-sm-12">

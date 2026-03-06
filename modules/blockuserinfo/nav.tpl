@@ -19,6 +19,8 @@
 
 <!-- Block user information module NAV  -->
 {block name='user_navigation'}
+    {assign var='fewo_keycloak_login_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', [], true)|escape:'html':'UTF-8'}
+    {assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['register' => 1], true)|escape:'html':'UTF-8'}
     {if !isset($ajaxCustomerLogin)}
         <div class="header-top-item header_user_info hidden-xs">
     {/if}
@@ -41,9 +43,12 @@
                 </li>
             </ul>
         {else}
-            <a class="header-top-link" href="{$link->getPageLink('my-account', true)|escape:'html'}" rel="nofollow" title="{l s='Log in to your customer account' mod='blockuserinfo'}">
+            <a class="header-top-link" href="{$fewo_keycloak_login_url}" rel="nofollow" title="{l s='Log in to your customer account' mod='blockuserinfo'}">
                 <span class="hide_xs">{l s='Sign in' mod='blockuserinfo'}</span>
                 <span class="visi_xs"><i class="icon-user"></i></span>
+            </a>
+            <a class="header-top-link hidden-xs" href="{$fewo_keycloak_register_url}" rel="nofollow" title="{l s='Create an account' mod='blockuserinfo'}">
+                <span class="hide_xs">{l s='Register' mod='blockuserinfo'}</span>
             </a>
         {/if}
     {if !isset($ajaxCustomerLogin)}

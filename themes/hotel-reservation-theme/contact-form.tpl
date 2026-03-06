@@ -36,13 +36,13 @@
 			<p class="contact-desc col-sm-offset-2 col-sm-8">{l s='Reach out to us for any inquiries or assistance. We\'re here to help make your experience with us exceptional.'}</p>
 		</div>
 		<div class="row">
-			<div class="col-sm-offset-2 col-sm-8 fe-contact-image-wrap">
-				<img
-					class="img-responsive fe-contact-image"
-					src="{$img_dir}banner.png"
-					alt="{l s='Fewo Lauscha contact'}"
-				/>
-			</div>
+				<div class="col-sm-offset-2 col-sm-8 fe-contact-image-wrap">
+					<img
+						class="img-responsive fe-contact-image"
+						src="{if Configuration::get('WK_HOTEL_HEADER_IMAGE')}{$link->getMediaLink("`$smarty.const._PS_IMG_`{Configuration::get('WK_HOTEL_HEADER_IMAGE')}")}{else}{$img_dir}banner.png{/if}"
+						alt="{l s='Fewo Lauscha contact'}"
+					/>
+				</div>
 		</div>
 		<div class="row margin-top-50">
 			{if false && (isset($gblHtlAddress) && $gblHtlAddress) && (isset($gblHtlPhone) && $gblHtlPhone) && (isset($gblHtlEmail) && $gblHtlEmail)}

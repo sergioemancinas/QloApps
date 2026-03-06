@@ -1,5 +1,6 @@
 <div id="opc_new_account" class="opc-main-block">
     <div id="opc_new_account-overlay" class="opc-overlay" style="display: none;"></div>
+    {assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc', 'register' => 1], true)|escape:'html':'UTF-8'}
     <h2>{l s='Account'}</h2>
     {block name='order_opc_new_account_advanced_login_form'}
         <form action="{$link->getPageLink('authentication', true, NULL, "back=order-opc")|escape:'html':'UTF-8'}" method="post" id="login_form" class="box">
@@ -49,7 +50,7 @@
                                 <li>- {l s='Separate billing and shipping addresses'}</li>
                             </ul>
                             <p class="opc-button">
-                                <button type="submit" class="btn btn-default button button-medium exclusive" id="opc_createAccount"><span><i class="icon-user left"></i>{l s='Create an account'}</span></button>
+                                <a class="btn btn-default button button-medium exclusive" id="opc_createAccount" href="{$fewo_keycloak_register_url}" rel="nofollow"><span><i class="icon-user left"></i>{l s='Create an account'}</span></a>
                             </p>
                         </div>
                     </div>

@@ -21,8 +21,8 @@
 *}
 
 <ul class="nav nav-pills nav-stacked visible-xs wk-nav-style">
-	{assign var='fewo_keycloak_login_url' value='https://fewolauscha.de/auth/realms/fewo/protocol/openid-connect/auth?client_id=qloapps-customer&response_type=code&scope=openid%20email%20profile&redirect_uri=https%3A%2F%2Ffewolauscha.de%2Fen%2Fmodule%2Ffewokeycloak%2Fcustomercallback'}
-	{assign var='fewo_keycloak_register_url' value='https://fewolauscha.de/auth/realms/fewo/protocol/openid-connect/registrations?client_id=qloapps-customer&redirect_uri=https%3A%2F%2Ffewolauscha.de%2Fen%2Fmodule%2Ffewokeycloak%2Fcustomercallback&response_type=code&scope=openid%20email%20profile'}
+	{assign var='fewo_keycloak_login_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', [], true)|escape:'html':'UTF-8'}
+	{assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['register' => 1], true)|escape:'html':'UTF-8'}
 	{if $logged}
 		<li>
 			<a class="navigation-link" href="{$link->getPageLink('history', true)|escape:'html'}" title="{l s='Bookings' mod='blockuserinfo'}">{l s='Bookings' mod='blockuserinfo'}</a>

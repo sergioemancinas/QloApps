@@ -31,11 +31,29 @@
 					</div>
 					<div class="row margin-lr-0">
 						<ul class="footer-navigation-section">
+						{assign var='fewo_has_discover' value=0}
+						{assign var='fewo_has_getting_here' value=0}
 						{foreach $navigation_links as $navigationLink}
+							{if isset($navigationLink.id_cms) && $navigationLink.id_cms|intval == 9}
+								{assign var='fewo_has_discover' value=1}
+							{/if}
+							{if isset($navigationLink.id_cms) && $navigationLink.id_cms|intval == 10}
+								{assign var='fewo_has_getting_here' value=1}
+							{/if}
 							<li class="item">
 								<a title="{$navigationLink['name']}" href="{$navigationLink['link']}">{$navigationLink['name']}</a>
 							</li>
 						{/foreach}
+						{if !$fewo_has_getting_here}
+							<li class="item">
+								<a title="{l s='Getting Here' mod='blocknavigationmenu'}" href="{$link->getCMSLink(10)}">{l s='Getting Here' mod='blocknavigationmenu'}</a>
+							</li>
+						{/if}
+						{if !$fewo_has_discover}
+							<li class="item">
+								<a title="{l s='Discover Lauscha' mod='blocknavigationmenu'}" href="{$link->getCMSLink(9)}">{l s='Discover Lauscha' mod='blocknavigationmenu'}</a>
+							</li>
+						{/if}
 						{block name='displayFooterExploreSectionHook'}
 							{hook h="displayFooterExploreSectionHook"}
 						{/block}

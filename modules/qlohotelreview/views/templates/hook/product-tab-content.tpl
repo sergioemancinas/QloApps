@@ -38,7 +38,7 @@
         {else}
             <div class="fewo-review-fallback">
                 <div class="fewo-review-fallback-summary">
-                    <span class="raty readonly" data-score="5"></span>
+                    <span class="fewo-review-stars-fallback" aria-hidden="true">★★★★★</span>
                     <strong>5.0</strong>
                     <span>6 {l s='Review(s)' mod='qlohotelreview'}</span>
                 </div>

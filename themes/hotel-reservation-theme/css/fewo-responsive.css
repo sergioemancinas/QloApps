@@ -113,6 +113,14 @@ button[type="submit"]:hover {
   color: #244d24;
 }
 
+.fewo-review-stars-fallback {
+  display: inline-block;
+  color: #f4c84a;
+  letter-spacing: 2px;
+  font-size: 16px;
+  line-height: 1;
+}
+
 .fewo-review-fallback-summary .raty.readonly {
   margin-right: 4px;
 }

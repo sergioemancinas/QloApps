@@ -274,7 +274,7 @@ class WkRoomSearchBlock extends Module
             if ($roomTypeRedirectId <= 0) {
                 $roomTypeRedirectId = 1;
             }
-            if ($isHomePageSearch && $roomTypeRedirectId > 0) {
+            if ($roomTypeRedirectId > 0) {
                 $canRedirectToConfiguredRoomType = true;
 
                 if ($hotelCategoryId && class_exists('HotelRoomType')) {

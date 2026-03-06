@@ -123,7 +123,9 @@
 {/block}
 	<script type="text/javascript" src="{$js_dir}fe-animations.js?v=1"></script>
 	<script type="text/javascript" src="{$js_dir}cookie-consent.js?v=1"></script>
+	{if $page_name == 'cms' && isset($cms) && isset($cms->id) && $cms->id|intval == 9}
 	<script type="text/javascript" src="{$js_dir}fe-weather.js?v=1"></script>
+	{/if}
 	<script type="text/javascript" src="{$js_dir}fe-travel.js?v=2"></script>
 	</body>
 </html>

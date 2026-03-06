@@ -133,6 +133,14 @@ class WkCustomNavigationLink extends ObjectModel
                     $navigationLink['link'] = $interiorLink;
                 }
 
+                if (isset($navigationLink['id_cms']) && (int) $navigationLink['id_cms'] === 9) {
+                    $navigationLink['link'] = rtrim($context->link->getBaseLink((int) $context->shop->id, null, true), '/')
+                        .'/'.$context->language->iso_code.'/discover-lauscha';
+                } elseif (isset($navigationLink['id_cms']) && (int) $navigationLink['id_cms'] === 10) {
+                    $navigationLink['link'] = rtrim($context->link->getBaseLink((int) $context->shop->id, null, true), '/')
+                        .'/'.$context->language->iso_code.'/getting-here';
+                }
+
                 $filteredResult[] = $navigationLink;
             }
 
@@ -149,7 +157,7 @@ class WkCustomNavigationLink extends ObjectModel
                 }
 
                 $cms = new CMS($cmsId, (int) $context->language->id);
-                if (!Validate::isLoadedObject($cms) || !(int) $cms->active) {
+                if (!Validate::isLoadedObject($cms)) {
                     return;
                 }
 
@@ -173,7 +181,10 @@ class WkCustomNavigationLink extends ObjectModel
                     'show_at_footer' => 0,
                     'active' => 1,
                     'position' => 9999 + $cmsId,
-                    'link' => $context->link->getCMSLink($cmsId),
+                    'link' => in_array($cmsId, array(9, 10))
+                        ? rtrim($context->link->getBaseLink((int) $context->shop->id, null, true), '/')
+                            .'/'.$context->language->iso_code.'/'.($cmsId === 9 ? 'discover-lauscha' : 'getting-here')
+                        : $context->link->getCMSLink($cmsId),
                     'name' => $cmsTitle,
                 );
             };

@@ -37,12 +37,30 @@
 				</div>
 				<div class="row">
 					<ul class="nav nav-pills nav-stacked wk-nav-style">
+						{assign var='fewo_has_discover' value=0}
+						{assign var='fewo_has_getting_here' value=0}
 						{if isset($navigation_links) && $navigation_links}
 							{foreach $navigation_links as $navigationLink}
+								{if isset($navigationLink.id_cms) && $navigationLink.id_cms|intval == 9}
+									{assign var='fewo_has_discover' value=1}
+								{/if}
+								{if isset($navigationLink.id_cms) && $navigationLink.id_cms|intval == 10}
+									{assign var='fewo_has_getting_here' value=1}
+								{/if}
 								<li>
 									<a class="navigation-link" href="{$navigationLink['link']}">{$navigationLink['name']}</a>
 								</li>
 							{/foreach}
+						{/if}
+						{if !$fewo_has_getting_here}
+							<li>
+								<a class="navigation-link" href="{$link->getCMSLink(10)}">{l s='Getting Here' mod='blocknavigationmenu'}</a>
+							</li>
+						{/if}
+						{if !$fewo_has_discover}
+							<li>
+								<a class="navigation-link" href="{$link->getCMSLink(9)}">{l s='Discover Lauscha' mod='blocknavigationmenu'}</a>
+							</li>
 						{/if}
 						{block name='displayDefaultNavigationHook'}
 							{hook h="displayDefaultNavigationHook"}

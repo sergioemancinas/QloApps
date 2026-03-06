@@ -27,6 +27,6 @@
         {assign var='fewo_avg_rating' value=5}
         {assign var='fewo_num_reviews' value=6}
     {/if}
-    <span class="raty readonly" data-score="{$fewo_avg_rating}"></span>
+    <span class="fewo-review-stars-fallback" aria-hidden="true">★★★★★</span>
     <span class="num_reviews">{$fewo_num_reviews} {if $fewo_num_reviews > 1}{l s='Review(s)' mod='qlohotelreview'}{else}{l s='Review' mod='qlohotelreview'}{/if}</span>
 </div>

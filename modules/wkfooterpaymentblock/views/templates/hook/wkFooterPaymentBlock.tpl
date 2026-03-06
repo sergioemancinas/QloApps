@@ -27,11 +27,23 @@
 			<hr/>
 		</div>
 		<div class="row margin-lr-0 footer-payment-block">
-			<span class="fe-payment-pill" aria-label="Visa"><i class="icon icon-cc-visa" aria-hidden="true"></i><span>Visa</span></span>
-			<span class="fe-payment-pill" aria-label="American Express"><i class="icon icon-cc-amex" aria-hidden="true"></i><span>American Express</span></span>
-			<span class="fe-payment-pill" aria-label="MasterCard"><i class="icon icon-cc-mastercard" aria-hidden="true"></i><span>MasterCard</span></span>
-			<span class="fe-payment-pill" aria-label="PayPal"><i class="icon icon-cc-paypal" aria-hidden="true"></i><span>PayPal</span></span>
-			<span class="fe-payment-pill" aria-label="Stripe"><i class="icon icon-cc-stripe" aria-hidden="true"></i><span>Stripe</span></span>
+			{if isset($allPaymentBlocks) && $allPaymentBlocks}
+				{assign var='hasStripe' value=0}
+				{foreach $allPaymentBlocks as $paymentBlock}
+					{if isset($paymentBlock['id_payment_block']) && $paymentBlock['id_payment_block']|intval == 5}
+						{assign var='hasStripe' value=1}
+					{/if}
+					<img
+						src="{$link->getMediaLink("`$module_dir`views/img/payment_img/`$paymentBlock['id_payment_block']`.jpg")}"
+						alt="{$paymentBlock['name']|escape:'html':'UTF-8'}"
+						onerror="this.style.display='none'; if (this.nextElementSibling) { this.nextElementSibling.style.display='inline-flex'; }"
+					>
+					<span class="fe-payment-fallback">{$paymentBlock['name']|escape:'html':'UTF-8'}</span>
+				{/foreach}
+				{if !$hasStripe}
+					<span class="fe-footer-stripe-fallback"><i class="icon-cc-stripe"></i> Stripe</span>
+				{/if}
+			{/if}
 		</div>
 	</section>
 </div>

@@ -20,15 +20,21 @@
 * @license https://opensource.org/license/osl-3-0-php Open Software License version 3.0
 */
 
-.footer-payment-block .fe-payment-pill {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	margin-right: 10px;
-	margin-bottom: 10px;
-	padding: 8px 10px;
+.footer-payment-block img {
+	margin-right: 15px;
+	margin-bottom: 15px;
+	width: 61px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.footer-payment-block .fe-payment-fallback {
+	display: none;
+	margin-right: 15px;
+	margin-bottom: 15px;
+	padding: 6px 10px;
 	border: 1px solid #d8dfd8;
-	border-radius: 6px;
+	border-radius: 4px;
 	background: #f7fbf7;
 	color: #2f6631;
 	font-size: 12px;
@@ -36,7 +42,17 @@
 	vertical-align: middle;
 }
 
-.footer-payment-block .fe-payment-pill i {
-	font-size: 18px;
+.footer-payment-block .fe-footer-stripe-fallback {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-right: 15px;
+	margin-bottom: 15px;
+	padding: 6px 10px;
+	border: 1px solid #d8dfd8;
+	border-radius: 4px;
+	background: #f7fbf7;
+	color: #2f6631;
+	font-size: 12px;
 	line-height: 1;
 }

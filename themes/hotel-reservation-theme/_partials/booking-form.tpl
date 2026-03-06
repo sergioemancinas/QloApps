@@ -36,7 +36,7 @@
                 {block name='booking_form_hotel_location'}
                     {if isset($id_hotel) && $id_hotel}
                         <div class="form-group htl_location_block">
-                            <label for="" class="control-label">{l s='Hotel Location'}</label>
+                            <label class="control-label">{l s='Hotel Location'}</label>
                             <p>{$hotel_location|escape:'html':'UTF-8'}</p>
                         </div>
                     {/if}

@@ -58,32 +58,32 @@
 						</select>
 					</div>
 					<div class="required form-group col-sm-5">
-						<label for="firstname">{l s='First name'} <sup>*</sup></label>
-						<input type="text" class="text form-control validate" id="customer_firstname" name="customer_firstname" onblur="$('#firstname').val($(this).val());" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.customer_firstname) && $guestInformations.customer_firstname}{$guestInformations.customer_firstname}{/if}" />
+						<label for="customer_firstname">{l s='First name'} <sup>*</sup></label>
+						<input type="text" class="text form-control validate" id="customer_firstname" name="customer_firstname" autocomplete="given-name" onblur="$('#firstname').val($(this).val());" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.customer_firstname) && $guestInformations.customer_firstname}{$guestInformations.customer_firstname}{/if}" />
 					</div>
 					<div class="required form-group col-sm-5">
-						<label for="lastname">{l s='Last name'} <sup>*</sup></label>
-						<input type="text" class="form-control validate" id="customer_lastname" name="customer_lastname" onblur="$('#lastname').val($(this).val());" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.customer_lastname) && $guestInformations.customer_lastname}{$guestInformations.customer_lastname}{/if}" />
+						<label for="customer_lastname">{l s='Last name'} <sup>*</sup></label>
+						<input type="text" class="form-control validate" id="customer_lastname" name="customer_lastname" autocomplete="family-name" onblur="$('#lastname').val($(this).val());" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.customer_lastname) && $guestInformations.customer_lastname}{$guestInformations.customer_lastname}{/if}" />
 					</div>
 				</div>
 
 				<div class="row">
 					<div class="required text form-group col-sm-6">
 						<label for="email">{l s='Email'} <sup>*</sup></label>
-						<input type="email" class="text form-control validate" id="email" name="email" data-validate="isEmail" value="{if isset($guestInformations) && isset($guestInformations.email) && $guestInformations.email}{$guestInformations.email}{/if}" />
+						<input type="email" class="text form-control validate" id="email" name="email" autocomplete="email" data-validate="isEmail" value="{if isset($guestInformations) && isset($guestInformations.email) && $guestInformations.email}{$guestInformations.email}{/if}" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="required password is_customer_param form-group col-sm-6">
 						<label for="passwd">{l s='Password'} <sup>*</sup></label>
-						<input type="password" class="text form-control validate" name="passwd" id="passwd" data-validate="isPasswd" />
+						<input type="password" class="text form-control validate" name="passwd" id="passwd" autocomplete="new-password" data-validate="isPasswd" />
 						<span class="form_info">{l s='(five characters min.)'}</span>
 					</div>
 				</div>
 				<div class="row">
 					<div class="{if isset($one_phone_at_least) && $one_phone_at_least}required {/if}form-group col-sm-6">
 						<label for="customer_phone">{l s='Phone'}{if isset($one_phone_at_least) && $one_phone_at_least} <sup>*</sup>{/if}</label>
-						<input type="text" class="text form-control validate" name="customer_phone" id="customer_phone" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone_mobile) && $guestInformations.phone_mobile}{$guestInformations.phone_mobile}{/if}" onblur="$('#phone').val($(this).val());"/>
+						<input type="text" class="text form-control validate" name="customer_phone" id="customer_phone" autocomplete="tel" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone_mobile) && $guestInformations.phone_mobile}{$guestInformations.phone_mobile}{/if}" onblur="$('#phone').val($(this).val());"/>
 					</div>
 				</div>
 					{if true}
@@ -150,38 +150,38 @@
 							{if $field_name eq "firstname"}
 								<div class="required text form-group col-sm-6">
 									<label for="firstname">{l s='First name'} <sup>*</sup></label>
-									<input type="text" class="text form-control validate" id="firstname" name="firstname" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.firstname) && $guestInformations.firstname}{$guestInformations.firstname}{/if}" />
+									<input type="text" class="text form-control validate" id="firstname" name="firstname" autocomplete="given-name" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.firstname) && $guestInformations.firstname}{$guestInformations.firstname}{/if}" />
 								</div>
 							{elseif $field_name eq "lastname"}
 								<div class="required text form-group col-sm-6">
 									<label for="lastname">{l s='Last name'} <sup>*</sup></label>
-									<input type="text" class="text form-control validate" id="lastname" name="lastname" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.lastname) && $guestInformations.lastname}{$guestInformations.lastname}{/if}" />
+									<input type="text" class="text form-control validate" id="lastname" name="lastname" autocomplete="family-name" data-validate="isName" value="{if isset($guestInformations) && isset($guestInformations.lastname) && $guestInformations.lastname}{$guestInformations.lastname}{/if}" />
 								</div>
 							{elseif $field_name eq "address1"}
 								<div class="required text form-group col-sm-6">
 									<label for="address1">{l s='Address'} <sup>*</sup></label>
-									<input type="text" class="text form-control validate" name="address1" id="address1" data-validate="isAddress" value="{if isset($guestInformations) && isset($guestInformations.address1) && isset($guestInformations) && isset($guestInformations.address1) && $guestInformations.address1}{$guestInformations.address1}{/if}" />
+									<input type="text" class="text form-control validate" name="address1" id="address1" autocomplete="address-line1" data-validate="isAddress" value="{if isset($guestInformations) && isset($guestInformations.address1) && isset($guestInformations) && isset($guestInformations.address1) && $guestInformations.address1}{$guestInformations.address1}{/if}" />
 								</div>
 							{elseif $field_name eq "address2"}
 								<div class="text{if !in_array($field_name, $required_fields)} is_customer_param{/if} form-group col-sm-6">
 									<label for="address2">{l s='Address (Line 2)'}{if in_array($field_name, $required_fields)} <sup>*</sup>{/if}</label>
-									<input type="text" class="text form-control validate" name="address2" id="address2" data-validate="isAddress" value="{if isset($guestInformations) && isset($guestInformations.address2) && isset($guestInformations) && isset($guestInformations.address2) && $guestInformations.address2}{$guestInformations.address2}{/if}" />
+									<input type="text" class="text form-control validate" name="address2" id="address2" autocomplete="address-line2" data-validate="isAddress" value="{if isset($guestInformations) && isset($guestInformations.address2) && isset($guestInformations) && isset($guestInformations.address2) && $guestInformations.address2}{$guestInformations.address2}{/if}" />
 								</div>
 							{elseif $field_name eq "city"}
 								<div class="required text form-group col-sm-6">
 									<label for="city">{l s='City'} <sup>*</sup></label>
-									<input type="text" class="text form-control validate" name="city" id="city" data-validate="isCityName" value="{if isset($guestInformations) && isset($guestInformations.city) && $guestInformations.city}{$guestInformations.city}{/if}" />
+									<input type="text" class="text form-control validate" name="city" id="city" autocomplete="address-level2" data-validate="isCityName" value="{if isset($guestInformations) && isset($guestInformations.city) && $guestInformations.city}{$guestInformations.city}{/if}" />
 								</div>
 							{elseif $field_name eq "postcode"}
 								{$postCodeExist = true}
 								<div class="required postcode text form-group col-sm-6">
 									<label for="postcode">{l s='Zip/Postal code'} <sup>*</sup></label>
-									<input type="text" class="text form-control validate" name="postcode" id="postcode" data-validate="isPostCode" value="{if isset($guestInformations) && isset($guestInformations.postcode) && $guestInformations.postcode}{$guestInformations.postcode}{/if}"/>
+									<input type="text" class="text form-control validate" name="postcode" id="postcode" autocomplete="postal-code" data-validate="isPostCode" value="{if isset($guestInformations) && isset($guestInformations.postcode) && $guestInformations.postcode}{$guestInformations.postcode}{/if}"/>
 								</div>
 							{elseif $field_name eq "company"}
 								<div class="text form-group col-sm-6">
 									<label for="company">{l s='Company'}{if in_array($field_name, $required_fields)} <sup>*</sup>{/if}</label>
-									<input type="text" class="text form-control validate" id="company" name="company" data-validate="isGenericName" value="{if isset($guestInformations) && isset($guestInformations.company) && $guestInformations.company}{$guestInformations.company}{/if}" />
+									<input type="text" class="text form-control validate" id="company" name="company" autocomplete="organization" data-validate="isGenericName" value="{if isset($guestInformations) && isset($guestInformations.company) && $guestInformations.company}{$guestInformations.company}{/if}" />
 								</div>
 							{elseif $field_name eq "dni"}
 								{assign var='dniExist' value=true}
@@ -232,12 +232,12 @@
 						{/if}
 						<div class="form-group is_customer_param col-sm-6">
 							<label for="phone">{l s='Home phone'}{if isset($one_phone_at_least) && $one_phone_at_least} <sup>**</sup>{/if}</label>
-							<input type="text" class="text form-control validate" name="phone" id="phone" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone) && $guestInformations.phone}{$guestInformations.phone}{/if}" />
-						</div>
-						<div class="{if isset($one_phone_at_least) && $one_phone_at_least}required {/if}form-group col-sm-6">
-							<label for="phone_mobile">{l s='Mobile phone'}{if isset($one_phone_at_least) && $one_phone_at_least} <sup>**</sup>{/if}</label>
-							<input type="text" class="text form-control validate" name="phone_mobile" id="phone_mobile" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone_mobile) && $guestInformations.phone_mobile}{$guestInformations.phone_mobile}{/if}" />
-						</div>
+								<input type="text" class="text form-control validate" name="phone" id="phone" autocomplete="tel" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone) && $guestInformations.phone}{$guestInformations.phone}{/if}" />
+							</div>
+							<div class="{if isset($one_phone_at_least) && $one_phone_at_least}required {/if}form-group col-sm-6">
+								<label for="phone_mobile">{l s='Mobile phone'}{if isset($one_phone_at_least) && $one_phone_at_least} <sup>**</sup>{/if}</label>
+								<input type="text" class="text form-control validate" name="phone_mobile" id="phone_mobile" autocomplete="tel-national" data-validate="isPhoneNumber" value="{if isset($guestInformations) && isset($guestInformations.phone_mobile) && $guestInformations.phone_mobile}{$guestInformations.phone_mobile}{/if}" />
+							</div>
 						<div class="form-group is_customer_param col-sm-6">
 							<label for="other">{l s='Additional information'}</label>
 							<textarea class="form-control" name="other" id="other" cols="26" rows="7"></textarea>

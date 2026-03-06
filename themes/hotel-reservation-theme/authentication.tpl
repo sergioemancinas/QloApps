@@ -565,8 +565,8 @@
 					<div class="account_creation">
 						<h3 class="page-subheading">{l s='Your company information'}</h3>
 						<p class="form-group">
-							<label for="">{l s='Company'}</label>
-							<input type="text" class="form-control" id="company" name="company" value="{if isset($smarty.post.company)}{$smarty.post.company}{/if}" />
+								<label for="company">{l s='Company'}</label>
+								<input type="text" class="form-control" id="company" name="company" autocomplete="organization" value="{if isset($smarty.post.company)}{$smarty.post.company}{/if}" />
 						</p>
 						<p class="form-group">
 							<label for="siret">{l s='SIRET'}</label>

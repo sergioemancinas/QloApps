@@ -38,7 +38,7 @@
                     <input type="hidden" name="action" value="SubscribeNewsletter" />
                     <input type="hidden" name="token" value="{$csrf_token}" />
                     <input type="hidden" name="newsletter_action" value="0" />
-                    <input type="text" class="inputNew form-control newsletter-input" id="newsletter-input" name="email" placeholder="{l s='Your email address' mod='blocknewsletter'}" />
+                    <input type="email" class="inputNew form-control newsletter-input" id="newsletter-input" name="email" autocomplete="email" placeholder="{l s='Your email address' mod='blocknewsletter'}" />
                     <div class="message-block" style="display: none;"></div>
                     {* Hook added for GDPR *}
                     {if isset($id_module)}

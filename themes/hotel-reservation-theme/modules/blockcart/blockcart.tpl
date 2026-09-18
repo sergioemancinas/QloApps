@@ -198,10 +198,10 @@
 							<span class="cross" title="{l s='Close window' mod='blockcart'}"></span>
 							{block name='blockcart_layer_cart_left_heading'}
 								<h2 class="layer_cart_room_txt">
-									<i class="icon-check"></i>{l s='Room successfully added to your cart' mod='blockcart'}
+									<i class="icon-check"></i>{l s='Stay dates added to your booking' mod='blockcart'}
 								</h2>
-								<h2 class="layer_cart_product_txt">
-									<i class="icon-check"></i>{l s='Product successfully added to your cart' mod='blockcart'}
+								<h2 class="layer_cart_product_txt unvisible">
+									<i class="icon-check"></i>{l s='Added to your booking' mod='blockcart'}
 								</h2>
 							{/block}
 							{block name='blockcart_layer_cart_product_image'}
@@ -217,7 +217,7 @@
 										<span id="layer_cart_product_time_duration"></span>
 									</div>
 									<div>
-										<strong class="dark layer_cart_product_txt">{l s='Hotel Name' mod='blockcart'} &nbsp;-&nbsp;</strong>
+										<strong class="dark layer_cart_product_txt">{l s='Apartment' mod='blockcart'} &nbsp;-&nbsp;</strong>
 										<span id="layer_cart_product_hotel_name"></span>
 									</div>
 									<div>
@@ -257,7 +257,7 @@
 							{block name='blockcart_layer_cart_room_total_price'}
 								<div class="layer_cart_row">
 									<strong class="dark">
-										{l s='Total Rooms Cost in cart' mod='blockcart'}
+										{l s='Stay total in cart' mod='blockcart'}
 										{if $display_tax_label}
 											{if $priceDisplay == 1}
 												{l s='(tax excl.)' mod='blockcart'}

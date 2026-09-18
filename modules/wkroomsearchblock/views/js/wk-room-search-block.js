@@ -1356,8 +1356,9 @@ $(document).ready(function() {
         var bodyId = $('body').attr('id') || '';
 
         if (isHomePage() || bodyId === 'product') {
-            var defaultProductLink = baseUri + (lang_iso || 'en') + '/the-hotel-prime/1-fewo-ebermannsmuehle-lauscha.html';
+            var defaultProductLink = baseUri + (lang_iso || 'en') + '/fewo-lauscha/1-fewo-lauscha.html';
             var productLink = $('.htlRoomTypeBookNow:first').attr('href')
+                || $('.navigation-link[href*="/fewo-lauscha/"]:first').attr('href')
                 || $('.navigation-link[href*="/the-hotel-prime/"]:first').attr('href')
                 || defaultProductLink;
 
@@ -1379,7 +1380,7 @@ $(document).ready(function() {
                 }
             }
 
-            if (productLink.charAt(0) !== '/' || productLink.indexOf('/the-hotel-prime/') === -1) {
+            if (productLink.charAt(0) !== '/' || (productLink.indexOf('/fewo-lauscha/') === -1 && productLink.indexOf('/the-hotel-prime/') === -1)) {
                 productLink = defaultProductLink;
             }
 

@@ -218,3 +218,25 @@ button[type="submit"]:hover {
 #index #header .header_user_info .header-top-link + .header-top-link {
   margin-left: 12px;
 }
+
+/* Homepage amenities: one row per feature (replaces Bootstrap breakpoint triplication). */
+.fe-amenities-grid .fe-amenity-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.fe-amenities-grid .fe-amenity-media,
+.fe-amenities-grid .fe-amenity-copy {
+  float: none;
+}
+
+@media (min-width: 768px) {
+  .fe-amenities-grid .fe-amenity-row--reverse .fe-amenity-media {
+    order: 2;
+  }
+
+  .fe-amenities-grid .fe-amenity-row--reverse .fe-amenity-copy {
+    order: 1;
+  }
+}

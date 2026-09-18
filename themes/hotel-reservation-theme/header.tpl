@@ -30,7 +30,11 @@
 <html{if isset($language_code) && $language_code} lang="{$language_code|escape:'html':'UTF-8'}"{/if} {if isset($language_is_rtl) && $language_is_rtl}dir="rtl"{/if} style="{if $page_name == 'index'}height: 100%;{/if}">
 	<head>
 		<meta charset="utf-8" />
-		<title>{$meta_title|escape:'html':'UTF-8'}</title>
+		{assign var='fewo_meta_title' value=$meta_title|escape:'html':'UTF-8'}
+		{if $fewo_meta_title|strstr:'Hotel Prime'}
+			{assign var='fewo_meta_title' value=$fewo_meta_title|replace:'Hotel Prime - ':''|replace:' - Hotel Prime':''|replace:'Hotel Prime':'FeWo Lauscha'}
+		{/if}
+		<title>{$fewo_meta_title}</title>
 		{if isset($meta_description) AND $meta_description}
 			<meta name="description" content="{$meta_description|escape:'html':'UTF-8'}" />
 		{/if}
@@ -65,7 +69,7 @@
 		{block name='displayHeader'}
 			{$HOOK_HEADER}
 		{/block}
-		<link rel="stylesheet" href="{$css_dir}fewo-responsive.css?v=2" type="text/css" media="all" />
+		<link rel="stylesheet" href="{$css_dir}fewo-responsive.css?v=3" type="text/css" media="all" />
 		<link rel="stylesheet" href="{$css_dir}cookie-consent.css?v=1" type="text/css" media="all" />
 		<!-- <link rel="stylesheet" href="http{if Tools::usingSecureMode()}s{/if}://fonts.googleapis.com/css?family=Open+Sans:300,600&amp;subset=latin,latin-ext" type="text/css" media="all" /> -->
 

@@ -79,7 +79,7 @@
 		{if $page_name == 'contact'}
 		<link rel="stylesheet" href="{$css_dir}fewo-contact.css?v=1" type="text/css" media="all" />
 		{/if}
-		<link rel="stylesheet" href="{$css_dir}fewo-brand.css?v=2" type="text/css" media="all" />
+		<link rel="stylesheet" href="{$css_dir}fewo-brand.css?v=3" type="text/css" media="all" />
 		<link rel="stylesheet" href="{$css_dir}fewo-whatsapp.css?v=1" type="text/css" media="all" />
 		<!-- <link rel="stylesheet" href="http{if Tools::usingSecureMode()}s{/if}://fonts.googleapis.com/css?family=Open+Sans:300,600&amp;subset=latin,latin-ext" type="text/css" media="all" /> -->
 

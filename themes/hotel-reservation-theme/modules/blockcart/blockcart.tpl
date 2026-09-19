@@ -225,12 +225,12 @@
 										<span id="layer_cart_product_unit_price"></span>
 									</div>
 									<div>
-										<strong class="dark layer_cart_room_txt">{if isset($occupancy_required_for_booking) && $occupancy_required_for_booking}{l s='Room occupancy' mod='blockcart'}{else}{l s='Rooms quantity added' mod='blockcart'}{/if} &nbsp;-&nbsp;</strong>
+										<strong class="dark layer_cart_room_txt">{if isset($occupancy_required_for_booking) && $occupancy_required_for_booking}{l s='Guest count' mod='blockcart'}{else}{l s='Guests added' mod='blockcart'}{/if} &nbsp;-&nbsp;</strong>
 										<strong class="dark layer_cart_product_txt">{l s='Quantity' mod='blockcart'} &nbsp;-&nbsp;</strong>
 										<span id="layer_cart_product_quantity"></span>
 									</div>
 									<div>
-										<strong class="dark layer_cart_room_txt">{l s='Room type cost' mod='blockcart'} &nbsp;-&nbsp;</strong>
+										<strong class="dark layer_cart_room_txt">{l s='Stay cost' mod='blockcart'} &nbsp;-&nbsp;</strong>
 										<strong class="dark layer_cart_product_txt">{l s='Total' mod='blockcart'} &nbsp;-&nbsp;</strong>
 										<span id="layer_cart_product_price"></span>
 									</div>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+<defs>
+<clipPath id="fwl-ring"><circle cx="50" cy="50" r="44"/></clipPath>
+<mask id="fwl-big"><rect width="100" height="100" fill="#fff"/><path d="M50,54 L64,64 L60.5,64 L60.5,76 L39.5,76 L39.5,64 L36,64 Z M54,45 L58,45 L58,60.5 L54,57.4 Z" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/></mask>
+<mask id="fwl-small"><rect width="100" height="100" fill="#fff"/><path d="M34,18 L64,76 L2,76 Z" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/><path d="M50,54 L64,64 L60.5,64 L60.5,76 L39.5,76 L39.5,64 L36,64 Z M54,45 L58,45 L58,60.5 L54,57.4 Z" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/></mask>
+<mask id="fwl-house"><rect width="100" height="100" fill="#fff"/><rect x="47" y="68" width="6" height="8" rx="3" fill="#000"/></mask>
+</defs>
+
+
+<g clip-path="url(#fwl-ring)">
+<path d="M68,34 L98,76 L44,76 Z" fill="#111111" mask="url(#fwl-small)"/>
+<path d="M34,18 L64,76 L2,76 Z" fill="#111111" mask="url(#fwl-big)"/>
+<rect x="0" y="76" width="100" height="24" fill="#111111"/>
+</g>
+<path d="M50,54 L64,64 L60.5,64 L60.5,76 L39.5,76 L39.5,64 L36,64 Z M54,45 L58,45 L58,60.5 L54,57.4 Z" fill="#111111" mask="url(#fwl-house)"/>
+<circle cx="50" cy="50" r="45.5" fill="none" stroke="#111111" stroke-width="4"/>
+</svg>

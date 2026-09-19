@@ -34,6 +34,9 @@
 		{if $fewo_meta_title|strstr:'Hotel Prime'}
 			{assign var='fewo_meta_title' value=$fewo_meta_title|replace:'Hotel Prime - ':''|replace:' - Hotel Prime':''|replace:'Hotel Prime':'FeWo Lauscha'}
 		{/if}
+		{if $shop_name && $fewo_meta_title == "`$shop_name` - `$shop_name`"}
+			{assign var='fewo_meta_title' value=$shop_name|escape:'html':'UTF-8'}
+		{/if}
 		<title>{$fewo_meta_title}</title>
 		{if isset($meta_description) AND $meta_description}
 			<meta name="description" content="{$meta_description|escape:'html':'UTF-8'}" />
@@ -45,8 +48,10 @@
 		<meta name="robots" content="{if isset($nobots)}no{/if}index,{if isset($nofollow) && $nofollow}no{/if}follow" />
 		<meta name="viewport" content="width=device-width, minimum-scale=0.25, maximum-scale=1.6, initial-scale=1.0" />
 		<meta name="mobile-web-app-capable" content="yes" />
-		<link rel="icon" type="image/vnd.microsoft.icon" href="{$favicon_url}?{$img_update_time}" />
-		<link rel="shortcut icon" type="image/x-icon" href="{$favicon_url}?{$img_update_time}" />
+		<link rel="icon" type="image/svg+xml" href="{$img_dir}brand/favicon.svg?v=1" />
+		<link rel="icon" type="image/png" sizes="32x32" href="{$img_dir}brand/favicon-32.png?v=1" />
+		<link rel="shortcut icon" type="image/png" href="{$img_dir}brand/favicon-32.png?v=1" />
+		<link rel="apple-touch-icon" sizes="180x180" href="{$img_dir}brand/apple-touch-icon.png?v=1" />
 		{if isset($css_files)}
 			{foreach from=$css_files key=css_uri item=media}
 				{if $css_uri == 'lteIE9'}
@@ -70,7 +75,12 @@
 			{$HOOK_HEADER}
 		{/block}
 		<link rel="stylesheet" href="{$css_dir}fewo-responsive.css?v=3" type="text/css" media="all" />
-		<link rel="stylesheet" href="{$css_dir}cookie-consent.css?v=1" type="text/css" media="all" />
+		<link rel="stylesheet" href="{$css_dir}cookie-consent.css?v=7" type="text/css" media="all" />
+		{if $page_name == 'contact'}
+		<link rel="stylesheet" href="{$css_dir}fewo-contact.css?v=1" type="text/css" media="all" />
+		{/if}
+		<link rel="stylesheet" href="{$css_dir}fewo-brand.css?v=1" type="text/css" media="all" />
+		<link rel="stylesheet" href="{$css_dir}fewo-whatsapp.css?v=1" type="text/css" media="all" />
 		<!-- <link rel="stylesheet" href="http{if Tools::usingSecureMode()}s{/if}://fonts.googleapis.com/css?family=Open+Sans:300,600&amp;subset=latin,latin-ext" type="text/css" media="all" /> -->
 
 		<!--[if IE 8]>
@@ -119,8 +129,13 @@
 								<div class="row">
 									<div class="col-xs-12">
 										<div id="header_logo">
-											<a href="{if isset($force_ssl) && $force_ssl}{$base_dir_ssl}{else}{$base_dir}{/if}" title="{$shop_name|escape:'html':'UTF-8'}">
-												<img class="logo img-responsive" src="{$logo_url}" alt="{$shop_name|escape:'html':'UTF-8'}"/>
+											<a href="{if isset($force_ssl) && $force_ssl}{$base_dir_ssl}{else}{$base_dir}{/if}" title="{$shop_name|escape:'html':'UTF-8'}" class="fewo-brand-lockup">
+												<img class="fewo-brand-mark" src="{$img_dir}brand/logo-mark-color.svg?v=1" alt="{$shop_name|escape:'html':'UTF-8'}" width="56" height="56"/>
+												<span class="fewo-brand-text">
+													<span class="fewo-brand-sub">FERIENWOHNUNG</span>
+													<span class="fewo-brand-name">LAUSCHA</span>
+													<span class="fewo-brand-tagline">THÜRINGER WALD</span>
+												</span>
 											</a>
 										</div>
 										<div class="header-top-menu">

@@ -1,0 +1,47 @@
+/* ===============================================
+   Floating WhatsApp button (site-wide, GDPR-safe:
+   plain link to wa.me, no tracking scripts)
+   =============================================== */
+.fe-wa-float {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9990;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #25d366;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 26px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.fe-wa-float:hover,
+.fe-wa-float:focus {
+  background: #1eb958;
+  color: #fff;
+  transform: scale(1.06);
+}
+
+.fe-wa-float .fe-wa-float-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .fe-wa-float {
+    right: 14px;
+    bottom: 14px;
+    width: 50px;
+    height: 50px;
+    font-size: 23px;
+  }
+}

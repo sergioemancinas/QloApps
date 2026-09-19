@@ -37,6 +37,22 @@
 {/block}
 {block name='displayHome'}
 	{if isset($HOOK_HOME) && $HOOK_HOME|trim}
+		<div class="fe-availability" id="verfuegbarkeit">
+			<div class="container">
+				<h3 class="fe-availability-title">{l s='Availability'}</h3>
+				<p class="fe-availability-sub">{l s='Grey ranges are already booked. Everything else is free — pick your dates below.'}</p>
+				<div id="fewo-availability-calendar"></div>
+				<div class="fe-availability-actions">
+					<a class="btn btn-primary" href="{$link->getPageLink('index', true)|escape:'html':'UTF-8'}#search_hotel_block">{l s='Book your stay'}</a>
+				</div>
+			</div>
+		</div>
+		<script>
+			var fewoAvailabilityUrl = '{$link->getModuleLink('fewobooking', 'availability')|escape:'javascript':'UTF-8'}';
+		</script>
+		<link rel="stylesheet" href="{$css_dir}fewo-availability.css?v=1" type="text/css" media="all" />
+		<script src="{$js_dir}vendor/fullcalendar.global.min.js" defer></script>
+		<script src="{$js_dir}fewo-availability.js" defer></script>
 		<div class="fe-welcome-offer">
 			<div class="container">
 				<div class="fe-welcome-card">

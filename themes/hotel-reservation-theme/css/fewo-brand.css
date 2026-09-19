@@ -1,0 +1,59 @@
+/* FeWo Lauscha brand system — palette from logo pack (draft 1)
+   ink #17332B, green #2F5D4E, teal #4E9A8F, gold #E8A33D, paper #FAF8F4 */
+
+:root {
+  --fewo-ink: #17332B;
+  --fewo-green: #2F5D4E;
+  --fewo-teal: #4E9A8F;
+  --fewo-gold: #E8A33D;
+  --fewo-paper: #FAF8F4;
+  --fewo-sub: #6E8A80;
+}
+
+/* Jost — brand typeface (Google Fonts, free license) */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap');
+
+.fewo-brand-lockup {
+	display: inline-flex;
+	align-items: center;
+	gap: 14px;
+	text-decoration: none;
+	font-family: 'Jost', sans-serif;
+}
+
+.fewo-brand-mark {
+	flex: none;
+	display: block;
+}
+
+.fewo-brand-text {
+	display: flex;
+	flex-direction: column;
+	line-height: 1;
+	text-align: left;
+}
+
+.fewo-brand-sub {
+	font-size: 9px;
+	font-weight: 400;
+	letter-spacing: 0.44em;
+	color: var(--fewo-sub);
+}
+
+.fewo-brand-name {
+	font-size: 22px;
+	font-weight: 500;
+	letter-spacing: 0.16em;
+	margin-top: 4px;
+	color: var(--fewo-ink);
+}
+
+.fewo-brand-tagline {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	.fewo-brand-mark { width: 40px; height: 40px; }
+	.fewo-brand-name { font-size: 17px; }
+	.fewo-brand-sub { font-size: 7px; }
+}

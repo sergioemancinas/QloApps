@@ -1,0 +1,64 @@
+/* FeWo Lauscha — homepage availability calendar styling */
+.fe-availability {
+	padding: 48px 0 8px;
+	font-family: 'Jost', sans-serif;
+}
+
+.fe-availability-title {
+	color: var(--fewo-ink, #17332B);
+	letter-spacing: 0.06em;
+	margin-bottom: 4px;
+}
+
+.fe-availability-sub {
+	color: var(--fewo-sub, #6E8A80);
+	margin-bottom: 20px;
+}
+
+#fewo-availability-calendar {
+	background: var(--fewo-paper, #FAF8F4);
+	border: 1px solid #DDD7CC;
+	border-radius: 4px;
+	padding: 16px;
+	max-width: 860px;
+}
+
+#fewo-availability-calendar.is-loading {
+	opacity: 0.55;
+	pointer-events: none;
+}
+
+#fewo-availability-calendar.has-error::after {
+	content: 'Calendar is temporarily unavailable — please try the search above.';
+	display: block;
+	color: #8A4B2B;
+	font-size: 13px;
+	padding: 10px 4px 0;
+}
+
+/* FullCalendar fc branding overrides — keep it in the house palette */
+#fewo-availability-calendar .fc-theme-standard td,
+#fewo-availability-calendar .fc-theme-standard th {
+	border-color: #E6E1D7;
+}
+
+#fewo-availability-calendar .fc .fc-button {
+	background: var(--fewo-green, #2F5D4E);
+	border-color: var(--fewo-green, #2F5D4E);
+	text-transform: none;
+}
+
+#fewo-availability-calendar .fc .fc-button:not(:disabled):hover,
+#fewo-availability-calendar .fc .fc-button:not(:disabled).fc-button-active {
+	background: var(--fewo-teal, #4E9A8F);
+	border-color: var(--fewo-teal, #4E9A8F);
+}
+
+#fewo-availability-calendar .fc .fc-button:disabled {
+	background: #C9D3CD;
+	border-color: #C9D3CD;
+}
+
+.fe-availability-actions {
+	padding: 18px 0 8px;
+}

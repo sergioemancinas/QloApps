@@ -5,10 +5,51 @@
   var maxAgeDays = 180;
 
   function getCookie(name) {
-    var match = document.cookie.match(
-      new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\\[\\]\\\\/+^])/g, '\\$1') + '=([^;]*)')
-    );
-    return match ? decodeURIComponent(match[1]) : null;
+    var cookies = document.cookie ? document.cookie.split(';') : [];
+    var prefix = name + '=';
+    var i;
+    var part;
+    for (i = 0; i < cookies.length; i += 1) {
+      part = cookies[i];
+      while (part.charAt(0) === ' ') {
+        part = part.substring(1);
+      }
+      if (part.indexOf(prefix) === 0) {
+        try {
+          return decodeURIComponent(part.substring(prefix.length));
+        } catch (e) {
+          return part.substring(prefix.length);
+        }
+      }
+    }
+    return null;
+  }
+
+  function detectUiLang() {
+    var htmlLang = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+    if (htmlLang.indexOf('de') === 0) {
+      return 'de';
+    }
+    if (document.body && document.body.className.indexOf('lang_de') !== -1) {
+      return 'de';
+    }
+    if (location.pathname.indexOf('/de/') === 0 || location.pathname === '/de') {
+      return 'de';
+    }
+    return 'en';
+  }
+
+  function applyUiLang() {
+    var lang = detectUiLang();
+    var banner = document.getElementById('fe-cookie-banner');
+    var modal = document.getElementById('fe-cookie-modal');
+    if (banner) {
+      banner.setAttribute('data-lang', lang);
+    }
+    if (modal) {
+      modal.setAttribute('data-lang', lang);
+    }
+    document.documentElement.setAttribute('data-fe-lang', lang);
   }
 
   function setCookie(name, value, days) {
@@ -112,6 +153,11 @@
     setCookie(consentKey, JSON.stringify(consent), maxAgeDays);
     applyConsent(consent);
     loadOptionalServices(consent);
+    // Origin CSP allows Cloudflare Insights only after analytics=true is in the
+    // cookie. Reload so the next response (and any edge snippet) matches consent.
+    window.setTimeout(function () {
+      window.location.reload();
+    }, 50);
   }
 
   function setCheckboxes(consent) {
@@ -249,19 +295,26 @@
   }
 
   function init() {
-    dedupeBanner();
-    unwrapUniform();
-    var stored = parseConsent(getCookie(consentKey));
-    if (stored) {
-      applyConsent(stored);
-      setCheckboxes(stored);
-      loadOptionalServices(stored);
-    } else {
-      setCheckboxes(defaultConsent());
+    try {
+      dedupeBanner();
+      unwrapUniform();
+      applyUiLang();
+      var stored = parseConsent(getCookie(consentKey));
+      if (stored) {
+        applyConsent(stored);
+        setCheckboxes(stored);
+        loadOptionalServices(stored);
+      } else {
+        setCheckboxes(defaultConsent());
+        showBanner();
+      }
+      bindActions();
+      window.addEventListener('load', unwrapUniform);
+    } catch (e) {
+      applyUiLang();
       showBanner();
+      bindActions();
     }
-    bindActions();
-    window.addEventListener('load', unwrapUniform);
   }
 
   if (document.readyState === 'loading') {

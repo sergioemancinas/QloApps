@@ -1,0 +1,488 @@
+/* ===============================================
+   Forest Escape Contact Form v2 - Professional Styling
+   =============================================== */
+
+/* Page container */
+.fe-contact-page-v2 {
+  padding: 30px 15px 60px;
+}
+
+/* Hero section */
+.fe-contact-page-v2 .fe-contact-hero {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.fe-contact-page-v2 .contact-header {
+  font-size: 38px;
+  font-weight: 300;
+  color: #2a221b;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.fe-contact-page-v2 .contact-desc {
+  font-size: 17px;
+  color: #6a5a4a;
+  line-height: 1.7;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* Success message */
+.fe-contact-success {
+  max-width: 600px;
+  margin: 0 auto 30px;
+  border-radius: 10px;
+  padding: 16px 20px;
+  background: #e8f5e8;
+  border: 1px solid #c8e6c8;
+  color: #2d5a2d;
+}
+
+/* Card base */
+.fe-contact-page-v2 .fe-contact-card {
+  background: #ffffff;
+  border: 1px solid #e6ddd2;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 8px 32px rgba(36, 33, 28, 0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.fe-contact-page-v2 .fe-contact-card:hover {
+  box-shadow: 0 12px 40px rgba(36, 33, 28, 0.1);
+}
+
+/* Info card header */
+.fe-contact-info-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #efe7dd;
+}
+
+.fe-contact-info-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #3b7d3b 0%, #4a9a4a 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fe-contact-info-icon i {
+  color: #fff;
+  font-size: 20px;
+}
+
+.fe-contact-info-header .fe-contact-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2a221b;
+  margin: 0 0 4px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.fe-contact-info-header .fe-contact-meta {
+  font-size: 14px;
+  color: #7a6b5a;
+  margin: 0;
+}
+
+/* Contact list */
+.fe-contact-page-v2 .fe-contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fe-contact-page-v2 .fe-contact-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid #f5efe8;
+}
+
+.fe-contact-page-v2 .fe-contact-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.fe-contact-page-v2 .fe-contact-icon {
+  width: 40px;
+  height: 40px;
+  background: #f5f1eb;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.fe-contact-page-v2 .fe-contact-item:hover .fe-contact-icon {
+  background: #e8f5e8;
+}
+
+.fe-contact-page-v2 .fe-contact-icon i {
+  color: #5a8a5a;
+  font-size: 16px;
+}
+
+.fe-contact-page-v2 .fe-contact-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9a8a7a;
+  margin-bottom: 3px;
+}
+
+.fe-contact-page-v2 .fe-contact-value {
+  display: block;
+  font-size: 15px;
+  color: #2a221b;
+  line-height: 1.5;
+}
+
+.fe-contact-page-v2 .fe-contact-value a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.fe-contact-page-v2 .fe-contact-value a:hover {
+  color: #3b7d3b;
+}
+
+/* Tip box */
+.fe-contact-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #faf8f5;
+  border: 1px solid #efe7dd;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 20px;
+}
+
+.fe-contact-tip i {
+  color: #c9a227;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.fe-contact-tip span {
+  font-size: 13px;
+  color: #6a5a4a;
+  line-height: 1.5;
+}
+
+/* Form card */
+.fe-contact-form-card {
+  padding: 32px;
+}
+
+.fe-contact-page-v2 .fe-contact-section-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2a221b;
+  margin: 0 0 8px;
+}
+
+.fe-contact-page-v2 .fe-contact-section-note {
+  font-size: 15px;
+  color: #7a6b5a;
+  margin: 0 0 28px;
+}
+
+/* Form grid */
+.fe-contact-page-v2 .fe-contact-grid {
+  margin: 0 -10px;
+}
+
+.fe-contact-page-v2 .fe-contact-grid > [class*="col-"] {
+  padding: 0 10px;
+}
+
+/* Form groups */
+.fe-contact-page-v2 .form-group {
+  margin-bottom: 20px;
+}
+
+.fe-contact-page-v2 .control-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4a3a2a;
+  margin-bottom: 8px;
+}
+
+.fe-required {
+  color: #c75050;
+}
+
+.fe-optional {
+  font-weight: 400;
+  color: #9a8a7a;
+  font-size: 12px;
+}
+
+/* Inputs */
+.fe-contact-page-v2 .fe-input,
+.fe-contact-page-v2 .fe-textarea {
+  width: 100%;
+  border: 1.5px solid #e0d8ce;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 15px;
+  color: #2a221b;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fe-contact-page-v2 .fe-input:focus,
+.fe-contact-page-v2 .fe-textarea:focus {
+  outline: none;
+  border-color: #5a8a5a;
+  box-shadow: 0 0 0 3px rgba(90, 138, 90, 0.12);
+}
+
+.fe-contact-page-v2 .fe-input::placeholder,
+.fe-contact-page-v2 .fe-textarea::placeholder {
+  color: #b0a090;
+}
+
+.fe-contact-page-v2 .fe-textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* File input */
+.fe-contact-page-v2 .fe-file-input {
+  padding: 12px 16px;
+  border: 1.5px dashed #d0c8be;
+  border-radius: 10px;
+  background: #faf8f5;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.fe-contact-page-v2 .fe-file-input:hover {
+  border-color: #5a8a5a;
+  background: #f5fff5;
+}
+
+/* Dropdown */
+.fe-contact-page-v2 .contact_type_input {
+  height: auto;
+  padding: 14px 16px;
+  border: 1.5px solid #e0d8ce;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.fe-contact-page-v2 .contact_type_ul {
+  border-radius: 10px;
+  border: 1.5px solid #e0d8ce;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  margin-top: 4px;
+}
+
+.fe-contact-page-v2 .contact_type_ul li {
+  padding: 12px 16px;
+  transition: background 0.15s ease;
+}
+
+.fe-contact-page-v2 .contact_type_ul li:hover {
+  background: #e8f5e8;
+  color: #2a221b;
+}
+
+/* Form footer */
+.fe-contact-footer {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #efe7dd;
+}
+
+.fe-contact-privacy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: #faf8f5;
+  border-radius: 8px;
+}
+
+.fe-contact-privacy i {
+  color: #7a6b5a;
+  font-size: 14px;
+}
+
+.fe-contact-privacy span {
+  font-size: 13px;
+  color: #7a6b5a;
+  line-height: 1.5;
+}
+
+.fe-contact-submit {
+  text-align: right;
+}
+
+/* Submit button */
+.fe-contact-page-v2 .fe-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #3b7d3b 0%, #4a9a4a 100%);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fe-contact-page-v2 .fe-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 125, 59, 0.3);
+}
+
+.fe-contact-page-v2 .fe-submit-btn:active {
+  transform: translateY(0);
+}
+
+.fe-contact-page-v2 .fe-submit-btn i {
+  font-size: 14px;
+}
+
+/* Info card positioning */
+.fe-contact-page-v2 .fe-contact-info-card {
+  margin-top: 40px;
+}
+
+@media (min-width: 768px) {
+  .fe-contact-page-v2 .fe-contact-info-card {
+    position: sticky;
+    top: 100px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .fe-contact-page-v2 .contact-header {
+    font-size: 30px;
+  }
+
+  .fe-contact-page-v2 .contact-desc {
+    font-size: 15px;
+  }
+
+  .fe-contact-page-v2 .fe-contact-card {
+    padding: 22px;
+  }
+
+  .fe-contact-form-card {
+    padding: 24px !important;
+  }
+
+  .fe-contact-page-v2 .fe-contact-section-title {
+    font-size: 20px;
+  }
+
+  .fe-contact-submit {
+    text-align: center;
+  }
+
+  .fe-contact-page-v2 .fe-submit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .fe-contact-info-header {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .fe-contact-page-v2 .fe-contact-info-card {
+    margin-top: 0;
+    margin-bottom: 30px;
+    order: -1;
+  }
+}
+
+/* ===============================================
+   Map (OpenStreetMap, GDPR-safe iframe)
+   =============================================== */
+.fe-contact-map-card {
+  padding: 24px 28px 20px;
+}
+
+.fe-contact-map {
+  display: block;
+  width: 100%;
+  height: 360px;
+  border: 1px solid #e6ddd2;
+  border-radius: 10px;
+}
+
+.fe-map-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #3b7d3b;
+}
+
+.fe-map-link:hover {
+  text-decoration: underline;
+}
+
+/* ===============================================
+   WhatsApp buttons (no tracking scripts)
+   =============================================== */
+.fe-wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.fe-wa-btn:hover,
+.fe-wa-btn:focus {
+  background: #1eb958;
+  color: #fff;
+  text-decoration: none;
+}
+
+.fe-wa-btn i {
+  font-size: 18px;
+}
+
+.fe-wa-inline {
+  width: 100%;
+  justify-content: center;
+  margin-top: 18px;
+}
+

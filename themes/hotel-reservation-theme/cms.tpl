@@ -112,6 +112,40 @@
 					</div>
 				</div>
 			{/if}
+			{if isset($cms->id) && $cms->id|intval == 10}
+				<div class="fe-cms-card fe-route-planner" id="fe-route-planner">
+					<div class="fe-rp-head">
+						<div class="fe-rp-title">{if $lang_iso == 'de'}Planen Sie Ihre Route{else}Plan your route{/if}</div>
+						<div class="fe-rp-note">{if $lang_iso == 'de'}Geben Sie Ihren Startpunkt ein — das Tool deckt Auto, Bahn und Bus ab.{else}Enter where you start; the tool covers car, train and bus.{/if}</div>
+					</div>
+					<div class="fe-rp-controls">
+						<div class="fe-rp-modes">
+							<button type="button" class="is-active" data-mode="auto">{if $lang_iso == 'de'}Auto{else}Car{/if}</button>
+							<button type="button" data-mode="transit">{if $lang_iso == 'de'}Bahnen{else}Public transport{/if}</button>
+						</div>
+						<div class="fe-rp-search">
+							<input type="text" placeholder="{if $lang_iso == 'de'}Stadt oder Adresse{else}City or address{/if}" aria-label="{if $lang_iso == 'de'}Planen Sie Ihre Route{else}Plan your route{/if}" />
+							<button type="button" class="fe-rp-go">{if $lang_iso == 'de'}Route berechnen{else}Plan route{/if}</button>
+						</div>
+					</div>
+					<div class="fe-rp-presets">
+						<span>{if $lang_iso == 'de'}Schnellauswahl:{else}Quick picks:{/if}</span>
+						<button type="button" data-lat="51.3397" data-lon="12.3731">Leipzig</button>
+						<button type="button" data-lat="50.1109" data-lon="8.6821">Frankfurt am Main</button>
+						<button type="button" data-lat="49.4521" data-lon="11.0767">N&uuml;rnberg</button>
+						<button type="button" data-lat="50.9848" data-lon="11.0299">Erfurt</button>
+						<button type="button" data-lat="50.3753" data-lon="11.1808">Sonneberg</button>
+					</div>
+					<div class="fe-rp-map" role="application" aria-label="{if $lang_iso == 'de'}Planen Sie Ihre Route{else}Plan your route{/if}"></div>
+					<div class="fe-rp-summary" hidden>
+						<span class="fe-rp-dist"></span>
+						<span class="fe-rp-sep">&middot;</span>
+						<span class="fe-rp-time"></span>
+					</div>
+					<div class="fe-rp-status" aria-live="polite"></div>
+					<div class="fe-rp-privacy">{if $lang_iso == 'de'}Karte &amp; Suche: OpenStreetMap. Routing: eigener Server — keine Datenweitergabe.{else}Map &amp; search: OpenStreetMap. Routing: our own server — no data shared.{/if}</div>
+				</div>
+			{/if}
 			{$cms->content}
 		</div>
 	{elseif isset($cms_category)}

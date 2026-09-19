@@ -31,83 +31,71 @@
 		{include file="$tpl_dir./errors.tpl"}
 	{/block}
 	{if $lang_iso == 'de'}
-		{assign var=feHeroTitle value='So erreichen Sie uns'}
-		{assign var=feHeroDesc value='Fragen zu Ihrem Aufenthalt oder besondere Wünsche? Wir helfen Ihnen gerne weiter.'}
-		{assign var=feCardTitle value='FeWo Lauscha'}
-		{assign var=feCardMeta value='Ihr Rückzugsort im Thüringer Wald'}
-		{assign var=feCardAddress value='Steinachtal 1, 98724 Lauscha, Deutschland'}
+		{assign var=feHeroTitle value='Fragen Sie uns alles, bevor Sie buchen.'}
+		{assign var=feHeroDesc value='Wir antworten per E-Mail, meist innerhalb eines Tages. Bei Fragen am Anreisetag rufen Sie bitte an — das Signal ist besser als das Postfach.'}
 		{assign var=feFormTitle value='Schreiben Sie uns'}
-		{assign var=feFormNote value='Wir antworten in der Regel innerhalb von 24 Stunden.'}
+		{assign var=feFormNote value='Eine Buchungsreferenz hilft, wenn Sie bereits gebucht haben.'}
+		{assign var=feFormHint value='Antwort meist innerhalb eines Tages.'}
 		{assign var=feWaText value='Per WhatsApp schreiben'}
 		{assign var=feWaAria value='Per WhatsApp an uns schreiben'}
 		{assign var=feMapTitle value='So finden Sie uns'}
+		{assign var=feReachTitle value='Erreichen Sie uns'}
+		{assign var=feManageTitle value='Schon gebucht?'}
+		{assign var=feManageValue value='Ihre Reise verwalten'}
+		{assign var=feManageNote value='Termine ändern, Rechnung herunterladen, Sauna dazubuchen.'}
 	{else}
-		{assign var=feHeroTitle value='Get in touch'}
-		{assign var=feHeroDesc value='Have a question about your stay or want to share special requests? We are here to help.'}
-		{assign var=feCardTitle value='FeWo Lauscha'}
-		{assign var=feCardMeta value='Your retreat in the Thuringian Forest'}
-		{assign var=feCardAddress value='Steinachtal 1, 98724 Lauscha, Germany'}
-		{assign var=feFormTitle value='Send us a message'}
-		{assign var=feFormNote value='We typically respond within 24 hours.'}
+		{assign var=feHeroTitle value='Ask us anything before you book.'}
+		{assign var=feHeroDesc value='We answer by e-mail, usually within a day. For arrival questions on the day itself, call — the signal is better than the inbox.'}
+		{assign var=feFormTitle value='Send a message'}
+		{assign var=feFormNote value='Booking reference helps if you are already booked.'}
+		{assign var=feFormHint value='Usually answered within a day.'}
 		{assign var=feWaText value='Chat on WhatsApp'}
 		{assign var=feWaAria value='Contact us via WhatsApp'}
 		{assign var=feMapTitle value='Find us on the map'}
+		{assign var=feReachTitle value='Reach us'}
+		{assign var=feManageTitle value='Already booked?'}
+		{assign var=feManageValue value='Manage your stay'}
+		{assign var=feManageNote value='Change dates, download your invoice, add the sauna.'}
 	{/if}
 	{assign var=feWaNumber value=Configuration::get('FEWO_WHATSAPP_NUMBER')}
 	{if !$feWaNumber}{assign var=feWaNumber value='4917612345678'}{* PLACEHOLDER: set real number via scripts/update_contact.sql *}{/if}
-	<div class="margin-top-50 htl-contact-page fe-contact-page-v2">
-		<div class="row">
-			<div class="col-sm-offset-2 col-sm-8 fe-contact-hero">
-				<p class="contact-header">{$feHeroTitle}</p>
-				<p class="contact-desc">{$feHeroDesc}</p>
+	<div class="fe-contact-page-v2">
+		<div class="fe-page-hero">
+			<div class="fe-page-hero__inner">
+				<div class="fe-page-hero__eyebrow">{l s='Contact'}</div>
+				<h1 class="fe-page-hero__title">{$feHeroTitle}</h1>
+				<p class="fe-page-hero__desc">{$feHeroDesc}</p>
 			</div>
 		</div>
-		<div class="row margin-top-50">
-			<div class="col-sm-5 col-md-4">
-				{block name='contact_form_info'}
-					<div class="htl-global-address-div col-sm-12 fe-contact-card fe-contact-info-card">
-						<div class="fe-contact-info-header">
-							<span class="fe-contact-info-icon"><i class="icon-home"></i></span>
-							<div>
-								<p class="fe-contact-card-title">{$feCardTitle}</p>
-								<p class="fe-contact-meta">{$feCardMeta}</p>
-							</div>
-						</div>
-						<ul class="fe-contact-list">
-							<li class="fe-contact-item">
-								<span class="fe-contact-icon"><i class="icon-map-marker"></i></span>
-								<div>
-									<span class="fe-contact-label">{l s='Address'}</span>
-									<span class="fe-contact-value">{$feCardAddress}</span>
-								</div>
-							</li>
-							<li class="fe-contact-item">
-								<span class="fe-contact-icon"><i class="icon-phone"></i></span>
-								<div>
-									<span class="fe-contact-label">{l s='Phone'}</span>
-									<span class="fe-contact-value"><a href="tel:+493670222944">+49 36702 22944</a></span>
-								</div>
-							</li>
-							<li class="fe-contact-item">
-								<span class="fe-contact-icon"><i class="icon-envelope"></i></span>
-								<div>
-									<span class="fe-contact-label">{l s='Email'}</span>
-									<span class="fe-contact-value"><a href="mailto:info@fewolauscha.de">info@fewolauscha.de</a></span>
-								</div>
-							</li>
-						</ul>
-						<div class="fe-contact-tip">
-							<i class="icon-lightbulb-o"></i>
-							<span>{l s='For the fastest response, include your travel dates and booking number if you have one.'}</span>
-						</div>
-						<a class="fe-wa-btn fe-wa-inline" href="https://wa.me/{$feWaNumber}?text={if $lang_iso == 'de'}Hallo%20FeWo%20Lauscha%2C%20ich%20h%C3%A4tte%20eine%20Frage%20zu%20einem%20Aufenthalt.{else}Hello%20FeWo%20Lauscha%2C%20I%20have%20a%20question%20about%20a%20stay.{/if}" target="_blank" rel="noopener" aria-label="{$feWaAria}">
-							<i class="icon-whatsapp"></i>
-							<span>{$feWaText}</span>
-						</a>
-					</div>
-				{/block}
+		<div class="fe-contact-layout">
+			<div class="fe-contact-reach">
+				<div class="fe-reach-heading">{$feReachTitle}</div>
+				<div class="fe-reach-card">
+					<div class="fe-reach-card__label">{l s='Email'}</div>
+					<div class="fe-reach-card__value"><a href="mailto:info@fewolauscha.de">info@fewolauscha.de</a></div>
+					<div class="fe-reach-card__note">{l s='Best for dates, invoices and anything not urgent.'}</div>
+				</div>
+				<div class="fe-reach-card">
+					<div class="fe-reach-card__label">{l s='Phone'}</div>
+					<div class="fe-reach-card__value"><a href="tel:+493670222944">+49 36702 22944</a></div>
+					<div class="fe-reach-card__note">{l s='Weekdays 09:00–18:00, and any time on your arrival day.'}</div>
+				</div>
+				<div class="fe-reach-card">
+					<div class="fe-reach-card__label">{l s='The house'}</div>
+					<div class="fe-reach-card__value">Steinachtal 1, 98724 Lauscha</div>
+					<div class="fe-reach-card__note">{l s='Thuringia, Germany. Parking at the door.'}</div>
+				</div>
+				<div class="fe-reach-card">
+					<div class="fe-reach-card__label">{$feManageTitle}</div>
+					<div class="fe-reach-card__value"><a href="{$link->getPageLink('my-account', true)|escape:'html':'UTF-8'}">{$feManageValue}</a></div>
+					<div class="fe-reach-card__note">{$feManageNote}</div>
+				</div>
+				<a class="fe-wa-btn fe-wa-inline" href="https://wa.me/{$feWaNumber}?text={if $lang_iso == 'de'}Hallo%20FeWo%20Lauscha%2C%20ich%20h%C3%A4tte%20eine%20Frage%20zu%20einem%20Aufenthalt.{else}Hello%20FeWo%20Lauscha%2C%20I%20have%20a%20question%20about%20a%20stay.{/if}" target="_blank" rel="noopener" aria-label="{$feWaAria}">
+					<i class="icon-whatsapp"></i>
+					<span>{$feWaText}</span>
+				</a>
 			</div>
-			<div class="col-sm-7 col-md-8">
+			<div class="fe-contact-main">
 			{block name='contact_form_content'}
 				{if isset($customerThread.token)}
 					<form action="{$link->getPageLink('contact', null, null, array('token' => $customerThread.token))}" method="post" class="contact-form-box fe-contact-card fe-contact-form-card" enctype="multipart/form-data">
@@ -147,7 +135,7 @@
 							<label for="subject" class="control-label">
 								{l s='Subject'} <span class="fe-required">*</span>
 							</label>
-							<input class="form-control contact_input fe-input" type="text" id="subject" name="subject" placeholder="{l s='What is your enquiry about?'}" value="{if isset($smarty.post.subject)}{$smarty.post.subject}{else if isset($customerThread.subject)}{$customerThread.subject|escape:'html':'UTF-8'}{/if}" {if isset($customerThread.subject)}readonly="readonly"{/if}/>
+							<input class="form-control contact_input fe-input" type="text" id="subject" name="subject" required="required" placeholder="{l s='What is your enquiry about?'}" value="{if isset($smarty.post.subject)}{$smarty.post.subject}{else if isset($customerThread.subject)}{$customerThread.subject|escape:'html':'UTF-8'}{/if}" {if isset($customerThread.subject)}readonly="readonly"{/if}/>
 						</div>
 						{if !isset($customerThread.id_contact) && isset($allowContactSelection) && $allowContactSelection}
 							<div class="form-group col-sm-6">
@@ -203,19 +191,18 @@
 								<i class="icon-paper-plane"></i>
 								<span>{l s='Send message'}</span>
 							</button>
+							<span class="fe-contact-submit-hint">{$feFormHint}</span>
 						</div>
 					</div>
 				</form>
 				{/block}
 			</div>
 		</div>
-		<div class="row margin-top-50 fe-contact-map-row">
-			<div class="col-sm-12">
-				<div class="fe-contact-card fe-contact-map-card">
-					<p class="fe-contact-section-title">{$feMapTitle}</p>
-					<iframe class="fe-contact-map" title="{$feMapTitle}" src="https://www.openstreetmap.org/export/embed.html?bbox=11.108537%2C50.468244%2C11.158537%2C50.488244&amp;layer=mapnik&amp;marker=50.478244%2C11.133537" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-					<a class="fe-map-link" href="https://www.openstreetmap.org/?mlat=50.478244&amp;mlon=11.133537#map=15/50.478244/11.133537" target="_blank" rel="noopener">{if $lang_iso == 'de'}Größere Karte öffnen{else}Open larger map{/if}</a>
-				</div>
+		<div class="fe-contact-map-row">
+			<div class="fe-contact-map-card fe-contact-card">
+				<p class="fe-contact-section-title">{$feMapTitle}</p>
+				<iframe class="fe-contact-map" title="{$feMapTitle}" src="https://www.openstreetmap.org/export/embed.html?bbox=11.108537%2C50.468244%2C11.158537%2C50.488244&amp;layer=mapnik&amp;marker=50.478244%2C11.133537" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+				<a class="fe-map-link" href="https://www.openstreetmap.org/?mlat=50.478244&amp;mlon=11.133537#map=15/50.478244/11.133537" target="_blank" rel="noopener">{if $lang_iso == 'de'}Größere Karte öffnen{else}Open larger map{/if}</a>
 			</div>
 		</div>
 		<div style="clear:both;"></div>
@@ -238,3 +225,23 @@
 		{/if}
 	{/block}
 {/block}
+
+<script>
+(function () {
+	var form = document.getElementById('contact-form') || document.querySelector('form.contact-form-box');
+	if (!form) { return; }
+	form.addEventListener('submit', function () {
+		var subject = form.querySelector('#subject');
+		if (!subject || subject.value.trim() !== '') { return; }
+		var topic = document.getElementById('contact_type');
+		var hidden = document.getElementById('id_contact');
+		if (topic && topic.textContent && topic.textContent.trim().toLowerCase().indexOf('select') === -1) {
+			subject.value = topic.textContent.trim();
+		} else if (hidden && hidden.value && hidden.value !== '0') {
+			subject.value = 'Enquiry #' + hidden.value;
+		} else {
+			subject.value = 'General enquiry';
+		}
+	});
+})();
+</script>

@@ -56,3 +56,69 @@
 	font-size: 12px;
 	line-height: 1;
 }
+
+/* ============================================================
+   FeWo Lauscha brand payment badges (Payment Badges.dc.html rule)
+   White tile, contain, 3px radius, 56x36 geometry on dark footer.
+   Keeps the existing artwork images untouched.
+   ============================================================ */
+.wk_footer_payment_block .fe-footer-payment__methods,
+.fe-footer-payment__methods {
+  gap: 9px !important;
+}
+
+.wk_footer_payment_block .fe-footer-payment__item,
+.fe-footer-payment__item {
+  width: 56px !important;
+  height: 36px !important;
+  min-width: 56px !important;
+  min-height: 36px !important;
+  padding: 5px 6px !important;
+  background: #FAF8F4 !important;
+  border: 1px solid #DDD7CC !important;
+  border-radius: 3px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  transition: border-color .15s ease !important;
+}
+
+.wk_footer_payment_block .fe-footer-payment__item:hover,
+.fe-footer-payment__item:hover {
+  background: #FFFFFF !important;
+  border-color: #8FA79E !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.wk_footer_payment_block .fe-footer-payment__item img,
+.fe-footer-payment__item img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  filter: none !important;
+}
+
+.wk_footer_payment_block .fe-footer-payment__title,
+.fe-footer-payment__title {
+  font-size: 9.5px !important;
+  letter-spacing: 0.26em !important;
+  text-transform: uppercase !important;
+  color: #8FA79E !important;
+}
+
+.wk_footer_payment_block .fe-footer-payment__title::before,
+.wk_footer_payment_block .fe-footer-payment__title::after,
+.fe-footer-payment__title::before,
+.fe-footer-payment__title::after {
+  display: none !important;
+}
+
+.wk_footer_payment_block .fe-footer-payment__secure,
+.fe-footer-payment__secure {
+  font-size: 11.5px !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.02em !important;
+  color: #A9C0B8 !important;
+}

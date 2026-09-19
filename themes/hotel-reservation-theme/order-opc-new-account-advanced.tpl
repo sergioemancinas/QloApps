@@ -1,12 +1,13 @@
 <div id="opc_new_account" class="opc-main-block">
     <div id="opc_new_account-overlay" class="opc-overlay" style="display: none;"></div>
+    {assign var='fewo_keycloak_login_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc'], true)|escape:'html':'UTF-8'}
     {assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerregister', ['back' => 'order-opc'], true)|escape:'html':'UTF-8'}
     <h2>{l s='Account'}</h2>
     {block name='order_opc_new_account_advanced_login_form'}
         <form action="{$link->getPageLink('authentication', true, NULL, "back=order-opc")|escape:'html':'UTF-8'}" method="post" id="login_form" class="box">
             <fieldset>
-                <h3 class="page-subheading">{l s='Already registered?'}</h3>
-                <p><a href="{$link->getPageLink('authentication', true)|escape:'html':'UTF-8'}" id="openLoginFormBlock">&raquo; {l s='Click here'}</a></p>
+                <h3 class="page-subheading">{l s='Sign in'}</h3>
+                <p><a href="{$fewo_keycloak_login_url|default:$link->getPageLink('authentication', true)|escape:'html':'UTF-8'}" rel="nofollow">{l s='Sign in securely with your FeWo Lauscha account'}</a></p>
                 <div id="login_form_content" style="display:none;">
                     <!-- Error return block -->
                     <div id="opc_login_errors" class="alert alert-danger" style="display:none;"></div>
@@ -35,31 +36,23 @@
             <fieldset>
                 <div class="box">
                     <h3 id="new_account_title" class="page-subheading">{l s='New Customer'}</h3>
-                    <div id="opc_account_choice" class="row">
-                        <div class="col-xs-12 col-md-6">
-                            <p class="title_block">{l s='Instant Checkout'}</p>
-                            <p class="opc-button">
-                                <button type="submit" class="btn btn-default button button-medium exclusive" id="opc_guestCheckout"><span>{l s='Guest checkout'}</span></button>
-                            </p>
+                    <div id="opc_account_choice" class="row opc-choice">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="opc-choice-card opc-choice-secure">
+                                <h4>{l s='Continue securely'}</h4>
+                                <p class="text-muted">{l s='Recommended. Sign in or register once — your details are managed securely and reused for every stay.'}</p>
+                                <a class="btn btn-default button button-medium" href="{$fewo_keycloak_login_url}" rel="nofollow"><span>{l s='Sign in'}</span></a>
+                                <a class="btn btn-primary button button-medium" href="{$fewo_keycloak_register_url}" rel="nofollow"><span>{l s='Create an account'}</span></a>
+                            </div>
                         </div>
-                        <div class="col-xs-12 col-md-6">
-                            <p class="title_block">{l s='Create your account today and enjoy:'}</p>
-                            <ul class="bullet">
-                                <li>- {l s='Personalized and secure access'}</li>
-                                <li>- {l s='A fast and easy check out process'}</li>
-                                <li>- {l s='Separate billing and shipping addresses'}</li>
-                            </ul>
-                            <p class="opc-button">
-                                <a class="btn btn-default button button-medium exclusive" id="opc_createAccount" href="{$fewo_keycloak_register_url}" rel="nofollow"><span><i class="icon-user left"></i>{l s='Create an account'}</span></a>
-                            </p>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="opc-choice-card">
+                                <h4>{l s='Book as a guest'}</h4>
+                                <p class="text-muted">{l s='No account needed. We only ask for the details required for your booking — confirmation goes to your email.'}</p>
+                                <button type="button" class="btn btn-default button button-medium" id="opc_guestCheckout"><span>{l s='Continue as guest'}</span></button>
+                            </div>
                         </div>
                     </div>
-                    <div id="opc_account_form" class="unvisible">
-                        {block name='displayCustomerAccountFormTop'}
-                            {$HOOK_CREATE_ACCOUNT_TOP}
-                        {/block}
-                        <!-- Error return block -->
-                        <div id="opc_account_errors" class="alert alert-danger" style="display:none;"></div>
                         <!-- END Error return block -->
                         <!-- Account -->
                         <input type="hidden" id="is_new_customer" name="is_new_customer" value="0" />

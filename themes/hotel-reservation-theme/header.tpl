@@ -79,8 +79,10 @@
 		{if $page_name == 'contact'}
 		<link rel="stylesheet" href="{$css_dir}fewo-contact.css?v=1" type="text/css" media="all" />
 		{/if}
-		<link rel="stylesheet" href="{$css_dir}fewo-brand.css?v=4" type="text/css" media="all" />
-		<script src="{$js_dir}fe-locale.js?v=1" defer></script>
+		<link rel="stylesheet" href="{$css_dir}fewo-brand.css?v=10" type="text/css" media="all" />
+		<script src="{$js_dir}fe-locale.js?v=2" defer></script>
+		<script src="{$js_dir}fe-booking.js?v=1" defer></script>
+		<script src="{$js_dir}fe-product.js?v=1" defer></script>
 		<link rel="stylesheet" href="{$css_dir}fewo-whatsapp.css?v=1" type="text/css" media="all" />
 		<!-- <link rel="stylesheet" href="http{if Tools::usingSecureMode()}s{/if}://fonts.googleapis.com/css?family=Open+Sans:300,600&amp;subset=latin,latin-ext" type="text/css" media="all" /> -->
 
@@ -114,12 +116,64 @@
 						</div>
 					</div>
 					{block name='header_nav'}
-						<div id="nav-main">
-							<div class="container">
-								<div class="row">
-									{block name='displayNav'}
-										<nav>{hook h="displayNav"}</nav>
-									{/block}
+						<div class="fe-nav">
+							<div class="fe-nav-utility">
+								<div class="fe-nav-utility__inner">
+									<span class="fe-nav-utility__note">{l s='Direct booking · best rate, no platform fee'}</span>
+									<div class="fe-nav-utility__actions">
+										<div class="fe-nav-lang fe-nav-dropdown">
+											<button type="button" class="fe-nav-lang__toggle" data-fe-dropdown="lang" aria-haspopup="true" aria-expanded="false">
+												<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 8h13M8 1.4c1.8 1.9 2.7 4.1 2.7 6.6S9.8 12.7 8 14.6C6.2 12.7 5.3 10.5 5.3 8S6.2 3.3 8 1.4Z" stroke="currentColor" stroke-width="1.2"/></svg>
+												<span>{$lang_iso|strtoupper}</span>
+												<svg class="fe-caret" width="9" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.3"/></svg>
+											</button>
+											<div class="fe-nav-dropdown__menu" role="menu">
+												{if isset($languages)}
+													{foreach from=$languages item=language}
+														<a role="menuitem" href="{$link->getLanguageLink($language.id_lang, null, null, null, $language.language_code)|escape:'html':'UTF-8'}" class="fe-nav-dropdown__item{if $language.id_lang == $cookie->id_lang} is-active{/if}">
+															<span>{$language.name}</span>
+															<code>{$language.language_code|strtoupper}</code>
+														</a>
+													{/foreach}
+												{/if}
+											</div>
+										</div>
+										<span class="fe-nav-utility__divider" aria-hidden="true"></span>
+										{if isset($cookie) && $cookie->isLogged()}
+											<a class="fe-nav-utility__link" href="{$link->getPageLink('my-account', true)}">{l s='My account'}</a>
+											<a class="fe-nav-utility__link" href="{$link->getPageLink('index', true)}?mylogout">{l s='Sign out'}</a>
+										{else}
+											<a class="fe-nav-utility__link" href="{$link->getModuleLink('fewokeycloak', 'customerlogin')|escape:'html':'UTF-8'}">{l s='Sign in'}</a>
+											<a class="fe-nav-utility__link" href="{$link->getModuleLink('fewokeycloak', 'customerregister')|escape:'html':'UTF-8'}">{l s='Register'}</a>
+										{/if}
+										<a class="fe-nav-utility__link fe-nav-cart" href="{$link->getPageLink('order-opc', true)|escape:'html':'UTF-8'}">
+											<svg width="14" height="15" viewBox="0 0 15 16" fill="none" aria-hidden="true"><path d="M1 3.2h2.1l1.8 8.3h7.2l1.6-6H4.3" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><circle cx="6.2" cy="14" r="1.1" fill="currentColor"/><circle cx="11.4" cy="14" r="1.1" fill="currentColor"/></svg>
+											<span class="fe-nav-cart__count ajax_cart_quantity{if !$cart_qties || $cart_qties == 0} unvisible{/if}">{if isset($cart_qties)}{$cart_qties|intval}{else}0{/if}</span>
+											<span class="fe-nav-cart__count ajax_cart_no_product{if $cart_qties && $cart_qties > 0} unvisible{/if}">0</span>
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="fe-nav-main">
+								<div class="fe-nav-main__inner">
+									<a href="{if isset($force_ssl) && $force_ssl}{$base_dir_ssl}{else}{$base_dir}{/if}" title="{$shop_name|escape:'html':'UTF-8'}" class="fe-nav-brand">
+										<img class="fe-nav-brand__mark" src="{$img_dir}brand/logo-mark-color.svg?v=1" alt="{$shop_name|escape:'html':'UTF-8'}" width="42" height="42"/>
+										<span class="fe-nav-brand__text">
+											<span class="fe-nav-brand__sub">FERIENWOHNUNG</span>
+											<span class="fe-nav-brand__name">LAUSCHA</span>
+										</span>
+									</a>
+									<button type="button" class="fe-nav-burger" aria-label="{l s='Menu'}" data-fe-toggle="mobile-nav">
+										<span></span><span></span><span></span>
+									</button>
+									<nav class="fe-nav-items" id="fe-mobile-nav" aria-label="{l s='Main navigation'}">
+										<a href="{$link->getPageLink('index')|escape:'html':'UTF-8'}" class="fe-nav-item{if $page_name == 'index'} is-active{/if}">{l s='Home'}</a>
+										<a href="{$link->getPageLink('index')|escape:'html':'UTF-8'}#hotelInteriorBlock" class="fe-nav-item">{l s='The apartment'}</a>
+										<a href="{$link->getPageLink('contact', true)|escape:'html':'UTF-8'}" class="fe-nav-item{if $page_name == 'contact'} is-active{/if}">{l s='Contact Us'}</a>
+										<a href="{$link->getCMSLink(10)|escape:'html':'UTF-8'}" class="fe-nav-item{if $smarty.server.REQUEST_URI|strstr:'getting-here'} is-active{/if}">{l s='Getting Here'}</a>
+										<a href="{$link->getCMSLink(9)|escape:'html':'UTF-8'}" class="fe-nav-item{if $smarty.server.REQUEST_URI|strstr:'discover-lauscha'} is-active{/if}">{l s='Discover Lauscha'}</a>
+										<a href="{$link->getPageLink('index')|escape:'html':'UTF-8'}#search_hotel_block" class="fe-nav-cta">{l s='Check availability'}</a>
+									</nav>
 								</div>
 							</div>
 						</div>
@@ -129,16 +183,6 @@
 							<div class="container">
 								<div class="row">
 									<div class="col-xs-12">
-										<div id="header_logo">
-											<a href="{if isset($force_ssl) && $force_ssl}{$base_dir_ssl}{else}{$base_dir}{/if}" title="{$shop_name|escape:'html':'UTF-8'}" class="fewo-brand-lockup">
-												<img class="fewo-brand-mark" src="{$img_dir}brand/logo-mark-white.svg?v=1" alt="{$shop_name|escape:'html':'UTF-8'}" width="56" height="56"/>
-												<span class="fewo-brand-text">
-													<span class="fewo-brand-sub">FERIENWOHNUNG</span>
-													<span class="fewo-brand-name">LAUSCHA</span>
-													<span class="fewo-brand-tagline">THÜRINGER WALD</span>
-												</span>
-											</a>
-										</div>
 										<div class="header-top-menu">
 											{block name='displayTop'}
 												{if isset($HOOK_TOP)}{$HOOK_TOP}{/if}

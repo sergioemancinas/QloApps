@@ -66,7 +66,36 @@
 						{$confirmation}
 					</p>
 				{/if}
-				<!-- left infos-->
+				<!-- Pack-9 search strip -->
+			{if $lang_iso == 'de'}
+				{assign var=feSearchLabel value='Ihre Suche'}
+				{assign var=feChangeDates value='Termine ändern'}
+				{assign var=feNightsOne value='Nacht'}
+				{assign var=feNightsMany value='Nächte'}
+				{assign var=feGuestsWord value='Gäste'}
+				{assign var=feGuestOne value='Gast'}
+			{else}
+				{assign var=feSearchLabel value='Your search'}
+				{assign var=feChangeDates value='Change dates'}
+				{assign var=feNightsOne value='night'}
+				{assign var=feNightsMany value='nights'}
+				{assign var=feGuestsWord value='guests'}
+				{assign var=feGuestOne value='guest'}
+			{/if}
+			<div class="fe-search-strip" id="fe-search-strip" data-n1="{$feNightsOne}" data-n2="{$feNightsMany}" data-g1="{$feGuestOne}" data-g2="{$feGuestsWord}">
+				<div class="fe-search-strip__inner">
+					<div class="fe-search-strip__info">
+						<span class="fe-search-strip__label">{$feSearchLabel}</span>
+						<span class="fe-search-strip__dates" id="fe-strip-dates">–</span>
+						<span class="fe-search-strip__dot">·</span>
+						<span id="fe-strip-nights"></span>
+						<span class="fe-search-strip__dot">·</span>
+						<span id="fe-strip-guests"></span>
+					</div>
+					<button type="button" class="fe-search-strip__change" id="fe-change-dates">{$feChangeDates}</button>
+				</div>
+			</div>
+			<!-- left infos-->
 				{block name='product_left_column'}
 					<div class="pb-left-column col-xs-12 col-sm-8 col-md-8">
 						<div class="room_type_img_containter card">

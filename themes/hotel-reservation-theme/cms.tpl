@@ -38,7 +38,37 @@
 				<p id="admin-action-result"></p>
 			</div>
 		{/if}
-		<div class="rte{if $content_only} content_only{/if}">
+		{if isset($cms->id) && $cms->id|intval == 10}
+			{if $lang_iso == 'de'}
+				{assign var=fePageEyebrow value='Anreise'}
+				{assign var=fePageTitle value='Lauscha ist leichter zu erreichen, als es aussieht.'}
+				{assign var=fePageDesc value='Drei Stunden von Leipzig, vier von Frankfurt — und der Zug hält direkt im Ort. Planen Sie Ihre Route, lesen Sie dann die Hinweise für den letzten Abschnitt.'}
+			{else}
+				{assign var=fePageEyebrow value='Getting here'}
+				{assign var=fePageTitle value='Lauscha is easier to reach than it looks.'}
+				{assign var=fePageDesc value='Three hours from Leipzig, four from Frankfurt, and the train stops in the village itself. Plan your route below, then check the notes for the last stretch.'}
+			{/if}
+		{elseif isset($cms->id) && $cms->id|intval == 9}
+			{if $lang_iso == 'de'}
+				{assign var=fePageEyebrow value='Lauscha entdecken'}
+				{assign var=fePageTitle value='Ein Glasbläserdorf im Thüringer Wald.'}
+				{assign var=fePageDesc value='Waldrand-Komfort und Aktivitäten: entspannen Sie in der Holz-Sauna im Freien, erkunden Sie die Wanderwege und kehren Sie in die warme, gut ausgestattete Ferienwohnung zurück.'}
+			{else}
+				{assign var=fePageEyebrow value='Discover Lauscha'}
+				{assign var=fePageTitle value='A glassmaking village in the Thüringer Wald.'}
+				{assign var=fePageDesc value='Forest-side comforts and activities: unwind in the wood-fired outdoor sauna, explore nearby hiking trails, and return to a warm, well-equipped Ferienwohnung for quiet evenings in nature.'}
+			{/if}
+		{/if}
+		{if isset($fePageTitle)}
+			<div class="fe-page-hero">
+				<div class="fe-page-hero__inner">
+					<div class="fe-page-hero__eyebrow">{$fePageEyebrow}</div>
+					<h1 class="fe-page-hero__title">{$fePageTitle}</h1>
+					<p class="fe-page-hero__desc">{$fePageDesc}</p>
+				</div>
+			</div>
+		{/if}
+		<div class="rte{if $content_only} content_only{/if}{if isset($fePageTitle)} fe-cms-page{/if}">
 			{if isset($cms->id) && $cms->id|intval == 9}
 				<div class="fe-weather-section">
 					<div class="container">

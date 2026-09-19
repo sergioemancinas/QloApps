@@ -1,30 +1,189 @@
-/* FeWo Lauscha brand system — palette from logo pack (draft 1)
-   ink #17332B, green #2F5D4E, teal #4E9A8F, gold #E8A33D, paper #FAF8F4 */
+/* ============================================================
+   FeWo Lauscha — brand design system (from Brand Sheet, draft 1)
+   Fonts: Jost (UI) + Lora (display). Bind every component here.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
 
 :root {
-  --fewo-ink: #17332B;
-  --fewo-green: #2F5D4E;
-  --fewo-teal: #4E9A8F;
-  --fewo-gold: #E8A33D;
-  --fewo-paper: #FAF8F4;
-  --fewo-sub: #6E8A80;
+	--fw-ink:    #17332B;
+	--fw-forest: #2F5D4E;
+	--fw-teal:   #4E9A8F;
+	--fw-amber:  #E8A33D;
+	--fw-paper:  #FAF8F4;
+	--fw-sand:   #EFECE6;
+	--fw-line:   #DDD7CC;
+	--fw-muted:  #5C6F68;
+	--fw-ok:     #2F5D4E;
+	--fw-error:  #A8452F;
+
+	--fw-font-ui:      'Jost', system-ui, sans-serif;
+	--fw-font-display: 'Lora', Georgia, serif;
+
+	--fw-track-btn:    0.16em;
+	--fw-track-eyebrow: 0.30em;
+	--fw-radius:       2px;
+	--fw-maxw:         1180px;
+
+	/* legacy aliases (earlier fewo-brand.css consumers) */
+	--fewo-ink: var(--fw-ink);
+	--fewo-green: var(--fw-forest);
+	--fewo-teal: var(--fw-teal);
+	--fewo-gold: var(--fw-amber);
+	--fewo-paper: var(--fw-paper);
+	--fewo-sub: #6E8A80;
 }
 
-/* Jost — brand typeface (Google Fonts, free license) */
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap');
+/* ---------- Typography ---------- */
+body,
+body * { font-family: var(--fw-font-ui); }
 
+h1, h2, h3, .page-heading, .page-subheading {
+	font-family: var(--fw-font-display);
+	color: var(--fw-ink);
+}
+
+body { color: var(--fw-ink); }
+.text-muted, .form_info, .inline-infos { color: var(--fw-muted) !important; }
+
+/* ---------- Links ---------- */
+a { color: var(--fw-forest); }
+a:hover { color: var(--fw-ink); }
+
+/* ---------- Buttons ---------- */
+.btn,
+button,
+input.button {
+	font-family: var(--fw-font-ui);
+	font-size: 12.5px;
+	letter-spacing: var(--fw-track-btn);
+	text-transform: uppercase;
+	border-radius: var(--fw-radius);
+	transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.btn-primary,
+.btn-primary:hover,
+button.btn-primary,
+.btn.button.btn-primary {
+	background: var(--fw-forest);
+	border-color: var(--fw-forest);
+	color: var(--fw-paper);
+	padding: 15px 30px;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover,
+.btn.button.btn-primary:hover {
+	background: var(--fw-ink);
+	border-color: var(--fw-ink);
+	color: var(--fw-paper);
+}
+
+.btn-default,
+.btn.button.btn-default,
+button.btn-default {
+	background: transparent;
+	border: 1px solid var(--fw-forest);
+	color: var(--fw-forest);
+	padding: 14px 29px;
+}
+
+.btn-default:hover,
+.btn.button.btn-default:hover,
+button.btn-default:hover {
+	background: var(--fw-forest);
+	color: var(--fw-paper);
+}
+
+.btn.disabled,
+.btn[disabled],
+button[disabled] {
+	background: #C6CFCB;
+	border-color: #C6CFCB;
+	color: #7B8C85;
+	pointer-events: none;
+}
+
+/* Amber voucher-style CTA */
+.btn-amber,
+.fe-welcome-card .btn.btn-primary {
+	background: var(--fw-amber);
+	border-color: var(--fw-amber);
+	color: var(--fw-ink);
+}
+
+.btn-amber:hover,
+.fe-welcome-card .btn.btn-primary:hover {
+	background: #D18F2B;
+	border-color: #D18B2B;
+	color: var(--fw-ink);
+}
+
+/* ---------- Forms ---------- */
+input.form-control,
+select.form-control,
+textarea.form-control,
+input.text,
+select,
+textarea {
+	font-family: var(--fw-font-ui);
+	font-weight: 300;
+	font-size: 15px;
+	color: var(--fw-ink);
+	background: #FFFDFA;
+	border: 1px solid #C9D3CD;
+	border-radius: var(--fw-radius);
+	padding: 13px 14px;
+}
+
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus,
+input.text:focus,
+select:focus,
+textarea:focus {
+	border-color: var(--fw-forest);
+	box-shadow: 0 0 0 3px rgba(78, 154, 143, 0.18);
+	outline: none;
+}
+
+input.form-control.error,
+.form-group.error input,
+.form-group.error select,
+.has-error .form-control {
+	border-color: var(--fw-error);
+	background: #FDF5F3;
+}
+
+label { color: var(--fw-ink); font-weight: 400; }
+.form-group label { color: var(--fw-muted); }
+.required sup, sup.required { color: var(--fw-error); }
+
+/* ---------- Cards / panels ---------- */
+.card,
+.page-content-box,
+.opc-choice-card {
+	background: var(--fw-paper);
+	border: 1px solid var(--fw-line);
+	border-radius: var(--fw-radius);
+}
+
+/* ---------- Alerts ---------- */
+.alert-success { background: var(--fw-paper); border: 1px solid var(--fw-forest); color: var(--fw-ink); }
+.alert-danger { background: #FDF5F3; border: 1px solid var(--fw-error); color: var(--fw-error); }
+.alert-warning { background: var(--fw-sand); border: 1px solid var(--fw-amber); color: var(--fw-ink); }
+
+/* ---------- Header brand lockup ---------- */
 .fewo-brand-lockup {
 	display: inline-flex;
 	align-items: center;
 	gap: 14px;
 	text-decoration: none;
-	font-family: 'Jost', sans-serif;
+	font-family: var(--fw-font-ui);
 }
 
-.fewo-brand-mark {
-	flex: none;
-	display: block;
-}
+.fewo-brand-mark { flex: none; display: block; }
 
 .fewo-brand-text {
 	display: flex;
@@ -37,7 +196,7 @@
 	font-size: 9px;
 	font-weight: 400;
 	letter-spacing: 0.44em;
-	color: var(--fewo-sub);
+	color: rgba(250, 248, 244, 0.85);
 }
 
 .fewo-brand-name {
@@ -45,15 +204,67 @@
 	font-weight: 500;
 	letter-spacing: 0.16em;
 	margin-top: 4px;
-	color: var(--fewo-ink);
+	color: var(--fw-paper);
+	text-shadow: 0 1px 2px rgba(23, 51, 43, 0.45);
 }
 
-.fewo-brand-tagline {
-	display: none;
-}
+.fewo-brand-tagline { display: none; }
 
 @media (max-width: 767px) {
 	.fewo-brand-mark { width: 40px; height: 40px; }
 	.fewo-brand-name { font-size: 17px; }
 	.fewo-brand-sub { font-size: 7px; }
+	.btn, button.btn { padding: 12px 22px; }
 }
+
+/* ---------- Quick-order (OPC) path choice ---------- */
+.opc-choice-card { padding: 20px 22px; }
+.opc-choice-secure { border-color: var(--fw-teal); }
+.opc-choice-card h4 { font-family: var(--fw-font-display); color: var(--fw-ink); margin-top: 0; }
+.opc-choice-card .btn { margin-right: 8px; }
+
+/* ---------- Availability calendar ---------- */
+.fe-availability { padding: 48px 0 8px; }
+.fe-availability-title { color: var(--fw-ink); letter-spacing: 0.06em; margin-bottom: 4px; }
+.fe-availability-sub { color: var(--fw-muted); margin-bottom: 20px; }
+
+#fewo-availability-calendar {
+	background: var(--fw-paper);
+	border: 1px solid var(--fw-line);
+	border-radius: var(--fw-radius);
+	padding: 16px;
+	max-width: 860px;
+}
+
+#fewo-availability-calendar.is-loading { opacity: 0.55; pointer-events: none; }
+
+#fewo-availability-calendar.has-error::after {
+	content: 'Calendar is temporarily unavailable — please try the search above.';
+	display: block;
+	color: var(--fw-error);
+	font-size: 13px;
+	padding: 10px 4px 0;
+}
+
+#fewo-availability-calendar .fc-theme-standard td,
+#fewo-availability-calendar .fc-theme-standard th { border-color: var(--fw-line); }
+
+#fewo-availability-calendar .fc .fc-button {
+	background: var(--fw-forest);
+	border-color: var(--fw-forest);
+	text-transform: none;
+	letter-spacing: normal;
+}
+
+#fewo-availability-calendar .fc .fc-button:not(:disabled):hover,
+#fewo-availability-calendar .fc .fc-button:not(:disabled).fc-button-active {
+	background: var(--fw-teal);
+	border-color: var(--fw-teal);
+}
+
+#fewo-availability-calendar .fc .fc-button:disabled {
+	background: #C6CFCB;
+	border-color: #C6CFCB;
+}
+
+.fe-availability-actions { padding: 18px 0 8px; }

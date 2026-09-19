@@ -34,6 +34,7 @@ class FewoBooking extends Module
 
         return parent::install()
             && $this->registerHook('paymentConfirm')
+            && $this->registerHook('actionGetExtraMailTemplateVars')
             && Configuration::updateValue(self::CONFIG_ENABLED, 1)
             && Configuration::updateValue(self::CONFIG_SUBJECT, $subjectDefaults)
             && Configuration::updateValue(self::CONFIG_INSTRUCTIONS, $instructionDefaults, true)
@@ -229,6 +230,87 @@ class FewoBooking extends Module
         }
 
         return $values;
+    }
+
+    /**
+     * Brand booking e-mails need stay variables the core does not send
+     * ({check_in}, {check_out}, {nights}, {guests}, {refund_amount}, ...).
+     * Compute them from the order referenced by {order_name}.
+     */
+    public function hookActionGetExtraMailTemplateVars(array $params)
+    {
+        $template = isset($params['template']) ? (string) $params['template'] : '';
+        $bookingTemplates = array(
+            'order_conf', 'order_changed', 'order_canceled', 'refund', 'payment', 'pre_arrival',
+        );
+        if (!in_array($template, $bookingTemplates, true)) {
+            return;
+        }
+
+        $vars = array();
+        $orderName = '';
+        foreach (array('{order_name}', '{order_reference}') as $key) {
+            if (isset($params['template_vars'][$key]) && $params['template_vars'][$key] !== '') {
+                $orderName = (string) $params['template_vars'][$key];
+                break;
+            }
+        }
+        if ($orderName === '') {
+            return;
+        }
+
+        $orderId = (int) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue(
+            'SELECT `id_order` FROM `' . _DB_PREFIX_ . 'orders`
+             WHERE `reference` = \'' . pSQL($orderName) . '\'
+             ORDER BY `id_order` ASC'
+        );
+        if (!$orderId) {
+            return;
+        }
+
+        $booking = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow(
+            'SELECT MIN(`date_from`) AS `date_from`, MAX(`date_to`) AS `date_to`,
+                    SUM(`adults`) AS `adults`, SUM(`children`) AS `children`,
+                    MAX(`total_price_tax_incl`) AS `total_price_tax_incl`
+             FROM `' . _DB_PREFIX_ . 'htl_booking_detail`
+             WHERE `id_order` = ' . $orderId . ' AND `is_back_order` = 0'
+        );
+
+        if (is_array($booking) && !empty($booking['date_from'])) {
+            $from = strtotime($booking['date_from']);
+            $to = strtotime($booking['date_to']);
+            $nights = ($from && $to) ? (int) round(($to - $from) / 86400) : 0;
+            $guests = (int) $booking['adults'] + (int) $booking['children'];
+
+            $vars['{check_in}'] = Tools::displayDate($booking['date_from'], (int) $params['id_lang']);
+            $vars['{check_out}'] = Tools::displayDate($booking['date_to'], (int) $params['id_lang']);
+            $vars['{check_in_time}'] = '15:00';
+            $vars['{check_out_time}'] = '10:00';
+            $vars['{nights}'] = (string) max(1, $nights);
+            $vars['{guests}'] = (string) max(1, $guests);
+            $vars['{key_code}'] = Tools::substr(Tools::hash($orderId . 'fewo'), 0, 6);
+            // "old" values in order_changed: same as current (we do not track history)
+            foreach (array('check_in', 'check_out', 'guests') as $f) {
+                $vars['{' . $f . '_old}'] = $vars['{' . $f . '}'];
+            }
+            if ($template === 'pre_arrival' && isset($params['extra_template_vars'])) {
+                // nothing extra yet; key_code is delivered above
+            }
+        }
+
+        if ($template === 'refund' || $template === 'order_canceled') {
+            $refundRow = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow(
+                'SELECT `total_paid` FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_order` = ' . $orderId
+            );
+            if (is_array($refundRow) && isset($refundRow['total_paid'])) {
+                $vars['{refund_amount}'] = Tools::displayPrice($refundRow['total_paid'], $this->context->currency, false);
+            }
+            $vars['{refund_method}'] = $vars['{refund_method}'] ?? $this->l('Original payment method');
+        }
+
+        if (!empty($vars) && isset($params['extra_template_vars']) && is_array($params['extra_template_vars'])) {
+            $params['extra_template_vars'] = array_merge($params['extra_template_vars'], $vars);
+        }
     }
 
     public function hookPaymentConfirm($params)

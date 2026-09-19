@@ -1,132 +1,161 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-		<title>Message from {shop_name}</title>
+<!DOCTYPE html>
+<!--
+  Fewo Lauscha — Your booking has been updated
+  QloApps / PrestaShop mail template: mails/<lang>/order_changed.html
+  Ship a plain-text twin at mails/<lang>/order_changed.txt.
 
+  Smarty variables used:
+    {shop_name}
+    {shop_url}
+    {shop_logo}
+    {firstname}
+    {lastname}
+    {order_name}
+    {total_paid}
+    {my_account_url}
+    {check_in_old} {check_out_old} {guests_old} — custom, the previous values
+    {check_in} {check_out} {nights} {guests} — custom hotel vars, assign them in your mail hook
 
-		<style>	@media only screen and (max-width: 300px){
-				body {
-					width:218px !important;
-					margin:auto !important;
-				}
-				.table {width:195px !important;margin:auto !important;}
-				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto !important;display: block !important;}
-				span.title{font-size:20px !important;line-height: 23px !important}
-				span.subtitle{font-size: 14px !important;line-height: 18px !important;padding-top:10px !important;display:block !important;}
-				td.box p{font-size: 12px !important;font-weight: bold !important;}
-				.table-recap table, .table-recap thead, .table-recap tbody, .table-recap th, .table-recap td, .table-recap tr {
-					display: block !important;
-				}
-				.table-recap{width: 200px!important;}
-				.table-recap tr td, .conf_body td{text-align:center !important;}
-				.address{display: block !important;margin-bottom: 10px !important;}
-				.space_address{display: none !important;}
-			}
-	@media only screen and (min-width: 301px) and (max-width: 500px) {
-				body {width:308px!important;margin:auto!important;}
-				.table {width:285px!important;margin:auto!important;}
-				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto!important;display: block!important;}
-				.table-recap table, .table-recap thead, .table-recap tbody, .table-recap th, .table-recap td, .table-recap tr {
-					display: block !important;
-				}
-				.table-recap{width: 295px !important;}
-				.table-recap tr td, .conf_body td{text-align:center !important;}
-
-			}
-	@media only screen and (min-width: 501px) and (max-width: 768px) {
-				body {width:478px!important;margin:auto!important;}
-				.table {width:450px!important;margin:auto!important;}
-				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto!important;display: block!important;}
-			}
-	@media only screen and (max-device-width: 480px) {
-				body {width:308px!important;margin:auto!important;}
-				.table {width:285px;margin:auto!important;}
-				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto!important;display: block!important;}
-
-				.table-recap{width: 295px!important;}
-				.table-recap tr td, .conf_body td{text-align:center!important;}
-				.address{display: block !important;margin-bottom: 10px !important;}
-				.space_address{display: none !important;}
-			}
+  Brand tokens are inlined as literal hex (mail clients cannot read CSS variables):
+    ink #17332B · forest #2F5D4E · teal #4E9A8F · amber #E8A33D
+    paper #FAF8F4 · sand #EFECE6 · line #DDD7CC
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="x-apple-disable-message-reformatting" />
+<meta name="color-scheme" content="light dark" />
+<meta name="supported-color-schemes" content="light dark" />
+<title>Your booking has been updated</title>
+<!--[if mso]>
+<xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+<![endif]-->
+<style>
+  @media only screen and (max-width:620px) {
+    .pad { padding-left:24px !important; padding-right:24px !important; }
+    .h1 { font-size:26px !important; }
+  }
 </style>
+</head>
+<body style="margin:0; padding:0; background-color:#EFECE6; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
 
-	</head>
-	<body style="-webkit-text-size-adjust:none;background-color:#fff;width:650px;font-family:Open-sans, sans-serif;color:#555454;font-size:13px;line-height:18px;margin:auto" >
-		<table class="table table-mail" style="width:100%;margin-top:10px;-moz-box-shadow:0 0 5px #afafaf;-webkit-box-shadow:0 0 5px #afafaf;-o-box-shadow:0 0 5px #afafaf;box-shadow:0 0 5px #afafaf;filter:progid:DXImageTransform.Microsoft.Shadow(color=#afafaf,Direction=134,Strength=5)">
-			<tr>
-				<td class="space" style="width:20px;padding:7px 0">&nbsp;</td>
-				<td align="center" style="padding:7px 0">
-					<table class="table" bgcolor="#ffffff" style="width:100%">
-						<tr>
-							<td align="center" class="logo" style="border-bottom:4px solid #333333;padding:7px 0">
-								<a title="{shop_name}" href="{shop_url}" target="_blank" style="color:#337ff1">
-									<img src="{shop_logo}" alt="{shop_name}" />
-								</a>
-							</td>
-						</tr>
+<span style="display:none; font-size:1px; color:#EFECE6; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">Booking {order_name} updated — please check the new dates and total.</span>
 
-<tr>
-	<td align="center" class="titleblock" style="padding:7px 0">
-		<font size="2" face="Open-sans, sans-serif" color="#555454">
-			<span class="title" style="font-weight:500;font-size:28px;text-transform:uppercase;line-height:33px">Hi {firstname} {lastname},</span>
-		</font>
-	</td>
-</tr>
-<tr>
-	<td class="space_footer" style="padding:0!important">&nbsp;</td>
-</tr>
-<tr>
-	<td class="box" style="border:1px solid #D6D4D4;background-color:#f8f8f8;padding:7px 0">
-		<table class="table" style="width:100%">
-			<tr>
-				<td width="10" style="padding:7px 0">&nbsp;</td>
-				<td style="padding:7px 0">
-					<font size="2" face="Open-sans, sans-serif" color="#555454">
-						<p data-html-only="1" style="border-bottom:1px solid #D6D4D4;margin:3px 0 7px;text-transform:uppercase;font-weight:500;font-size:18px;padding-bottom:10px">
-							Order {order_name}&nbsp;-&nbsp;Order changed						</p>
-						<span style="color:#777">
-							Your order with the reference <span style="color:#333"><strong>{order_name}</strong></span> from <span style="color:#333"><strong>{hotel_hotel_name}</strong></span> has been changed by the merchant.						</span>
-					</font>
-				</td>
-				<td width="10" style="padding:7px 0">&nbsp;</td>
-			</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td class="space_footer" style="padding:0!important">&nbsp;</td>
-</tr>
-<tr>
-	<td class="linkbelow" style="padding:7px 0">
-		<font size="2" face="Open-sans, sans-serif" color="#555454">
-			<span>
-				You can review your order and download your invoice from the <a href="{history_url}" target="_blank" style="color:#337ff1">"Order history"</a> section of your customer account by clicking <a href="{my_account_url}" target="_blank" style="color:#337ff1">"My account"</a> on our website.			</span>
-		</font>
-	</td>
-</tr>
-<tr>
-	<td class="linkbelow" style="padding:7px 0">
-		<font size="2" face="Open-sans, sans-serif" color="#555454">
-			<span>
-				If you have a guest account, you can follow your order via the <a href="{guest_tracking_url}?id_order={order_name}" target="_blank" style="color:#337ff1">"Guest Tracking"</a> section on our website.			</span>
-		</font>
-	</td>
-</tr>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#EFECE6;">
+<tr><td align="center" style="padding:32px 12px 40px 12px;">
 
-						<tr>
-							<td class="space_footer" style="padding:0!important">&nbsp;</td>
-						</tr>
-						<tr>
-							<td class="footer" style="border-top:4px solid #333333;padding:7px 0">
-								<span><a href="{shop_url}" target="_blank" style="color:#337ff1">{shop_name}</a> powered by <a href="https://webkul.com" target="_blank" style="color:#337ff1">Webkul&trade;</a></span>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td class="space" style="width:20px;padding:7px 0">&nbsp;</td>
-			</tr>
-		</table>
-	</body>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; background-color:#FAF8F4; border:1px solid #DDD7CC;">
+
+    <tr>
+      <td align="center" bgcolor="#17332B" style="background-color:#17332B; padding:32px 24px 28px 24px;">
+        <img src="{shop_logo}" alt="{shop_name}" width="56" height="56" style="display:block; border:0; outline:none; text-decoration:none; width:56px; height:56px; margin:0 auto 16px auto;" />
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:4px; color:#8FA79E; text-transform:uppercase;">Ferienwohnung</div>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:24px; line-height:30px; mso-line-height-rule:exactly; letter-spacing:6px; color:#FAF8F4; padding-top:8px; text-transform:uppercase;">Lauscha</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="pad" style="padding:40px 48px 0px 48px;">
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Booking updated</div>
+        <h1 class="h1" style="margin:14px 0 0 0; font-family:Georgia,'Times New Roman',serif; font-weight:normal; font-size:30px; line-height:38px; mso-line-height-rule:exactly; color:#17332B;">Your booking has changed.</h1>        <p style="margin:18px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:26px; mso-line-height-rule:exactly; color:#3E5A51;">Booking {order_name} was updated. Here is what it looks like now — please check it and tell us if anything is wrong.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="pad" style="padding:28px 48px 0px 48px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#F1EEE7; border:1px solid #DDD7CC;">
+          <tr><td style="padding:22px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Previously</td></tr>
+          <tr><td style="padding:0 24px 18px 24px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;">
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Check-in</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{check_in_old}</td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Check-out</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{check_out_old}</td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Guests</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{guests_old}</td>
+                </tr>
+              </table>
+          </td></tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="pad" style="padding:14px 48px 0px 48px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#F1EEE7; border:1px solid #DDD7CC; border-left:3px solid #E8A33D;">
+          <tr><td style="padding:22px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Now</td></tr>
+          <tr><td style="padding:0 24px 18px 24px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;">
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Check-in</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{check_in} from 15:00</strong></td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Check-out</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{check_out} until 10:00</strong></td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Nights</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{nights}</td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Guests</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{guests}</td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">New total</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{total_paid}</strong></td>
+                </tr>
+              </table>
+          </td></tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="pad" style="padding:24px 48px 0px 48px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#FBF1DF; border-left:3px solid #E8A33D;">
+          <tr><td style="padding:16px 20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:21px; mso-line-height-rule:exactly; color:#5A4520;">If the total went up, the balance is due before arrival. If it went down, we refund the difference to your original payment method within five working days.</td></tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="pad" style="padding:26px 48px 0px 48px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+          <tr><td bgcolor="#2F5D4E" style="background-color:#2F5D4E; border-radius:2px;">
+            <a href="{my_account_url}" style="display:block; padding:15px 34px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; color:#FAF8F4; text-decoration:none; text-transform:uppercase;">Review my booking</a>
+          </td></tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="pad" style="padding:34px 48px 40px 48px;">
+        <div style="height:1px; line-height:1px; font-size:0; background-color:#DDD7CC;">&nbsp;</div>
+        <p style="margin:22px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:23px; mso-line-height-rule:exactly; color:#3E5A51;">Did not ask for this change? Reply to this e-mail and we will sort it out.</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td bgcolor="#17332B" class="pad" style="background-color:#17332B; padding:30px 48px 32px 48px;">
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:15px; mso-line-height-rule:exactly; letter-spacing:3px; color:#8FA79E; text-transform:uppercase;">Fewo Lauscha</div>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:22px; mso-line-height-rule:exactly; color:#A9C0B8; padding-top:12px;">
+          TODO: Street 00, 98724 Lauscha, Th&uuml;ringen, Germany<br />
+          <a href="{shop_url}" style="color:#CFE0D9; text-decoration:underline;">fewolauscha.de</a> &nbsp;&middot;&nbsp; <a href="mailto:info@fewolauscha.de" style="color:#CFE0D9; text-decoration:underline;">info@fewolauscha.de</a>
+        </div>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:18px; mso-line-height-rule:exactly; color:#8FA79E; padding-top:18px;">
+          <a href="{shop_url}content/6-privacy-policy" style="color:#8FA79E; text-decoration:underline;">Privacy policy</a> &nbsp;&middot;&nbsp; <a href="{shop_url}content/3-terms-and-conditions-of-use" style="color:#8FA79E; text-decoration:underline;">Terms</a> &nbsp;&middot;&nbsp; <a href="{shop_url}content/1-policies" style="color:#8FA79E; text-decoration:underline;">Booking policies</a>
+        </div>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:18px; mso-line-height-rule:exactly; color:#8FA79E; padding-top:10px;">This is a service message about your booking with {shop_name}.</div>
+      </td>
+    </tr>
+
+  </table>
+
+</td></tr>
+</table>
+
+</body>
 </html>

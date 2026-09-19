@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
-  Fewo Lauscha — Your new password
-  QloApps / PrestaShop mail template: mails/<lang>/password.html
-  Ship a plain-text twin at mails/<lang>/password.txt.
+  Fewo Lauscha — Payment received
+  QloApps / PrestaShop mail template: mails/<lang>/payment.html
+  Ship a plain-text twin at mails/<lang>/payment.txt.
 
   Smarty variables used:
     {shop_name}
@@ -10,9 +10,12 @@
     {shop_logo}
     {firstname}
     {lastname}
-    {email}
-    {passwd}
+    {order_name}
+    {total_paid}
+    {payment}
+    {date}
     {my_account_url}
+    {invoice_block_html}
 
   Brand tokens are inlined as literal hex (mail clients cannot read CSS variables):
     ink #17332B · forest #2F5D4E · teal #4E9A8F · amber #E8A33D
@@ -25,7 +28,7 @@
 <meta name="x-apple-disable-message-reformatting" />
 <meta name="color-scheme" content="light dark" />
 <meta name="supported-color-schemes" content="light dark" />
-<title>Your new password</title>
+<title>Payment received</title>
 <!--[if mso]>
 <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
 <![endif]-->
@@ -38,7 +41,7 @@
 </head>
 <body style="margin:0; padding:0; background-color:#EFECE6; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
 
-<span style="display:none; font-size:1px; color:#EFECE6; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">Your Fewo Lauscha password has been changed.</span>
+<span style="display:none; font-size:1px; color:#EFECE6; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">We received your payment for booking {order_name}.</span>
 
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#EFECE6;">
 <tr><td align="center" style="padding:32px 12px 40px 12px;">
@@ -55,22 +58,31 @@
 
     <tr>
       <td class="pad" style="padding:40px 48px 0px 48px;">
-        <h1 class="h1" style="margin:0; font-family:Georgia,'Times New Roman',serif; font-weight:normal; font-size:30px; line-height:38px; mso-line-height-rule:exactly; color:#17332B;">Your password has changed.</h1>        <p style="margin:18px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:26px; mso-line-height-rule:exactly; color:#3E5A51;">Here are your new sign-in details. Change the password to something of your own once you are in.</p>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Payment received</div>
+        <h1 class="h1" style="margin:14px 0 0 0; font-family:Georgia,'Times New Roman',serif; font-weight:normal; font-size:30px; line-height:38px; mso-line-height-rule:exactly; color:#17332B;">Thank you, {firstname}.</h1>        <p style="margin:18px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:26px; mso-line-height-rule:exactly; color:#3E5A51;">Your payment for booking {order_name} has cleared. Your invoice is attached and also available in your account.</p>
       </td>
     </tr>
     <tr>
       <td class="pad" style="padding:28px 48px 0px 48px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#F1EEE7; border:1px solid #DDD7CC;">
-          <tr><td style="padding:22px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Sign-in details</td></tr>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#F1EEE7; border:1px solid #DDD7CC; border-left:3px solid #4E9A8F;">
+          <tr><td style="padding:22px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Receipt</td></tr>
           <tr><td style="padding:0 24px 18px 24px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;">
                 <tr>
-                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">E-mail</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{email}</td>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Reference</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{order_name}</td>
                 </tr>
                 <tr>
-                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">New password</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{passwd}</strong></td>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Paid</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{total_paid}</strong></td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Method</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{payment}</td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Date</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{date}</td>
                 </tr>
               </table>
           </td></tr>
@@ -78,18 +90,11 @@
       </td>
     </tr>
     <tr>
-      <td class="pad" style="padding:26px 48px 0px 48px;">
+      <td class="pad" style="padding:26px 48px 40px 48px;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0">
           <tr><td bgcolor="#2F5D4E" style="background-color:#2F5D4E; border-radius:2px;">
-            <a href="{my_account_url}" style="display:block; padding:15px 34px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; color:#FAF8F4; text-decoration:none; text-transform:uppercase;">Sign in</a>
+            <a href="{my_account_url}" style="display:block; padding:15px 34px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; color:#FAF8F4; text-decoration:none; text-transform:uppercase;">Download invoice</a>
           </td></tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="pad" style="padding:28px 48px 40px 48px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#FBEEEA; border-left:3px solid #A8452F;">
-          <tr><td style="padding:16px 20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:21px; mso-line-height-rule:exactly; color:#7A3323;">Did not change your password? Reply to this e-mail immediately.</td></tr>
         </table>
       </td>
     </tr>

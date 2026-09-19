@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
-  Fewo Lauscha — Your booking has been cancelled
-  QloApps / PrestaShop mail template: mails/<lang>/order_canceled.html
-  Ship a plain-text twin at mails/<lang>/order_canceled.txt.
+  Fewo Lauscha — Your arrival details
+  QloApps / PrestaShop mail template: mails/<lang>/pre_arrival.html
+  Ship a plain-text twin at mails/<lang>/pre_arrival.txt.
 
   Smarty variables used:
     {shop_name}
@@ -11,10 +11,10 @@
     {firstname}
     {lastname}
     {order_name}
-    {total_paid}
+    {key_code} — custom, the key-box code
     {my_account_url}
-    {refund_amount} {refund_method} — custom
     {check_in} {check_out} {nights} {guests} — custom hotel vars, assign them in your mail hook
+    Not a stock QloApps mail: send it from a cron three days before {check_in}.
 
   Brand tokens are inlined as literal hex (mail clients cannot read CSS variables):
     ink #17332B · forest #2F5D4E · teal #4E9A8F · amber #E8A33D
@@ -27,7 +27,7 @@
 <meta name="x-apple-disable-message-reformatting" />
 <meta name="color-scheme" content="light dark" />
 <meta name="supported-color-schemes" content="light dark" />
-<title>Your booking has been cancelled</title>
+<title>Your arrival details</title>
 <!--[if mso]>
 <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
 <![endif]-->
@@ -40,7 +40,7 @@
 </head>
 <body style="margin:0; padding:0; background-color:#EFECE6; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
 
-<span style="display:none; font-size:1px; color:#EFECE6; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">Booking {order_name} is cancelled. Refund details inside.</span>
+<span style="display:none; font-size:1px; color:#EFECE6; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">Three days to go — here is everything you need to get to the house.</span>
 
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#EFECE6;">
 <tr><td align="center" style="padding:32px 12px 40px 12px;">
@@ -57,14 +57,14 @@
 
     <tr>
       <td class="pad" style="padding:40px 48px 0px 48px;">
-        <div style="font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Booking cancelled</div>
-        <h1 class="h1" style="margin:14px 0 0 0; font-family:Georgia,'Times New Roman',serif; font-weight:normal; font-size:30px; line-height:38px; mso-line-height-rule:exactly; color:#17332B;">Your booking is cancelled.</h1>        <p style="margin:18px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:26px; mso-line-height-rule:exactly; color:#3E5A51;">We have cancelled booking {order_name}. Nothing further is needed from you.</p>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Three days to go</div>
+        <h1 class="h1" style="margin:14px 0 0 0; font-family:Georgia,'Times New Roman',serif; font-weight:normal; font-size:30px; line-height:38px; mso-line-height-rule:exactly; color:#17332B;">Getting to the house.</h1>        <p style="margin:18px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:26px; mso-line-height-rule:exactly; color:#3E5A51;">Your stay starts {check_in}. Here is everything you need for arrival — save this message or print it, mobile signal is patchy on the last stretch.</p>
       </td>
     </tr>
     <tr>
       <td class="pad" style="padding:28px 48px 0px 48px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#F1EEE7; border:1px solid #DDD7CC; border-left:3px solid #A8452F;">
-          <tr><td style="padding:22px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Cancelled stay</td></tr>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#F1EEE7; border:1px solid #DDD7CC; border-left:3px solid #E8A33D;">
+          <tr><td style="padding:22px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Arrival</td></tr>
           <tr><td style="padding:0 24px 18px 24px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;">
                 <tr>
@@ -73,62 +73,49 @@
                 </tr>
                 <tr>
                   <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Check-in</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{check_in}</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{check_in}, from 15:00</strong></td>
                 </tr>
                 <tr>
                   <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Check-out</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{check_out}</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{check_out}, until 10:00</td>
                 </tr>
                 <tr>
-                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Guests</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{guests}</td>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Key-box code</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{key_code}</strong></td>
+                </tr>
+                <tr>
+                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Parking</td>
+                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">At the house, no permit needed</td>
                 </tr>
               </table>
           </td></tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="pad" style="padding:14px 48px 0px 48px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#F1EEE7; border:1px solid #DDD7CC;">
-          <tr><td style="padding:22px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Refund</td></tr>
-          <tr><td style="padding:0 24px 18px 24px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;">
-                <tr>
-                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Amount</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;"><strong>{refund_amount}</strong></td>
-                </tr>
-                <tr>
-                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Back to</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">{refund_method}</td>
-                </tr>
-                <tr>
-                  <td width="130" style="width:130px; padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#5C6F68; vertical-align:top;">Expect it in</td>
-                  <td style="padding:7px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#17332B;">Up to 5 working days</td>
-                </tr>
-              </table>
-          </td></tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="pad" style="padding:24px 48px 0px 48px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; background-color:#FBEEEA; border-left:3px solid #A8452F;">
-          <tr><td style="padding:16px 20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:21px; mso-line-height-rule:exactly; color:#7A3323;">Cancelled inside the 14-day window? Part of the stay may be non-refundable — the amount above is what we are returning.</td></tr>
         </table>
       </td>
     </tr>
     <tr>
       <td class="pad" style="padding:32px 48px 0px 48px;">
         <div style="height:1px; line-height:1px; font-size:0; background-color:#DDD7CC;">&nbsp;</div>
-        <p style="margin:22px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:26px; mso-line-height-rule:exactly; color:#3E5A51;">We would still like to host you. The forest is quietest in late autumn, and the sauna is at its best then.</p>
       </td>
     </tr>
     <tr>
-      <td class="pad" style="padding:22px 48px 40px 48px;">
+      <td class="pad" style="padding:28px 48px 0px 48px;">
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:14px; mso-line-height-rule:exactly; letter-spacing:2px; color:#5C6F68; text-transform:uppercase;">Good to know</div>
+        <div style="height:16px; line-height:16px; font-size:0;">&nbsp;</div>
+        <div style="font-family:Georgia,'Times New Roman',serif; font-size:17px; line-height:24px; mso-line-height-rule:exactly; color:#17332B;">The sauna</div>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#3E5A51; padding-top:4px;">Reply by the day before and we will heat the wood-fired sauna for your first evening.</div>
+        <div style="height:18px; line-height:18px; font-size:0;">&nbsp;</div>
+        <div style="font-family:Georgia,'Times New Roman',serif; font-size:17px; line-height:24px; mso-line-height-rule:exactly; color:#17332B;">Shopping</div>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#3E5A51; padding-top:4px;">The last supermarket before the house closes at 20:00, and Sundays it is shut. Bring what you need for the first evening.</div>
+        <div style="height:18px; line-height:18px; font-size:0;">&nbsp;</div>
+        <div style="font-family:Georgia,'Times New Roman',serif; font-size:17px; line-height:24px; mso-line-height-rule:exactly; color:#17332B;">Trails</div>
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:22px; mso-line-height-rule:exactly; color:#3E5A51; padding-top:4px;">The Rennsteig path starts a ten-minute walk uphill. Maps are in the welcome folder on the dining table.</div>
+      </td>
+    </tr>
+    <tr>
+      <td class="pad" style="padding:28px 48px 40px 48px;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0">
           <tr><td bgcolor="#2F5D4E" style="background-color:#2F5D4E; border-radius:2px;">
-            <a href="{shop_url}" style="display:block; padding:15px 34px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; color:#FAF8F4; text-decoration:none; text-transform:uppercase;">Check other dates</a>
+            <a href="{shop_url}content/10-getting-here" style="display:block; padding:15px 34px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; color:#FAF8F4; text-decoration:none; text-transform:uppercase;">Full directions</a>
           </td></tr>
         </table>
       </td>

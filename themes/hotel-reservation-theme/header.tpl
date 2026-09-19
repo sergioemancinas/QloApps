@@ -79,7 +79,7 @@
 		{if $page_name == 'contact'}
 		<link rel="stylesheet" href="{$css_dir}fewo-contact.css?v=1" type="text/css" media="all" />
 		{/if}
-		<link rel="stylesheet" href="{$css_dir}fewo-brand.css?v=1" type="text/css" media="all" />
+		<link rel="stylesheet" href="{$css_dir}fewo-brand.css?v=2" type="text/css" media="all" />
 		<link rel="stylesheet" href="{$css_dir}fewo-whatsapp.css?v=1" type="text/css" media="all" />
 		<!-- <link rel="stylesheet" href="http{if Tools::usingSecureMode()}s{/if}://fonts.googleapis.com/css?family=Open+Sans:300,600&amp;subset=latin,latin-ext" type="text/css" media="all" /> -->
 
@@ -130,7 +130,7 @@
 									<div class="col-xs-12">
 										<div id="header_logo">
 											<a href="{if isset($force_ssl) && $force_ssl}{$base_dir_ssl}{else}{$base_dir}{/if}" title="{$shop_name|escape:'html':'UTF-8'}" class="fewo-brand-lockup">
-												<img class="fewo-brand-mark" src="{$img_dir}brand/logo-mark-color.svg?v=1" alt="{$shop_name|escape:'html':'UTF-8'}" width="56" height="56"/>
+												<img class="fewo-brand-mark" src="{$img_dir}brand/logo-mark-white.svg?v=1" alt="{$shop_name|escape:'html':'UTF-8'}" width="56" height="56"/>
 												<span class="fewo-brand-text">
 													<span class="fewo-brand-sub">FERIENWOHNUNG</span>
 													<span class="fewo-brand-name">LAUSCHA</span>

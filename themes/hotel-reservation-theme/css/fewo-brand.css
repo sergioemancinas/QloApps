@@ -34,6 +34,22 @@
 	--fewo-sub: #6E8A80;
 }
 
+/* ---------- Focus & tap highlight ---------- */
+/* Remove default blue focus ring / tap highlight; keep an on-brand visible
+   focus indicator for keyboard users (a11y) via :focus-visible only. */
+button, a, input, select, textarea, [role="button"] {
+	-webkit-tap-highlight-color: transparent;
+}
+button:focus, a:focus, .btn:focus, input[type="submit"]:focus {
+	outline: none;
+	box-shadow: none;
+}
+button:focus-visible, a:focus-visible, .btn:focus-visible,
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(78, 154, 143, 0.25);
+}
+
 /* ---------- Typography ---------- */
 body,
 body * { font-family: var(--fw-font-ui); }
@@ -196,7 +212,8 @@ label { color: var(--fw-ink); font-weight: 400; }
 	font-size: 9px;
 	font-weight: 400;
 	letter-spacing: 0.44em;
-	color: rgba(250, 248, 244, 0.85);
+	color: #FAF8F4 !important;
+	text-shadow: 0 1px 2px rgba(23, 51, 43, 0.45);
 }
 
 .fewo-brand-name {
@@ -204,7 +221,7 @@ label { color: var(--fw-ink); font-weight: 400; }
 	font-weight: 500;
 	letter-spacing: 0.16em;
 	margin-top: 4px;
-	color: var(--fw-paper);
+	color: #FAF8F4 !important;
 	text-shadow: 0 1px 2px rgba(23, 51, 43, 0.45);
 }
 

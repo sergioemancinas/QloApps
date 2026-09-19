@@ -1,7 +1,7 @@
 <div id="opc_new_account" class="opc-main-block">
 	<div id="opc_new_account-overlay" class="opc-overlay" style="display: none;"></div>
 	{assign var='fewo_keycloak_login_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc'], true)|escape:'html':'UTF-8'}
-	{assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc', 'register' => 1], true)|escape:'html':'UTF-8'}
+	{assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerregister', ['back' => 'order-opc'], true)|escape:'html':'UTF-8'}
 	{block name='order_opc_new_account_login_form'}
 		<div id="login_form">
 			<fieldset>

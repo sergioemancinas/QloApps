@@ -1,6 +1,6 @@
 <div id="opc_new_account" class="opc-main-block">
     <div id="opc_new_account-overlay" class="opc-overlay" style="display: none;"></div>
-    {assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['back' => 'order-opc', 'register' => 1], true)|escape:'html':'UTF-8'}
+    {assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerregister', ['back' => 'order-opc'], true)|escape:'html':'UTF-8'}
     <h2>{l s='Account'}</h2>
     {block name='order_opc_new_account_advanced_login_form'}
         <form action="{$link->getPageLink('authentication', true, NULL, "back=order-opc")|escape:'html':'UTF-8'}" method="post" id="login_form" class="box">

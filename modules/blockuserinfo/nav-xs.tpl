@@ -22,7 +22,7 @@
 
 <ul class="nav nav-pills nav-stacked visible-xs wk-nav-style">
 	{assign var='fewo_keycloak_login_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', [], true)|escape:'html':'UTF-8'}
-	{assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerlogin', ['register' => 1], true)|escape:'html':'UTF-8'}
+	{assign var='fewo_keycloak_register_url' value=$link->getModuleLink('fewokeycloak', 'customerregister', [], true)|escape:'html':'UTF-8'}
 	{if $logged}
 		<li>
 			<a class="navigation-link" href="{$link->getPageLink('history', true)|escape:'html'}" title="{l s='Bookings' mod='blockuserinfo'}">{l s='Bookings' mod='blockuserinfo'}</a>

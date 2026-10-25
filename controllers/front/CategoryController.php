@@ -143,11 +143,11 @@ class CategoryControllerCore extends FrontController
         $displayAllRoomsTypes = false;
         if (!($date_from = Tools::getValue('date_from'))) {
             $date_from = date('Y-m-d');
-            $date_to = date('Y-m-d', strtotime($date_from) + 86400);
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_from)));
             $displayAllRoomsTypes = true;
         }
         if (!($date_to = Tools::getValue('date_to'))) {
-            $date_to = date('Y-m-d', strtotime($date_from) + 86400);
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_from)));
             $displayAllRoomsTypes = true;
         }
 
@@ -165,7 +165,7 @@ class CategoryControllerCore extends FrontController
             ) {
                 $date_from = date('Y-m-d', strtotime('+ '.$minBookingOffset.' day'));
                 if (strtotime($date_from) >= strtotime($date_to)) {
-                    $date_to = date('Y-m-d', strtotime($date_from) + 86400);
+                    $date_to = date('Y-m-d', strtotime('+1 day', strtotime($date_from)));
                 }
             }
 

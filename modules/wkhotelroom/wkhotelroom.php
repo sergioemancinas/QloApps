@@ -49,7 +49,7 @@ class WkHotelRoom extends Module
         if ($hotelRoomDisplay = $objRoomBlock->getHotelRoomDisplayData()) {
             $idLang = $this->context->language->id;
             $dateFrom = date('Y-m-d');
-            $dateTo = date('Y-m-d', strtotime($dateFrom) + 86400);
+            $dateTo = date('Y-m-d', strtotime('+1 day', strtotime($dateFrom)));
             $useTax = HotelBookingDetail::useTax();
             foreach ($hotelRoomDisplay as &$htlRoom) {
                 $idProduct = $htlRoom['id_product'];

@@ -1480,7 +1480,7 @@ class HotelBookingDetail extends ObjectModel
             }
 
             while ($iDateFrom < $iDateTo) {
-                $iDateFrom += 86400; // add 24 hours
+                $iDateFrom = strtotime('+1 day', $iDateFrom);
                 if ($iDateFrom != $iDateTo || !$for_check) {
                     // to stop last entry in check partial case
 

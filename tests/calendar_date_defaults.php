@@ -1,4 +1,8 @@
 <?php
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
 // Exercise the real date defaults without booting the database-backed controllers.
 $root = isset($argv[1]) ? rtrim($argv[1], '/') : dirname(__DIR__);
 $files = array(

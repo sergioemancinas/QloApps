@@ -2,8 +2,10 @@
 // Exercise the real date defaults without booting the database-backed controllers.
 $root = isset($argv[1]) ? rtrim($argv[1], '/') : dirname(__DIR__);
 $files = array(
-    'modules/wkhotelroom/wkhotelroom.php',
-    'modules/hotelreservationsystem/controllers/admin/AdminHotelFeaturePricesSettings.php',
+    'modules/wkhotelroom/wkhotelroom.php' => 1,
+    'modules/hotelreservationsystem/controllers/admin/AdminHotelFeaturePricesSettings.php' => 1,
+    'controllers/front/CategoryController.php' => 3,
+    'modules/wkhotelfilterblock/wkhotelfilterblock.php' => 2,
 );
 $cases = array(
     '2026-10-25' => '2026-10-26',
@@ -28,22 +30,29 @@ $booking = (new ReflectionClass('HotelBookingDetail'))->newInstanceWithoutConstr
 $originalTimezone = date_default_timezone_get();
 $checks = 0;
 try {
-    foreach ($files as $file) {
+    foreach ($files as $file => $expectedExpressions) {
         $source = file_get_contents($root.'/'.$file);
-        $pattern = '/\$dateFrom = date\(\'Y-m-d\'\);\s*\$dateTo = ([^;]+);/';
-        if (preg_match_all($pattern, $source, $matches) !== 1) {
-            throw new RuntimeException('Expected one default date pair in '.$file);
+        $pattern = '/\$(?:dateTo|date_to) = (date\(\'Y-m-d(?: H:i:s)?\', [^;\n]+\));/';
+        preg_match_all($pattern, $source, $matches);
+        $expressions = array_filter($matches[1], function ($expression) {
+            return strpos($expression, '$dateFrom') !== false || strpos($expression, '$date_from') !== false;
+        });
+        if (count($expressions) !== $expectedExpressions) {
+            throw new RuntimeException('Unexpected date-default coverage in '.$file);
         }
         foreach (array('Europe/Berlin', 'Europe/Paris', 'UTC') as $timezone) {
             date_default_timezone_set($timezone);
             foreach ($cases as $dateFrom => $expected) {
-                // The expression is trusted repository code, not request input.
-                $dateTo = eval('return '.$matches[1][0].';');
-                $nights = (new DateTime($dateFrom))->diff(new DateTime($dateTo))->days;
-                if ($dateTo !== $expected || $nights !== 1) {
-                    throw new RuntimeException($file.': '.$timezone.' '.$dateFrom.' -> '.$dateTo);
+                $date_from = $dateFrom;
+                foreach ($expressions as $expression) {
+                    // The expression is trusted repository code, not request input.
+                    $dateTo = eval('return '.$expression.';');
+                    $nights = (new DateTime($dateFrom))->diff(new DateTime($dateTo))->days;
+                    if (substr($dateTo, 0, 10) !== $expected || $nights !== 1) {
+                        throw new RuntimeException($file.': '.$timezone.' '.$dateFrom.' -> '.$dateTo);
+                    }
+                    ++$checks;
                 }
-                ++$checks;
             }
         }
     }

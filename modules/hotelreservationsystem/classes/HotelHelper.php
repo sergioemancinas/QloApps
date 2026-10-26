@@ -2738,7 +2738,7 @@ class HotelHelper
             $isValid = false;
         } else if ($dateTo != '' && ($dateToTimestamp === false || ($dateToTimestamp < $validStartDateTimeStamp))) {
             $isValid = false;
-        } else if ($dateTo != '' && $dateFrom != '' && $dateFromTimestamp >= $dateToTimestamp) {
+        } else if ($dateTo != '' && $dateToTimestamp <= ($dateFrom != '' ? $dateFromTimestamp : $validStartDateTimeStamp)) {
             $isValid = false;
         } else if ($dateToTimestamp > $maxOrderDateTimestamp) {
             $isValid = false;

@@ -35,6 +35,16 @@ try {
         foreach ([[false, false], ['', ''], [$from, false], [false, $to], [$from, $to], [$from.' 00:00:00', $to.' 00:00:00']] as $pair) {
             $check(HotelHelper::validateDateRangeForHotel($pair[0], $pair[1], 1) === true, 'Valid/default dates rejected: '.$timezone);
         }
+        $today = date('Y-m-d');
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+        $check(HotelHelper::validateDateRangeForHotel(false, $today, 1) === false, 'Missing arrival allowed zero-night checkout');
+        $check(HotelHelper::validateDateRangeForHotel(false, $tomorrow, 1) === true, 'Missing arrival rejected tomorrow checkout');
+        $filter = file_get_contents($root.'/modules/wkhotelfilterblock/wkhotelfilterblock.php');
+        if (!preg_match('/\$date_from = (date\([^;\n]+\));/', $filter, $default)) {
+            throw new RuntimeException('Room-filter arrival default missing');
+        }
+        $filterFrom = eval('return '.$default[1].';');
+        $check(HotelHelper::getNumberOfDays($filterFrom, $tomorrow) === 1, 'Room-filter default made zero-night partial stay');
         $check(HotelHelper::validateDateRangeForHotel($to, $from, 1) === false, 'Reversed stay accepted');
         $check(HotelHelper::validateDateRangeForHotel($from, $from, 1) === false, 'Zero-night stay accepted');
         $check(HotelHelper::validateDateRangeForHotel(date('Y-m-d', strtotime('-1 day')), $to, 1) === false, 'Past arrival accepted');

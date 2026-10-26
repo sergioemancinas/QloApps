@@ -186,7 +186,7 @@ class wkhotelfilterblock extends Module
 
                     $urlData = array ();
                     if (!($date_from = Tools::getValue('date_from'))) {
-                        $date_from = date('Y-m-d H:i:s');
+                        $date_from = date('Y-m-d');
                         $date_to = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($date_from)));
                     } else {
                         $urlData['date_from'] = $date_from;

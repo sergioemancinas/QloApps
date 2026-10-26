@@ -45,6 +45,14 @@ try {
         }
         $filterFrom = eval('return '.$default[1].';');
         $check(HotelHelper::getNumberOfDays($filterFrom, $tomorrow) === 1, 'Room-filter default made zero-night partial stay');
+        $check(HotelHelper::validateDateRangeForHotel($from.' 16:00:00', $to.' 10:00:00', 1) === false, 'Sub-day overnight stay accepted');
+        $check(HotelHelper::validateDateRangeForHotel(false, $today.' 12:00:00', 1) === false, 'Sub-day checkout-only stay accepted');
+        $check(HotelHelper::validateDateRangeForHotel($from.' 16:00:00', false, 1) === false, 'Sub-day arrival-only default accepted');
+        $check(HotelHelper::validateDateRangeForHotel($from.' 16:00:00', $to.' 16:00:00', 1) === true, 'Full-day datetime stay rejected');
+        $check(HotelHelper::validateDateRangeForHotel($from.' 99:00:00', $to, 1) === false, 'Invalid arrival time accepted');
+        $check(HotelHelper::validateDateRangeForHotel($from, $to.' 99:00:00', 1) === false, 'Invalid departure time accepted');
+        $spring = date('Y-m-d', strtotime('last sunday of march '.((int) date('Y') + 1)));
+        $check(HotelHelper::validateDateRangeForHotel($spring.' 00:00:00', date('Y-m-d', strtotime($spring.' +1 day')).' 00:00:00', 1) === true, 'Spring DST calendar night rejected');
         $check(HotelHelper::validateDateRangeForHotel($to, $from, 1) === false, 'Reversed stay accepted');
         $check(HotelHelper::validateDateRangeForHotel($from, $from, 1) === false, 'Zero-night stay accepted');
         $check(HotelHelper::validateDateRangeForHotel(date('Y-m-d', strtotime('-1 day')), $to, 1) === false, 'Past arrival accepted');

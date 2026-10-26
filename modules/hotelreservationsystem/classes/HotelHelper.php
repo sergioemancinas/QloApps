@@ -2718,6 +2718,12 @@ class HotelHelper
      */
     public static function validateDateRangeForHotel($dateFrom, $dateTo, $idHotel)
     {
+        foreach (array($dateFrom, $dateTo) as $date) {
+            if ($date !== false && $date !== '' && (!is_string($date) || !Validate::isDate($date))) {
+                return false;
+            }
+        }
+
         $validStartDateTimeStamp = strtotime(date('Y-m-d'));
         if ($minBookingOffset = (int) HotelOrderRestrictDate::getMinimumBookingOffset($idHotel)) {
             $validStartDateTimeStamp = strtotime('+ '.$minBookingOffset.' day', $validStartDateTimeStamp);

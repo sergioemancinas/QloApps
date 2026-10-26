@@ -2718,6 +2718,12 @@ class HotelHelper
      */
     public static function validateDateRangeForHotel($dateFrom, $dateTo, $idHotel)
     {
+        foreach (array($dateFrom, $dateTo) as $date) {
+            if ($date !== false && $date !== '' && (!is_string($date) || !Validate::isDate($date))) {
+                return false;
+            }
+        }
+
         $validStartDateTimeStamp = strtotime(date('Y-m-d'));
         if ($minBookingOffset = (int) HotelOrderRestrictDate::getMinimumBookingOffset($idHotel)) {
             $validStartDateTimeStamp = strtotime('+ '.$minBookingOffset.' day', $validStartDateTimeStamp);
@@ -2726,13 +2732,18 @@ class HotelHelper
         $maxOrderDateTimestamp = strtotime(HotelOrderRestrictDate::getMaxOrderDate($idHotel));
         $dateFromTimestamp = strtotime($dateFrom);
         $dateToTimestamp = strtotime($dateTo);
+        $effectiveDateFrom = $dateFrom != '' ? $dateFrom : date('Y-m-d', $validStartDateTimeStamp);
+        $effectiveDateTo = $dateTo != '' ? $dateTo : date('Y-m-d', strtotime('+1 day', strtotime($effectiveDateFrom)));
 
         $isValid = true;
         if ($dateFrom != '' && ($dateFromTimestamp === false || ($dateFromTimestamp < $validStartDateTimeStamp))) {
             $isValid = false;
         } else if ($dateTo != '' && ($dateToTimestamp === false || ($dateToTimestamp < $validStartDateTimeStamp))) {
             $isValid = false;
-        } else if ($dateTo != '' && $dateFrom != '' && $dateFromTimestamp >= $dateToTimestamp) {
+        } else if ($dateTo != '' && $dateToTimestamp <= ($dateFrom != '' ? $dateFromTimestamp : $validStartDateTimeStamp)) {
+            $isValid = false;
+        } else if ((new DateTime($effectiveDateFrom))->diff(new DateTime($effectiveDateTo))->days < 1) {
+            // Pricing needs a full calendar day; a spring DST night may be only 23 elapsed hours.
             $isValid = false;
         } else if ($dateToTimestamp > $maxOrderDateTimestamp) {
             $isValid = false;
